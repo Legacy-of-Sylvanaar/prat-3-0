@@ -3,7 +3,7 @@ tinsert(Prat.EnableTasks, function(self)
   LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("Prat", {
     type = "launcher",
     text = "Prat |cff8080ff3.0|r",
-    icon = "Interface\\Addons\\" .. Prat.FolderLocation .. "\\textures\\chat-bubble",
+    icon = "Interface\Addons\Prat-3.0\textures\chat-bubble",
     OnClick = function(frame, button)
       Prat.ToggleOptionsWindow()
     end,
