@@ -275,7 +275,7 @@ end
       self:SetParameters(v, enabled)
     end
 
-    DEFAULT_CHATFRAME_ALPHA = self.db.profile.framealpha
+    --DEFAULT_CHATFRAME_ALPHA = self.db.profile.framealpha
   end
 
   -- get the defaults for chat frame1 max/min width/height for use when disabling the module
