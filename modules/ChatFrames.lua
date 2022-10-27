@@ -284,7 +284,6 @@ end
     local prof = self.db.profile
 
     local minwidthdefault, minheightdefault ,maxwidthdefault, maxheightdefault = cf:GetResizeBounds()
-      
 
     prof.minchatwidthdefault = minwidthdefault
     prof.maxchatwidthdefault = maxwidthdefault
@@ -300,13 +299,11 @@ end
     if enabled then
       cf:SetResizeBounds(prof.minchatwidth, prof.minchatheight, prof.maxchatwidth, prof.maxchatheight)
 
-
       if prof.removeclamp then
         cf:SetClampRectInsets(0, 0, 0, 0)
       end
     else
       cf:SetResizeBounds(prof.minchatwidthdefault, prof.minchatheightdefault, prof.maxchatwidthdefault, prof.maxchatheightdefault)
-
     end
   end
 

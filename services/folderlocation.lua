@@ -9,5 +9,5 @@ setfenv(1, select(2, ...))
 
 --[[ END STANDARD HEADER ]] --
 
-FolderLocation = _G.debugstack():match("ns\\(.-)\\")
+FolderLocation = _G.debugstack():match("ns/(.-)/"):gsub("/", "\\")
 
