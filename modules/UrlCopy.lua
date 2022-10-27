@@ -561,7 +561,7 @@ end
 
           editBox:SetText(StaticPopupDialogs["SHOW_URL"].urltext)
           editBox:SetFocus()
-          editBox:HighlightText(false)
+          editBox:HighlightText()
 
           local button = _G[this:GetName() .. "Button2"]
           button:ClearAllPoints()
