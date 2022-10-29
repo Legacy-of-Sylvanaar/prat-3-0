@@ -1,8 +1,9 @@
 name: Package AddOn
 
-# triggers when pushing a tag
 on:
   push:
+    branches:
+      - master
     tags:
       - '**'
 
@@ -17,4 +18,4 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - uses: BigWigsMods/packager@master
+      - uses: BigWigsMods/packager@v2

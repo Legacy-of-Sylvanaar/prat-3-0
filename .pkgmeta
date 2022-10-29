@@ -61,3 +61,4 @@ ignore:
 tools-used:
     - idlua
 
+enable-toc-creation: yes

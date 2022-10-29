@@ -1,6 +1,6 @@
-## Interface: 90200
-## Interface-Classic: 11402
-## Interface-BCC: 20503
+## Interface: 100000
+## Interface-Classic: 11403
+## Interface-Wrath: 30400
 
 ## X-Curse-Project-ID: 7473
 ## X-WoWI-ID: 10783
