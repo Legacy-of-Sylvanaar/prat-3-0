@@ -275,7 +275,9 @@ end
       self:SetParameters(v, enabled)
     end
 
-    --DEFAULT_CHATFRAME_ALPHA = self.db.profile.framealpha
+    if Prat.IsClassic then -- Classic only as this taints on 10.0.0
+      DEFAULT_CHATFRAME_ALPHA = self.db.profile.framealpha
+    end
   end
 
   -- get the defaults for chat frame1 max/min width/height for use when disabling the module
@@ -283,7 +285,13 @@ end
     local cf = _G["ChatFrame1"]
     local prof = self.db.profile
 
-    local minwidthdefault, minheightdefault ,maxwidthdefault, maxheightdefault = cf:GetResizeBounds()
+    local minwidthdefault, minheightdefault, maxwidthdefault, maxheightdefault
+    if cf.GetResizeBounds then
+      minwidthdefault, minheightdefault, maxwidthdefault, maxheightdefault = cf:GetResizeBounds()
+    else
+      minwidthdefault, minheightdefault = cf:GetMinResize()
+      maxwidthdefault, maxheightdefault = cf:GetMaxResize()
+    end
 
     prof.minchatwidthdefault = minwidthdefault
     prof.maxchatwidthdefault = maxwidthdefault
@@ -296,14 +304,24 @@ end
   -- set the max/min width/height for a chatframe
   function mod:SetParameters(cf, enabled)
     local prof = self.db.profile
+    local minWidth, minHeight, maxWidth, maxHeight
     if enabled then
-      cf:SetResizeBounds(prof.minchatwidth, prof.minchatheight, prof.maxchatwidth, prof.maxchatheight)
+      minWidth, minHeight = prof.minchatwidth, prof.minchatheight
+      maxWidth, maxHeight = prof.maxchatwidth, prof.maxchatheight
 
       if prof.removeclamp then
         cf:SetClampRectInsets(0, 0, 0, 0)
       end
     else
-      cf:SetResizeBounds(prof.minchatwidthdefault, prof.minchatheightdefault, prof.maxchatwidthdefault, prof.maxchatheightdefault)
+      minWidth, minHeight = prof.minchatwidthdefault, prof.minchatheightdefault
+      maxWidth, maxHeight = prof.maxchatwidthdefault, prof.maxchatheightdefault
+    end
+
+    if cf.SetResizeBounds then
+      cf:SetResizeBounds(minWidth, minHeight, maxWidth, maxHeight)
+    else
+      cf:SetMinResize(minWidth, minHeight)
+      cf:SetMaxResize(maxWidth, maxHeight)
     end
   end
 

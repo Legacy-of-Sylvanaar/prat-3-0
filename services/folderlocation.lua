@@ -9,5 +9,10 @@ setfenv(1, select(2, ...))
 
 --[[ END STANDARD HEADER ]] --
 
-FolderLocation = _G.debugstack():match("ns/(.-)/"):gsub("/", "\\")
+local stack = _G.debugstack()
+if stack:match("ns\\") then
+  FolderLocation = stack:match("ns\\(.-)\\")
+elseif stack:match("ns/") then
+  FolderLocation = _G.debugstack():match("ns/(.-)/"):gsub("/", "\\")
+end
 

@@ -671,7 +671,12 @@ end
           frame:SetScript("OnMouseUp", stopMoving)
           frame:SetWidth(w)
           frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
-          frame:SetResizeBounds(40, 1)
+          local minWidth, minHeight = 40, 1
+          if frame.SetResizeBounds then
+            frame:SetResizeBounds(minWidth, minHeight)
+          else
+            frame:SetMinResize(minWidth, minHeight)
+          end
 
           frame.lDrag:EnableMouse(true)
           frame.rDrag:EnableMouse(true)
