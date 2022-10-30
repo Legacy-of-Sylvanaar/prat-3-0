@@ -235,9 +235,11 @@ end
   function mod:FloatingChatFrame_UpdateBackgroundAnchors(frame)
     if self.db.profile.removeclamp then
       frame:SetClampRectInsets(0, 0, 0, 0)
-    	if frame:GetName() == "ChatFrame1" then
-		    frame:SetClampedToScreen(false)
-	    end
+      if not Prat.IsClassic then
+    	  if frame:GetName() == "ChatFrame1" then
+		      frame:SetClampedToScreen(false)
+	      end
+      end
     end
     Prat.Frames[frame:GetName()] = frame
     local m = Prat.Addon:GetModule("Font", true)
@@ -246,9 +248,11 @@ end
   function mod:FCF_DockFrame(frame, ...)
     if self.db.profile.removeclamp then
       frame:SetClampRectInsets(0, 0, 0, 0)
-    	if frame:GetName() == "ChatFrame1" then
-		    frame:SetClampedToScreen(false)
-	    end
+      if not Prat.IsClassic then
+    	  if frame:GetName() == "ChatFrame1" then
+		      frame:SetClampedToScreen(false)
+	      end
+      end
     end
     Prat.Frames[frame:GetName()] = frame
     local m = Prat.Addon:GetModule("Font", true)
@@ -258,9 +262,11 @@ end
   function mod:FCF_UnDockFrame(frame, ...)
     if self.db.profile.removeclamp then
       frame:SetClampRectInsets(0, 0, 0, 0)
-  	  if frame:GetName() == "ChatFrame1" then
-		    frame:SetClampedToScreen(false)
-	    end
+      if not Prat.IsClassic then
+    	  if frame:GetName() == "ChatFrame1" then
+		      frame:SetClampedToScreen(false)
+	      end
+      end
     end
     Prat.Frames[frame:GetName()] = frame
     local m = Prat.Addon:GetModule("Font", true)
