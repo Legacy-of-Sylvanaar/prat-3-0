@@ -108,10 +108,11 @@ function GetChannelNumber(channel)
 end
 
 -- "CHANNEL_CATEGORY_CUSTOM", "CHANNEL_CATEGORY_WORLD", "CHANNEL_CATEGORY_GROUP"
+local name, header, collapsed, channelNumber, active, count, category, voiceEnabled, voiceActive;
 function GetChannelCategory(num)
   num = GetChannelNumber(num)
-  for i = 1, _G.GetNumDisplayChannels() do
-    local _, _, _, channelNumber, _, _, category = _G.GetChannelDisplayInfo(i)
+  for i = 1, _G.GetNumDisplayChannels(), 1 do
+    name, header, collapsed, channelNumber, count, active, category, voiceEnabled, voiceActive = _G.GetChannelDisplayInfo(i)
 
     if channelNumber == num then
       return category
@@ -119,6 +120,7 @@ function GetChannelCategory(num)
   end
 end
 
+local name, t
 function IsPrivateChannel(num)
   return select(4, _G.GetChannelName(num))
 end

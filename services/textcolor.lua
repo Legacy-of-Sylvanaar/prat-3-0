@@ -28,6 +28,7 @@
 --[[ BEGIN STANDARD HEADER ]] --
 
 -- Imports
+local _G = _G
 local tostring = tostring
 local select = select
 local type = type
@@ -41,7 +42,7 @@ setfenv(1, select(2, ...))
 --[[ END STANDARD HEADER ]] --
 
 
-local CLR = {}
+CLR = {}
 
 CLR.DEFAULT = "ffffff" -- default to white
 CLR.LINK = {
@@ -191,10 +192,9 @@ end
 function CLR:HSLtoRGB(hue, saturation, luminance)
   local red, green, blue
 
-  if saturation == 0 then
+  if (S == 0) then
     red, green, blue = luminance, luminance, luminance
   else
-    local var1, var2
     if luminance < 0.5 then
       var2 = luminance * (1 + saturation)
     else

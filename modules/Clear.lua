@@ -24,6 +24,9 @@
 --
 -------------------------------------------------------------------------------
 
+
+
+
 Prat:AddModuleToLoad(function()
 
   local PRAT_MODULE = Prat:RequestModuleName("Clear")
@@ -59,17 +62,26 @@ do
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
 PL:AddLocale(PRAT_MODULE, "enUS", L)
 
+
+
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
 PL:AddLocale(PRAT_MODULE, "itIT", L)
+
+
 
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
 PL:AddLocale(PRAT_MODULE, "ptBR", L)
 
+
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
 PL:AddLocale(PRAT_MODULE, "frFR",L)
 
+
+
+
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
 PL:AddLocale(PRAT_MODULE, "deDE", L)
+
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
 PL:AddLocale(PRAT_MODULE, "koKR",L)

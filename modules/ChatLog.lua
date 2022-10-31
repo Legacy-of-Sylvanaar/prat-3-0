@@ -17,12 +17,16 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc.,
--- 51 Franklin Street, Fifth Floor,
+-- Free Software Foundation, Inc., 
+-- 51 Franklin Street, Fifth Floor, 
 -- Boston, MA  02110-1301, USA.
 --
 --
 -------------------------------------------------------------------------------
+
+
+
+
 
 Prat:AddModuleToLoad(function()
 
@@ -63,20 +67,30 @@ Prat:AddModuleToLoad(function()
 do
     local L
 
+
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
 PL:AddLocale(PRAT_MODULE, "enUS", L)
+
+
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
 PL:AddLocale(PRAT_MODULE, "itIT", L)
 
+
+
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
 PL:AddLocale(PRAT_MODULE, "ptBR", L)
+
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
 PL:AddLocale(PRAT_MODULE, "frFR",L)
 
+
+
+
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
 PL:AddLocale(PRAT_MODULE, "deDE", L)
+
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
 PL:AddLocale(PRAT_MODULE, "koKR",L)
@@ -97,6 +111,9 @@ PL:AddLocale(PRAT_MODULE, "esES",L)
 PL:AddLocale(PRAT_MODULE, "zhTW",L)
 end
 --@end-non-debug@]===]
+
+
+
 
   Prat:SetModuleDefaults(module.name, {
     profile = {

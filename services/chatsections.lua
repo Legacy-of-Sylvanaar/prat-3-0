@@ -419,7 +419,7 @@ function SplitChatMessage(frame, event, ...)
     s.TYPEPOSTFIX = safestr(s.TYPEPOSTFIX)
     s.TYPEPREFIX = safestr(s.TYPEPREFIX)
 
-    arg2 = safestr(arg2)
+    local arg2 = safestr(arg2)
     if strlen(arg2) > 0 then
 
       if (strsub(type, 1, 7) == "MONSTER" or type == "RAID_BOSS_EMOTE" or
@@ -530,7 +530,7 @@ function SplitChatMessage(frame, event, ...)
       s.MESSAGE = _G.format(globalstring, arg8, _G.ChatFrame_ResolvePrefixedChannelName(arg4))
     end
 
-    arg6 = safestr(arg6)
+    local arg6 = safestr(arg6)
     if strlen(arg6) > 0 then
       s.fF = ""
 
@@ -558,7 +558,7 @@ function SplitChatMessage(frame, event, ...)
       s.MOBILE = _G.ChatFrame_GetMobileEmbeddedTexture(info.r, info.g, info.b)
     end
 
-    arg3 = safestr(arg3)
+    local arg3 = safestr(arg3)
     if ((strlen(arg3) > 0) and (arg3 ~= "Universal") and (arg3 ~= frame.defaultLanguage)) then
       s.gG = "["
       s.LANGUAGE = arg3
@@ -567,7 +567,7 @@ function SplitChatMessage(frame, event, ...)
       s.LANGUAGE_NOSHOW = arg3
     end
 
-    arg9 = safestr(arg9)
+    local arg9 = safestr(arg9)
     if strlen(arg9) > 0 or chatGroup == "BN_CONVERSATION" then
       --            local bracket, post_bracket = string.match(s.TYPEPREFIX, "%[(.*)%](.*)")
       --            bracket = safestr(bracket)
@@ -637,7 +637,7 @@ function SplitChatMessage(frame, event, ...)
 
 
 
-    arg7 = tonumber(arg7)
+    local arg7 = tonumber(arg7)
     -- 2.4
     -- Search for icon links and replace them with texture links.
     local term;

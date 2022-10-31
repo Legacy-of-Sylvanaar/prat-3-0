@@ -1,4 +1,4 @@
---if Prat.BN_CHAT then return end -- Removed in 3.3.5
+--if Prat.BN_CHAT then return end -- Removed in 3.3.5 
 
 --
 -- Prat - A framework for World of Warcraft chat mods
@@ -24,6 +24,9 @@
 --
 --
 -------------------------------------------------------------------------------
+
+
+
 
 Prat:AddModuleToLoad(function()
 
@@ -76,40 +79,58 @@ Prat:AddModuleToLoad(function()
 do
     local L
 
+
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "enUS", L)
+
+
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "itIT", L)
 
+
+
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "ptBR", L)
+
+
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "frFR", L)
 
+
+
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "deDE", L)
+
+
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "koKR",  L)
 
+
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "esMX",  L)
+
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "ruRU",  L)
 
+
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "zhCN",  L)
 
+
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "esES",  L)
+
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Buttons")@
 PL:AddLocale(PRAT_MODULE, "zhTW",  L)
 end
 --@end-non-debug@]===]
+
+
 
   Prat:SetModuleDefaults(module.name, {
     profile = {

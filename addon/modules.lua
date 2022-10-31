@@ -56,11 +56,11 @@ Module system flow:
 5) The module code creates a new module calling NewModule
 6) Once the module has been created, we recieve OnModuleCreated, we want to
    remember that this module is installed, so we save that info
-7) The module will have its on initalize called after Prat's.
+7) The module will have its on initalize called after Prat's.  
 8) If the module is disabled it will stop at this point
 9) If the module is enabled, it will call its OnEnable
 
-That give us the states: EXISTS, INSTALLED, INITIALIZED, ENABLED,
+That give us the states: EXISTS, INSTALLED, INITIALIZED, ENABLED, 
                                                          DISABLED
 
 
@@ -302,7 +302,7 @@ do
 end
 
 
---[[
+--[[ 
 
 For module options, i want to use the single closure style executed from the main chunk of the module,
 such as:
@@ -311,10 +311,10 @@ SetModuleOptionTable(name, function() return { ... } )
 
 This way the options can be GC'd by from the modules, before the decision is made as
 to whether we will actually load the module. they will go into a table here, and either
-free'd, given back to the module for it to execute, or possible executed on this end.
+free'd, given back to the module for it to execute, or possible executed on this end. 
 
 In any case there will only be 1 copy of the closure, and if executed it will create its data
-and then it can be freed leaving no code behind. Prat 2.0 used alot of memory solely because of
+and then it can be freed leaving no code behind. Prat 2.0 used alot of memory solely because of 
 its options tables, this tries to avoid that.
 
 ]]
@@ -355,7 +355,7 @@ do
   local function loadNow(self, mod)
     local success, ret = pcall(mod)
     if not success then
-      geterrorhandler()(ret)
+      _G.geterrorhandler()(ret)
     end
   end
 
@@ -363,7 +363,7 @@ do
     for i = 1, #modules_toload, 1 do
       local success, ret = pcall(modules_toload[i])
       if not success then
-        geterrorhandler()(ret)
+        _G.geterrorhandler()(ret)
       end
       modules_toload[i] = nil
     end
@@ -372,7 +372,7 @@ do
     for i = 1, #extensions_toload, 1 do
       local success, ret = pcall(extensions_toload[i])
       if not success then
-        geterrorhandler()(ret)
+        _G.geterrorhandler()(ret)
       end
       extensions_toload[i] = nil
     end
@@ -383,4 +383,4 @@ do
     AddModuleExtension = loadNow
   end
 end
-
+	

@@ -24,6 +24,9 @@
 --
 -------------------------------------------------------------------------------
 
+
+
+
 Prat:AddModuleToLoad(function()
 
   local PRAT_MODULE = Prat:RequestModuleName("History")
@@ -69,32 +72,50 @@ Prat:AddModuleToLoad(function()
  do
      local L
 
+
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
-PL:AddLocale(PRAT_MODULE, "enUS",L)
+
+   PL:AddLocale(PRAT_MODULE, "enUS",L)
+
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
-PL:AddLocale(PRAT_MODULE, "frFR",L)
+
+   PL:AddLocale(PRAT_MODULE, "frFR",L)
+
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
-PL:AddLocale(PRAT_MODULE, "deDE",L)
+
+   PL:AddLocale(PRAT_MODULE, "deDE",L)
+
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
-PL:AddLocale(PRAT_MODULE, "koKR",L)
+
+   PL:AddLocale(PRAT_MODULE, "koKR",L)
+
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
-PL:AddLocale(PRAT_MODULE, "esMX",L)
+
+   PL:AddLocale(PRAT_MODULE, "esMX",L)
+
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
-PL:AddLocale(PRAT_MODULE, "ruRU",L)
+
+   PL:AddLocale(PRAT_MODULE, "ruRU",L)
+
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
-PL:AddLocale(PRAT_MODULE, "zhCN",L)
+
+   PL:AddLocale(PRAT_MODULE, "zhCN",L)
+
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
-PL:AddLocale(PRAT_MODULE, "esES",L)
+
+   PL:AddLocale(PRAT_MODULE, "esES",L)
+
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
-PL:AddLocale(PRAT_MODULE, "zhTW",L)
+
+   PL:AddLocale(PRAT_MODULE, "zhTW",L)
  end
  --@end-non-debug@]===]
 
@@ -265,7 +286,7 @@ PL:AddLocale(PRAT_MODULE, "zhTW",L)
   end
 
   function module:ConfigureAllChatFrames(lines)
-    lines = lines or self.db.profile.chatlines
+    local lines = lines or self.db.profile.chatlines
 
     for k, v in pairs(self.db.profile.chatlinesframes) do
       self:SetHistory(_G[k], lines)
@@ -329,7 +350,7 @@ PL:AddLocale(PRAT_MODULE, "zhTW",L)
   end
 
   function module:addSavedHistory(editBox)
-    editBox = editBox or ChatFrame1EditBox
+    local editBox = editBox or ChatFrame1EditBox
     local cmdhistory = Prat3CharDB.history.cmdhistory[editBox:GetName()] or {}
     local cmdindex = #cmdhistory
 
@@ -350,7 +371,7 @@ PL:AddLocale(PRAT_MODULE, "zhTW",L)
     local cmdhistory = editBox.history_lines or {}
 
     if cmdhistory[1] == text then return end
-
+    
     table.insert(cmdhistory, 1, text)
 
     local cmdcount = #cmdhistory - maxlines
