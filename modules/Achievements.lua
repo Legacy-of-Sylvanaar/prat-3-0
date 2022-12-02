@@ -65,7 +65,7 @@ Prat:AddModuleToLoad(function()
     ["grats_have_3"] = "Wow %s that's great",
     ["grats_have_4"] = "Welcome to the club %s",
     ["grats_have_5"] = "I can still rememeber getting that one %s",
-    ["grats_have_6"] = "That one is a rite of passge %s",
+    ["grats_have_6"] = "That one is a rite of passage %s",
     ["grats_have_7"] = "I worked on that for ages %s, grats!",
     ["grats_have_8"] = "I remember doing that, %s, grats!",
     ["grats_have_9"] = "Nicely done %s",
