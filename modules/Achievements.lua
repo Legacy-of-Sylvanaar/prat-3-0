@@ -46,11 +46,11 @@ Prat:AddModuleToLoad(function()
   --@debug@
   PL:AddLocale(PRAT_MODULE, "enUS", {
     ["module_name"] = "Achievements",
-    ["module_desc"] = "Achievment related customizations",
+    ["module_desc"] = "Achievement related customizations",
     ["grats_link"] = "say grats",
     ["completed"] = "Completed %s",
     ["showCompletedDate_name"] = "Show completed date",
-    ["showCompletedDate_desc"] = "Show the date you completed the acheievment next to the link",
+    ["showCompletedDate_desc"] = "Show the date you completed the achievement next to the link",
     ["showGratsLink_name"] = "Show grats link",
     ["showGratsLink_desc"] = "Show a clickable link which sends a grats message",
     ["dontShowAchievements_name"] = "Don't show achievements",
@@ -77,7 +77,7 @@ Prat:AddModuleToLoad(function()
     ["grats_donthave_5"] = "I'm jealous %s, grats!",
     ["grats_donthave_6"] = "I have been working on that for ages %s",
     ["grats_donthave_7"] = "Still need that one %s, grats!",
-    ["grats_donthave_8"] = "WTB your achievment %s",
+    ["grats_donthave_8"] = "WTB your achievement %s",
     ["grats_donthave_9"] = "Looking forward to that one myself %s, good job!",
     ["grats_donthave_10"] = "I can't wait to get that one %s",
   })
