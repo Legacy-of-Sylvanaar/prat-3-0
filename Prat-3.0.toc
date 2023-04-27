@@ -11,7 +11,7 @@
 ## Title-zhCN: Prat |cff8080ff3.0|r
 ## Notes-zhCN: 整合的聊天增强助手
 ## Notes-zhTW: 整合的聊天視窗模組。
-## Notes-frFR: Framework pour des modules concernant les fen\195\170tres de discussion
+## Notes-frFR: Prat 3.0 est un addon qui améliore la discussion en jeu.
 ## Notes-esES: Un entorno para modulos de chat.
 ## Notes-deDE: Ein Grundaddon für Chatfenstermodule.
 ## Notes-koKR: 대화창에 대한 다양한 기능을 제공하는 애드온입니다.
