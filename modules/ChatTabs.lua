@@ -53,6 +53,7 @@ Prat:AddModuleToLoad(function()
     ["Sets alpha of chat tab for active chat frame."] = true,
     ["Not Active Alpha"] = true,
     ["Sets alpha of chat tab for not active chat frame."] = true,
+    ["Show Tab Textures"] = true,
     ["All"] = true,
     ["Individual"] = true,
     ["Always"] = true,
@@ -157,6 +158,7 @@ end
       notactivealpha = 0,
       activealpha = 0,
       preventdrag = false,
+      showtabtextures = true,
 
       foreveralert = false,
       alerttimeout = 3.2,
@@ -209,6 +211,11 @@ end
             min = 0.0,
             max = 1,
             step = 0.1,
+          },
+          showtabtextures = {
+            name = PL["Show Tab Textures"],
+            type = "toggle",
+            order = 150,
           },
         },
       },
@@ -406,6 +413,43 @@ end
     self:UpdateAllTabs()
   end
 
+  local ChatTabTexturesRetail = {
+    "Left", "Right", "Middle",
+    "HighlightLeft", "HighlightRight", "HighlightMiddle",
+    "ActiveLeft", "ActiveRight", "ActiveMiddle",
+  }
+  local ChatTabTexturesSelectedRetail = {
+    "ActiveLeft", "ActiveRight", "ActiveMiddle",
+  }
+  local ChatTabTexturesClassic = {
+    "Left", "Right", "Middle",
+    "HighlightLeft", "HighlightRight", "HighlightMiddle",
+    "SelectedLeft", "SelectedRight", "SelectedMiddle",
+  }
+  local ChatTabTexturesSelectedClassic = {
+    "SelectedLeft", "SelectedRight", "SelectedMiddle",
+  }
+
+  function module:ShowHideTabTextures(tab)
+    local tabButton = _G[tab:GetName() .. "Tab"]
+    local alpha = self.db.profile.showtabtextures and 1 or 0
+    if not Prat.IsClassic then
+      for _, field in ipairs(ChatTabTexturesRetail) do
+        tabButton[field]:SetShown(self.db.profile.showtabtextures)
+      end
+      for _, field in ipairs(ChatTabTexturesSelectedRetail) do
+        tabButton[field]:SetAlpha(alpha)
+      end
+    else
+      for _, field in ipairs(ChatTabTexturesClassic) do
+        _G[tabButton:GetName() .. field]:SetShown(self.db.profile.showtabtextures)
+      end
+      for _, field in ipairs(ChatTabTexturesSelectedClassic) do
+        _G[tabButton:GetName() .. field]:SetAlpha(alpha)
+      end
+    end
+  end
+
   function module:UpdateAllTabs()
     CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = self.db.profile.activealpha;
     CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = self.db.profile.notactivealpha;
@@ -416,6 +460,7 @@ end
         tabButton:Hide()
         FCFTab_UpdateAlpha(v)
       end
+      self:ShowHideTabTextures(v)
     end
   end
 
