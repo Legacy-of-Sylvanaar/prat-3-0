@@ -275,6 +275,11 @@ end
     end)
   end
 
+  local function CleanText(text)
+    text = text:gsub("|K.-|k", "<BNET REMOVED>")
+    return StripHyperlinks(text, false, true)
+  end
+
   --[[------------------------------------------------
       Core Functions
   ------------------------------------------------]] --
@@ -285,7 +290,7 @@ end
         if visibleLine:IsMouseOver() then
           local info = visibleLine.messageInfo
           if info and info.message then
-            local text = StripHyperlinks(info.message)
+            local text = CleanText(info.message)
 
             local editBox = ChatEdit_ChooseBoxForSend(frame);
 
@@ -365,7 +370,7 @@ end
       msg = msg and msg.message
 
       if msg then
-       scrapelines[#scrapelines+1] = StripHyperlinks(msg)
+       scrapelines[#scrapelines+1] = CleanText(msg)
       end
     end
 
@@ -388,7 +393,7 @@ end
       local msg = frame:GetMessageInfo(i)
 
       if msg then
-        lines[#lines+1] = StripHyperlinks(msg)
+        lines[#lines+1] = CleanText(msg)
       end
     end
 
