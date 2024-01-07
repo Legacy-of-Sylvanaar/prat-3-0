@@ -209,6 +209,9 @@ end
           ChatFrame5 = frameOption,
           ChatFrame6 = frameOption,
           ChatFrame7 = frameOption,
+          ChatFrame8 = frameOption,
+          ChatFrame9 = frameOption,
+          ChatFrame10 = frameOption,
           WhisperTabs = whisperTabsOption,
           PetBattleTab = petBattleTabOption,
         }
