@@ -280,6 +280,9 @@ end
 
   function module:Prat_FramesUpdated(info, name, chatFrame, ...)
     self:UpdateHighlightTabsConfig()
+    for k, v in pairs(Prat.Frames) do
+      self:ShowHideTabTextures(v)
+    end
   end
 
   function module:Prat_FramesRemoved(info, name, chatFrame)
