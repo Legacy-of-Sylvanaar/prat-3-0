@@ -93,7 +93,7 @@ Prat:AddModuleToLoad(function()
     [".*[Tt]wink.*$"] = true,
     ["(.-)'s? [Aa]lt"] = "%f[%a\192-\255]([%a\192-\255]+)%f[^%a\128-\255]'s [Aa]lt",
     ["([^%s%p%d%c%z]+)'s alt"] = "%f[%a\192-\255]([%a\192-\255]+)%f[^%a\128-\255]'s [Aa]lt",
-		["alt of ([^%s%p%d%c%z]+)"] = "[Aa]lt of %f[%a\192-\255]([%a\192-\255]+)%f[^%a\128-\255]",
+    ["alt of ([^%s%p%d%c%z]+)"] = "[Aa]lt of %f[%a\192-\255]([%a\192-\255]+)%f[^%a\128-\255]",
     ['ERROR: some function sent a blank message!'] = true,
     ["Alts:"] = true,
     ['Main:'] = true,
