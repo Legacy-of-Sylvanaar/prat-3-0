@@ -93,6 +93,7 @@ Prat:AddModuleToLoad(function()
     [".*[Tt]wink.*$"] = true,
     ["(.-)'s? [Aa]lt"] = "%f[%a\192-\255]([%a\192-\255]+)%f[^%a\128-\255]'s [Aa]lt",
     ["([^%s%p%d%c%z]+)'s alt"] = "%f[%a\192-\255]([%a\192-\255]+)%f[^%a\128-\255]'s [Aa]lt",
+    ["alt of ([^%s%p%d%c%z]+)"] = "[Aa]lt of %f[%a\192-\255]([%a\192-\255]+)%f[^%a\128-\255]",
     ['ERROR: some function sent a blank message!'] = true,
     ["Alts:"] = true,
     ['Main:'] = true,
@@ -1121,6 +1122,11 @@ do
         mainname = cleanoffnote
       elseif officernote:find(PL["([^%s%p%d%c%z]+)'s alt"]) or publicnote:find(PL["([^%s%p%d%c%z]+)'s alt"]) then
         local TempName = officernote:match(PL["([^%s%p%d%c%z]+)'s alt"]) or publicnote:match(PL["([^%s%p%d%c%z]+)'s alt"])
+        if TempName and guildMembers[string.lower(TempName)] then
+          mainname = TempName
+        end
+      elseif officernote:find(PL["alt of ([^%s%p%d%c%z]+)"]) or publicnote:find(PL["alt of ([^%s%p%d%c%z]+)"]) then
+        local TempName = officernote:match(PL["alt of ([^%s%p%d%c%z]+)"]) or publicnote:match(PL["alt of ([^%s%p%d%c%z]+)"])
         if TempName and guildMembers[string.lower(TempName)] then
           mainname = TempName
         end
