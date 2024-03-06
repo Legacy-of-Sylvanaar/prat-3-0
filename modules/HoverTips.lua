@@ -108,19 +108,6 @@ end
     }
   })
 
-  -- basic code from Chatter
-
-  local strmatch = string.match
-  local linkTypes = {
-    item = true,
-    enchant = true,
-    spell = true,
-    quest = true,
-    achievement = true,
-    currency = true,
-    battlepet = true,
-  }
-
   function module:OnEnable()
     for i = 1, NUM_CHAT_WINDOWS do
       local frame = _G["ChatFrame" .. i]
@@ -139,19 +126,15 @@ end
 
   local showingTooltip = false
   function module:OnHyperlinkEnter(f, link, text)
-    local t = strmatch(link, "^(.-):")
-    if linkTypes[t] then
-      if t == "battlepet" then
-        showingTooltip = BattlePetTooltip
-        GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-        BattlePetToolTip_ShowLink(text)
-      else
-        showingTooltip = GameTooltip
-        ShowUIPanel(GameTooltip)
-        GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-        GameTooltip:SetHyperlink(link)
-        GameTooltip:Show()
-      end
+    if link:match("battlepet:") then
+      showingTooltip = BattlePetTooltip
+      GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+      BattlePetToolTip_ShowLink(text)
+    else
+      showingTooltip = GameTooltip
+      GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+      GameTooltip:SetHyperlink(link)
+      GameTooltip:Show()
     end
   end
 
