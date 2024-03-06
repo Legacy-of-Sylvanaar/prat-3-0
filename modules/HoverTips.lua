@@ -108,6 +108,16 @@ end
     }
   })
 
+  local linkTypes = {
+    item = true,
+    enchant = true,
+    spell = true,
+    quest = true,
+    achievement = true,
+    currency = true,
+    battlepet = true,
+  }
+
   function module:OnEnable()
     for i = 1, NUM_CHAT_WINDOWS do
       local frame = _G["ChatFrame" .. i]
@@ -126,11 +136,12 @@ end
 
   local showingTooltip = false
   function module:OnHyperlinkEnter(f, link, text)
-    if link:match("battlepet:") then
+    local linkType = link:match("^([^:]+):")
+    if linkType == "battlepet" then
       showingTooltip = BattlePetTooltip
       GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
       BattlePetToolTip_ShowLink(text)
-    else
+    elseif linkTypes[linkType] then
       showingTooltip = GameTooltip
       GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
       GameTooltip:SetHyperlink(link)
