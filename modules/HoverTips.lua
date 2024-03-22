@@ -139,6 +139,7 @@ end
     local linkType = link:match("^([^:]+):")
     if linkType == "battlepet" then
       showingTooltip = BattlePetTooltip
+      GameTooltip:Hide()
       GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
       BattlePetToolTip_ShowLink(text)
     elseif linkTypes[linkType] then
