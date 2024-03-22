@@ -137,9 +137,11 @@ end
   local showingTooltip = false
   function module:OnHyperlinkEnter(f, link, text)
     local linkType = link:match("^([^:]+):")
+    -- Prevent NPC tooltips leaving health bars behind or remaining behind
+    -- battle pet tooltips
+    GameTooltip:Hide()
     if linkType == "battlepet" then
       showingTooltip = BattlePetTooltip
-      GameTooltip:Hide()
       GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
       BattlePetToolTip_ShowLink(text)
     elseif linkTypes[linkType] then
