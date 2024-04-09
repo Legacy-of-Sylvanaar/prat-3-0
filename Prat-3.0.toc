@@ -35,7 +35,7 @@
 
 ## IconTexture: Interface\AddOns\Prat-3.0\textures\prat-logo-dark-small
 
-#libraries\includes.xml
+Libs.xml
 
 fonts\includes.xml
 addon\includes.xml
