@@ -245,6 +245,16 @@ end
     self:AdjustButtonFrames(self.db.profile.showButtons)
 
     self:UpdateReminder()
+
+    self:MarkButtonFramesDirty()
+  end
+
+  function module:MarkButtonFramesDirty()
+    for name, frame in pairs(Prat.Frames) do
+      if frame.buttonFrame and frame.buttonFrame.IsLayoutFrame and frame.buttonFrame:IsLayoutFrame() then
+        frame.buttonFrame:MarkDirty()
+      end
+    end
   end
 
   function module:OnModuleDisable()
@@ -332,7 +342,7 @@ end
         bottomButton = _G[name .. "ButtonFrameBottomButton"]
         bottomButton:SetScript("OnShow", hide)
         bottomButton:Hide()
-        bottomButton:SetParent(frame)
+        --bottomButton:SetParent(frame)
 
         bottomButton:SetScript("OnClick", function() frame:ScrollToBottom() end)
       end
@@ -408,7 +418,7 @@ end
         downButton:Show()
         bottomButton = _G[name .. "ButtonFrameBottomButton"]
         bottomButton:SetScript("OnShow", nil)
-        bottomButton:Show()
+        bottomButton:SetShown(self.showButtons)
         bottomButton:SetParent(_G[name .. "ButtonFrame"])
       end
 
@@ -493,6 +503,7 @@ end
       button.override = true
       button:Show()
     end
+    self:MarkButtonFramesDirty()
   end
 
   function module:ScrollDown(frame)
@@ -502,6 +513,7 @@ end
         button:Hide()
       end
     end
+    self:MarkButtonFramesDirty()
   end
 
   function module:ScrollDownForce(frame)
@@ -509,6 +521,7 @@ end
     if button then
       button:Hide()
     end
+    self:MarkButtonFramesDirty()
   end
 
   --function module:AddMessage(frame, text, ...)
@@ -522,6 +535,7 @@ end
     else
       button:Hide()
     end
+    self:MarkButtonFramesDirty()
   end
 
 
