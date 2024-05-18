@@ -135,6 +135,7 @@ SplitMessageIdx = {
   "FLAG",
   "Ff",
   "pP",
+  "TIMERUNNER",
   "lL",
   "PLAYERLINK",
   "PLAYERLINKDATA",
@@ -550,6 +551,12 @@ function SplitChatMessage(frame, event, ...)
       end
 
       s.Ff = ""
+    end
+
+    if arg12 and _G.C_ChatInfo.IsTimerunningPlayer and _G.C_ChatInfo.IsTimerunningPlayer(arg12) then
+      s.TIMERUNNER = _G.CreateAtlasMarkup("timerunning-glues-icon", 12, 12)
+    else
+      s.TIMERUNNER = ""
     end
 
     if arg15 then
