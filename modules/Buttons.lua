@@ -370,7 +370,7 @@ end
 
   function module:AdjustMinimizeButtons()
     for name, frame in pairs(Prat.Frames) do
-      local min = _G[name .. "ButtonFrameMinimizeButton"]
+      local min = _G[name .. "ButtonFrameMinimizeButton"] or _G[name .. "MinimizeButton"]
 
       if min then
 
