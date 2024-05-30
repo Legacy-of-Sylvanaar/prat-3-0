@@ -304,7 +304,7 @@ end
   local function SubInItemInfo(link)
     local res = link
 
-    local _, _, subType, equipLocation, icon, classID = GetItemInfoInstant(link)
+    local _, _, subType, equipLocation, icon, classID = C_Item.GetItemInfoInstant(link)
 
     local details = {}
 
@@ -316,7 +316,7 @@ end
       table.insert(details, _G[equipLocation])
     end
 
-    local level = GetDetailedItemLevelInfo(link)
+    local level = C_Item.GetDetailedItemLevelInfo(link)
     if module.db.profile.item.itemLevel and IsGear(classID) and level then
       table.insert(details, level)
     end
