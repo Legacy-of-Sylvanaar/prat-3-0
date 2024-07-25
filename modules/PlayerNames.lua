@@ -403,7 +403,7 @@ Prat:AddModuleToLoad(function()
       self:SetAltInvite()
     elseif field == "usewho" then
       if b and not LibStub:GetLibrary("LibWho-2.0", true) then
-        LoadAddOn("LibWho-2.0")
+        C_AddOns.LoadAddOn("LibWho-2.0")
       end
       self.wholib = b and LibStub:GetLibrary("LibWho-2.0", true)
       self:updateAll()
@@ -445,7 +445,7 @@ Prat:AddModuleToLoad(function()
 
     if self.db.profile.usewho then
       if not LibStub:GetLibrary("LibWho-2.0", true) then
-        LoadAddOn("LibWho-2.0")
+        C_AddOns.LoadAddOn("LibWho-2.0")
       end
       self.wholib = LibStub:GetLibrary("LibWho-2.0", true)
     end
