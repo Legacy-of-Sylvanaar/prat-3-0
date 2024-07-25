@@ -380,7 +380,7 @@ Prat:AddModuleToLoad(function()
             return false
           end
 
-          if GetAddOnInfo("LibWho-2.0") then
+          if C_AddOns.GetAddOnInfo("LibWho-2.0") then
             return false
           end
 
@@ -600,12 +600,13 @@ Prat:AddModuleToLoad(function()
     end
   end
 
-  -- This function is a wrapper for the Blizzard GuildRoster function, to account for the differences between Retail and Classic
-  function module:GuildRoster(...)
-    if Prat.IsRetail then
-      return C_GuildInfo.GuildRoster(...)
+  -- This function is a wrapper for the Blizzard GuildRoster function
+  -- All supported builds of WoW should now use C_GuildInfo.GuildRoster()
+  function module.GuildRoster()
+    if C_GuildInfo and C_GuildInfo.GuildRoster then
+      return C_GuildInfo.GuildRoster()
     else
-      return GuildRoster(...)
+      return GuildRoster()
     end
   end
 
