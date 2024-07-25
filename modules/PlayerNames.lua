@@ -669,7 +669,7 @@ Prat:AddModuleToLoad(function()
       self.GuildRoster()
 
       local Name, Class, Level, _
-      for i = 1, GetNumGuildMembers(true) do
+      for i = 1, GetNumGuildMembers() do
         Name, _, _, Level, _, _, _, _, _, _, Class = GetGuildRosterInfo(i)
 
         local plr, svr = Name:match("([^%-]+)%-?(.*)")
