@@ -627,7 +627,7 @@ Prat:AddModuleToLoad(function()
 
     self.NEEDS_INIT = nil
 
-    self:updateGuild(self.db.profile.keeplots)
+    self:updateGuild()
   end
 
 
