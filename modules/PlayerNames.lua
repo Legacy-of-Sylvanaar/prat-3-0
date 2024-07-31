@@ -681,6 +681,9 @@ Prat:AddModuleToLoad(function()
         if Name then
           local plr, svr = Name:match("([^%-]+)%-?(.*)")
 
+          -- @TODO: Note that since cross-realm guilds are now a thing, this logic may no longer be correct.
+          -- We can no longer assume that a player name without a server is automatically the same as being on our server.
+          -- In other words, if both Someplayer-ServerA and Someplayer-ServerB are in our guild, and they are different class/level, then this logic would overwrite the info of the first one processed with that of the second.
           self:addName(plr, nil, Class, Level, nil, "GUILD")
           self:addName(plr, svr, Class, Level, nil, "GUILD")
         end
