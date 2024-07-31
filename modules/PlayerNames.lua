@@ -664,10 +664,13 @@ Prat:AddModuleToLoad(function()
   end
 
 
+  local GuildRosterIsReady = false
 
-  function module:updateGuild()
+  function module:updateGuild(canRequestRosterUpdate)
+    if canRequestRosterUpdate ~= nil then GuildRosterIsReady = canRequestRosterUpdate end
     if IsInGuild() then
       self.GuildRoster()
+      if not GuildRosterIsReady then return end
 
       local Name, Class, Level, _
       for i = 1, GetNumGuildMembers() do
