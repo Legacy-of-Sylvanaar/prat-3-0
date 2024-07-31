@@ -667,8 +667,8 @@ Prat:AddModuleToLoad(function()
   local GuildRosterIsReady = false
 
   function module:updateGuild(canRequestRosterUpdate)
-    if canRequestRosterUpdate ~= nil then GuildRosterIsReady = canRequestRosterUpdate end
     if IsInGuild() then
+      if canRequestRosterUpdate ~= nil then GuildRosterIsReady = true end
       self.GuildRoster()
       if not GuildRosterIsReady then return end
 
@@ -676,10 +676,14 @@ Prat:AddModuleToLoad(function()
       for i = 1, GetNumGuildMembers() do
         Name, _, _, Level, _, _, _, _, _, _, Class = GetGuildRosterInfo(i)
 
-        local plr, svr = Name:match("([^%-]+)%-?(.*)")
+        -- Despite the safeguards, it's still possible for GetGuildRosterInfo() to return invalid data.
+        -- Add an additional sanity check to make sure name isn't null before proceeding.
+        if Name then
+          local plr, svr = Name:match("([^%-]+)%-?(.*)")
 
-        self:addName(plr, nil, Class, Level, nil, "GUILD")
-        self:addName(plr, svr, Class, Level, nil, "GUILD")
+          self:addName(plr, nil, Class, Level, nil, "GUILD")
+          self:addName(plr, svr, Class, Level, nil, "GUILD")
+        end
       end
     end
   end
