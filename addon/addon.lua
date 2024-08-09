@@ -843,3 +843,21 @@ Prat.RegisterChatCommand("pratdebug", function(name)
     dm:ShowCopyDialog()
   end
 end)
+
+local aboutText = "Prat: Publications Refinement And Transmission";
+AddonCompartmentFrame:RegisterAddon({
+	text = aboutText,
+	icon = "Interface/AddOns/Prat-3.0/textures/prat-logo-dark-small.tga",
+	notCheckable = true,
+	func = function(button, menuInputData, menu)
+		Prat.ToggleOptionsWindow()
+	end,
+	funcOnEnter = function(button)
+		MenuUtil.ShowTooltip(button, function(tooltip)
+			tooltip:SetText(aboutText .. "\n" .. Prat.Version)
+		end)
+	end,
+	funcOnLeave = function(button)
+		MenuUtil.HideTooltip(button)
+	end,
+})
