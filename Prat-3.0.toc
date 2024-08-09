@@ -34,6 +34,7 @@
 ## SavedVariablesPerCharacter: Prat3CharDB, Prat3HighCPUPerCharDB
 
 ## IconTexture: Interface\AddOns\Prat-3.0\textures\prat-logo-dark-small
+## AddonCompartmentFunc: Prat_ToggleOptionsWindow
 
 Libs.xml
 
