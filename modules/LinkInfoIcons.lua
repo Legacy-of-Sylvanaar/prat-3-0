@@ -334,7 +334,7 @@ end
 
   local function SubInSpellInfo(link)
     local spellID = tonumber(link:match("Hspell:(%d+)"))
-    local icon = select(3, GetSpellInfo(spellID))
+    local icon = select(3, C_Spell.GetSpellInfo(spellID))
 
     local res = link
     if module.db.profile.spell.icon and icon then
