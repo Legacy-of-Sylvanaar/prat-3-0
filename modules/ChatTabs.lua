@@ -571,7 +571,8 @@ end
 
     if #actions> 0 then
       self.chatAlertCleanupActions[chatFrame:GetName()] = actions
-      if not self.db.profile.foreveralert then
+      local activeChatFrame = SELECTED_CHAT_FRAME
+      if not self.db.profile.foreveralert or activeChatFrame:GetID() == chatFrame:GetID() then
         self.chatAlertTimers[chatFrame:GetName()] = C_Timer.NewTimer(self.db.profile.alerttimeout, function()
           self.chatAlertTimers[chatFrame:GetName()] = nil
           for _, a in ipairs(actions) do
