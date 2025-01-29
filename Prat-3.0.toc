@@ -1,5 +1,5 @@
 ## Interface: 110005, 110007
-## Interface-Vanilla: 11505
+## Interface-Vanilla: 11505, 11506
 ## Interface-Cata: 40401
 
 ## X-Curse-Project-ID: 7473
