@@ -458,6 +458,8 @@ Prat:AddModuleToLoad(function()
     end
 
     self:TabComplete(self.db.profile.tabcomplete)
+
+    self:CacheAppIcons()
   end
 
   function module:OnModuleDisable()
@@ -597,6 +599,39 @@ Prat:AddModuleToLoad(function()
       if accountInfo then
         return accountInfo.gameAccountInfo.clientProgram
       end
+    end
+  end
+
+  function module:CacheAppIcons()
+    self.appIcons = {}
+
+    -- List derived from old atlas containing client icons
+    for _, client in ipairs({
+      "App", -- B.net
+      "WoW",
+      "Hero", -- Heroes of the Storm
+      "LAZR", -- Modern Warfare 2
+      "OSI", -- Diablo Something
+      "Pro", -- Overwatch
+      "Overwatch-zhCN", -- Overwatch zhCN
+      "RTRO",
+      "ODIN", -- Modern Warfare
+      "S1", -- Starcraft 1
+      "WTCG", -- Hearthstone
+      "ZEUS", -- Black Ops
+      "FEN", -- Diablo 4
+      "D3", -- Diablo 3
+      "ANBS", -- Diablo Something
+      "VIPR",
+      "W3", -- Warcraft 3
+      "WLBY",
+      "GRY",
+    }) do
+      C_Texture.GetTitleIconTexture(client, 0, function(success, texture)
+        if success then
+          self.appIcons[client] = texture
+        end
+      end)
     end
   end
 
@@ -960,12 +995,14 @@ Prat:AddModuleToLoad(function()
 
       if self.db.profile.bnetclienticon then
         local client = GetBnetClientByID(message.PRESENCE_ID)
-        if client then
-          if BNet_GetClientEmbeddedAtlas then
-            message.PLAYERCLIENTICON = BNet_GetClientEmbeddedAtlas(client)
-          else
-            message.PLAYERCLIENTICON = ("|T%s:%d:%d:%d:%d|t"):format(BNet_GetClientTexture(client), 14)
-          end
+        if client and self.appIcons[client] then
+          message.PLAYERCLIENTICON = CreateTextureMarkup(self.appIcons[client], 12, 12, 12, 12, 0, 1, 0, 1) .. " "
+        elseif client then
+          C_Texture.GetTitleIconTexture(source, 0, function(success, texture)
+            if success then
+              self.appIcons[client] = texture
+            end
+          end)
         end
       end
     else
