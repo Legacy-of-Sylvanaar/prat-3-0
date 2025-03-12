@@ -998,7 +998,7 @@ Prat:AddModuleToLoad(function()
         if client and self.appIcons[client] then
           message.PLAYERCLIENTICON = CreateTextureMarkup(self.appIcons[client], 12, 12, 12, 12, 0, 1, 0, 1) .. " "
         elseif client then
-          C_Texture.GetTitleIconTexture(source, 0, function(success, texture)
+          C_Texture.GetTitleIconTexture(client, 0, function(success, texture)
             if success then
               self.appIcons[client] = texture
             end
