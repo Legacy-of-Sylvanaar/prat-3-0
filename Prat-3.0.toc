@@ -1,6 +1,7 @@
 ## Interface: 110107, 110105
 ## Interface-Vanilla: 11507
 ## Interface-Cata: 40402
+## Interface-Mists: 50500
 
 ## X-Curse-Project-ID: 7473
 ## X-WoWI-ID: 10783
