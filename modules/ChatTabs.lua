@@ -73,6 +73,8 @@ Prat:AddModuleToLoad(function()
     ["foreveralert_desc"] = "With this turned off the highlight/flash will persist until the timer elapses",
     ["Chat Alert Timeout"] = true,
     ["How long any highlights/flashes should last"] = true,
+    ["Tab Font Size"] = true,
+    ["Set the font size for chat tab names."] = true,
   })
   --@end-debug@
 
@@ -162,6 +164,7 @@ end
 
       foreveralert = false,
       alerttimeout = 3.2,
+      tabfontsize = 12,
     }
   })
 
@@ -216,6 +219,15 @@ end
             name = PL["Show Tab Textures"],
             type = "toggle",
             order = 150,
+          },
+          tabfontsize = {
+            name = PL["Tab Font Size"],
+            desc = PL["Set the font size for chat tab names."],
+            type = "range",
+            order = 160,
+            min = 8,
+            max = 24,
+            step = 1,
           },
         },
       },
@@ -465,6 +477,7 @@ end
       end
       self:ShowHideTabTextures(v)
     end
+    self:UpdateTabFontSizes()
   end
 
   function module:OnTabShow(tab, ...)
@@ -671,6 +684,16 @@ end
     end
   end
 
+  function module:UpdateTabFontSizes()
+    for k, v in pairs(Prat.Frames) do
+      local tabButton = _G[k .. "Tab"]
+      if tabButton and tabButton:GetFontString() then
+        local fontString = tabButton:GetFontString()
+        local currentFont, _, currentFlags = fontString:GetFont()
+        fontString:SetFont(currentFont, self.db.profile.tabfontsize, currentFlags)
+      end
+    end
+  end
 
   return
 end) -- Prat:AddModuleToLoad
