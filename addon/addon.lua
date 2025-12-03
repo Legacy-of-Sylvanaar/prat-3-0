@@ -62,7 +62,7 @@ Prat.BN_CHAT = true --(_G.GetBuildInfo() == "3.3.5") or (_G.GetBuildInfo() == "0
 
 --ChunkSizes = {}
 
---@debug@ 
+--@debug@
 Prat.Version = "Prat |cff8080ff3.0|r (|cff8080ff" .. "DEBUG" .. "|r)"
 
 
@@ -89,7 +89,7 @@ Prat.IsRetail =  (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE)
 
 local function dbg(...) end
 
---@debug@ 
+--@debug@
 local function dbg(...) Prat:PrintLiteral(...) end
 
 --@end-debug@
@@ -440,7 +440,15 @@ function addon:PostEnable()
   --	self:RegisterEvent("CVAR_UPDATE")
 
   -- Inbound Hooking
-  self:RawHook("ChatFrame_MessageEventHandler", true)
+	if _G["ChatFrame_MessageEventHandler"] then
+		self:RawHook("ChatFrame_MessageEventHandler", true)
+	elseif _G["ChatFrameMixin"] and _G["ChatFrameMixin"].MessageEventHandler then
+		for _, chatFrame in ipairs(_G["CHAT_FRAMES"]) do
+			_G[chatFrame].customEventHandler = function(self, event, ...)
+				return addon:ChatFrame_MessageEventHandler(self, event, ...)
+			end
+		end
+	end
 
   -- Outbound hooking
   self:SecureHook("ChatEdit_ParseText")
@@ -625,7 +633,11 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
   loading = nil -- clear any batch message loading that may be happening
 
   if not Prat.HookedFrames[this:GetName()] then
-    return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
+	  if _G["ChatFrame_MessageEventHandler"] then
+		  return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
+	  else
+		  return _G["ChatFrameMixin"].MessageEventHandler(proxy, event, ...)
+	  end
   end
 
   local message, info
@@ -651,7 +663,11 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
   end
 
   if not info then
-    return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
+	  if _G["ChatFrame_MessageEventHandler"] then
+		  return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
+	  else
+		  return _G["ChatFrameMixin"].MessageEventHandler(proxy, event, ...)
+	  end
   else
     local m = message --SplitMessage
 
@@ -681,7 +697,11 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
     local proxy = Prat.CreateProxy(this)
 
     m.CAPTUREOUTPUT = proxy
-    CMEResult = self.hooks["ChatFrame_MessageEventHandler"](proxy, event, ...) -- This specifically does not use message.EVENT
+	  if _G["ChatFrame_MessageEventHandler"] then
+		  CMEResult = self.hooks["ChatFrame_MessageEventHandler"](proxy, event, ...) -- This specifically does not use message.EVENT
+	  else
+		  CMEResult = _G["ChatFrameMixin"].MessageEventHandler(proxy, event, ...)
+	  end
     this.tellTimer = proxy.tellTimer
 
     Prat.RestoreProxy()
@@ -754,6 +774,9 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
 
         Prat.LastMessage = m
+		  if not _G["ChatFrame_MessageEventHandler"] then
+			  CMEResult = true
+		  end
       end
     end
 
