@@ -636,7 +636,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 	  if _G["ChatFrame_MessageEventHandler"] then
 		  return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
 	  else
-		  return _G["ChatFrameMixin"].MessageEventHandler(proxy, event, ...)
+		  return _G["ChatFrameMixin"].MessageEventHandler(this, event, ...)
 	  end
   end
 
@@ -666,7 +666,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 	  if _G["ChatFrame_MessageEventHandler"] then
 		  return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
 	  else
-		  return _G["ChatFrameMixin"].MessageEventHandler(proxy, event, ...)
+		  return _G["ChatFrameMixin"].MessageEventHandler(this, event, ...)
 	  end
   else
     local m = message --SplitMessage
