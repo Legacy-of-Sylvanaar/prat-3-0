@@ -1,5 +1,9 @@
 --[[ BEGIN STANDARD HEADER ]] --
 
+local ChatFrame_GetMentorChannelStatus = _G.ChatFrame_GetMentorChannelStatus or _G.ChatFrameUtil.GetMentorChannelStatus
+local ChatFrame_ResolvePrefixedChannelName = _G.ChatFrame_ResolvePrefixedChannelName or _G.ChatFrameUtil.ResolvePrefixedChannelName
+local ChatFrame_GetMobileEmbeddedTexture = _G.ChatFrame_GetMobileEmbeddedTexture or _G.ChatFrameUtil.GetMobileEmbeddedTexture
+
 -- Imports
 local _G = _G
 local LibStub = LibStub
@@ -17,30 +21,17 @@ local type = type
 local next, wipe = next, wipe
 local select = select
 
---local function RunOldMessageEventFilters(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
---	local filter = false
---	local chatFilters = _G.ChatFrame_GetMessageEventFilters and _G.ChatFrame_GetMessageEventFilters(event)
---    local newarg1 = arg1
---
---	if chatFilters then
---		for _, filterFunc in next, chatFilters do
---			filter, newarg1 = filterFunc(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
---			if filter then
---				return true
---			end
---			arg1 = newarg1 or arg1
---		end
---	end
---
---    return filter, arg1
---end
-
 
 -- arg1, filterthisout = RunMessageEventFilters(event, arg1)
 local newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10, newarg11, newarg12, newarg13, newrg14, newarg15, newarg16, newarg17
 local function RunMessageEventFilters(frame, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17)
   local filter = false
-  local chatFilters = _G.ChatFrame_GetMessageEventFilters and _G.ChatFrame_GetMessageEventFilters(event)
+	local chatFilters
+	if _G.ChatFrame_GetMessageEventFilters then
+		chatFilters = _G.ChatFrame_GetMessageEventFilters(event)
+	elseif _G.ChatFrameUtil.GetMessageEventFilters then
+		_G.ChatFrameUtil.GetMessageEventFilters(event)
+	end
 
   if chatFilters then
     for _, filterFunc in next, chatFilters do
@@ -528,13 +519,12 @@ function SplitChatMessage(frame, event, ...)
           end
         end
       end
-      s.MESSAGE = _G.format(globalstring, arg8, _G.ChatFrame_ResolvePrefixedChannelName(arg4))
+      s.MESSAGE = _G.format(globalstring, arg8, ChatFrame_ResolvePrefixedChannelName(arg4))
     end
 
     local arg6 = safestr(arg6)
     if strlen(arg6) > 0 then
       s.fF = ""
-		local ChatFrame_GetMentorChannelStatus = _G.ChatFrame_GetMentorChannelStatus or _G.ChatFrameUtil.GetMentorChannelStatus
 
       if arg6 == "GM" or arg6 == "DEV" then
         -- Add Blizzard Icon if this was sent by a GM/DEV
@@ -561,7 +551,7 @@ function SplitChatMessage(frame, event, ...)
     end
 
     if arg15 then
-      s.MOBILE = _G.ChatFrame_GetMobileEmbeddedTexture(info.r, info.g, info.b)
+      s.MOBILE = ChatFrame_GetMobileEmbeddedTexture(info.r, info.g, info.b)
     end
 
     local arg3 = safestr(arg3)
@@ -623,7 +613,7 @@ function SplitChatMessage(frame, event, ...)
       elseif chatGroup == "COMMUNITIES_CHANNEL" then
         s.cC = "["
         s.Cc = "] "
-        s.CHANNEL = _G.ChatFrame_ResolvePrefixedChannelName(arg4):match("%d%.%s+(.+)")
+        s.CHANNEL = ChatFrame_ResolvePrefixedChannelName(arg4):match("%d%.%s+(.+)")
       else
         if strlen(arg9) > 0 then
           s.CHANNEL = arg9

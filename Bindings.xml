@@ -16,64 +16,83 @@ Dependencies: Prat
 <Bindings>
 	<!-- ChannelNames -->
 	<Binding name="officer" header="Prat">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/o");
 	</Binding>
-	<Binding name="guild" >
+	<Binding name="guild">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/g");
 	</Binding>
- 	<Binding name="party" >
+ 	<Binding name="party">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/p");
 	</Binding>
-	<Binding name="raid" >
+	<Binding name="raid">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/raid");
 	</Binding>
-	<Binding name="raidwarn" >
+	<Binding name="raidwarn">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/rw");
 	</Binding>
-	<Binding name="instance" >
+	<Binding name="instance">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/i");
 	</Binding>
-	<Binding name="say" >
+	<Binding name="say">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/say");
 	</Binding>
-	<Binding name="yell" >
+	<Binding name="yell">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/yell");
 	</Binding>
-	<Binding name="whisper" >
+	<Binding name="whisper">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/w");
 	</Binding>
 	<Binding name="one">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/1");
 	</Binding>
 	<Binding name="two">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/2");
 	</Binding>
 	<Binding name="three">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/3");
 	</Binding>
 	<Binding name="four">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/4");
 	</Binding>
 	<Binding name="five">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/5");
 	</Binding>
 	<Binding name="six">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/6");
 	</Binding>
 	<Binding name="seven">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/7");
 	</Binding>
 	<Binding name="eight">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/8");
 	</Binding>
   	<Binding name="nine">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/9");
 	</Binding>
   	<Binding name="SmartGroup">
+		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/smart");
 	</Binding>
 	<Binding name="NextTab">
-		local mod =  Prat.Addon:GetModule("KeyBindings", true)
+		local mod = Prat.Addon:GetModule("KeyBindings", true)
         if mod then
             mod:CycleChatTabs()
         end
@@ -92,10 +111,10 @@ Dependencies: Prat
             mod:CopyChat();
         end
 	</Binding>
-  <Binding name="Scroll To Bottom">
-    SELECTED_CHAT_FRAME:ScrollToBottom()
-  </Binding>
-  <Binding name="Scroll To Top">
-    SELECTED_CHAT_FRAME:ScrollToTop()
-  </Binding>
+	<Binding name="Scroll To Bottom">
+		SELECTED_CHAT_FRAME:ScrollToBottom()
+	</Binding>
+	<Binding name="Scroll To Top">
+		SELECTED_CHAT_FRAME:ScrollToTop()
+	</Binding>
 </Bindings>

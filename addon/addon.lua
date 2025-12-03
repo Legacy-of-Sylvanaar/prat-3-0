@@ -764,7 +764,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
         if (not this:IsShown()) then
           if ((this == _G.DEFAULT_CHAT_FRAME and m.INFO.flashTabOnGeneral) or (this ~= _G.DEFAULT_CHAT_FRAME and m.INFO.flashTab)) then
-            if (not _G.CHAT_OPTIONS.HIDE_FRAME_ALERTS or m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then --BN_WHISPER FIXME
+            if ((_G.CHAT_OPTIONS and not _G.CHAT_OPTIONS.HIDE_FRAME_ALERTS) or m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then --BN_WHISPER FIXME
               if (not _G.FCFManager_ShouldSuppressMessageFlash(this, m.CHATGROUP, m.CHATTARGET)) then
                 _G.FCF_StartAlertFlash(this);
               end

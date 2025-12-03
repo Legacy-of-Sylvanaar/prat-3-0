@@ -271,28 +271,30 @@ Prat:AddModuleToLoad(function()
     },
   })
 
-  Prat:SetModuleInit(module, function(self)
-    -- Disable blizz timestamps if possible
-    if _G["ChatFrame_MessageEventHandler"] and issecurevariable("ChatFrame_MessageEventHandler") then
-      local proxy = {}
-      if Prat.IsClassic then
-        proxy.CHAT_TIMESTAMP_FORMAT = false -- nil would defer to __index
-      else
-        proxy.GetChatTimestampFormat = function() end
-      end
-      local CF_MEH_env = setmetatable(proxy, { __index = _G, __newindex = _G })
-      setfenv(ChatFrame_MessageEventHandler, CF_MEH_env)
-    else
-      -- An addon has modified ChatFrame_MessageEventHandler and likely
-      -- replaced / hooked it, so we can't setfenv the original function.
-      -- TODO Print a warning
-      self:Output("Could not install hook")
-    end
+	Prat:SetModuleInit(module, function(self)
+		-- Disable blizz timestamps if possible
+		local proxy = {}
+		if Prat.IsClassic then
+			proxy.CHAT_TIMESTAMP_FORMAT = false -- nil would defer to __index
+		else
+			proxy.GetChatTimestampFormat = function() end
+		end
+		local CF_MEH_env = setmetatable(proxy, { __index = _G, __newindex = _G })
+		if _G.ChatFrameMixin and _G.ChatFrameMixin.MessageEventHandler then
+			setfenv(_G.ChatFrameMixin.MessageEventHandler, CF_MEH_env)
+		elseif _G["ChatFrame_MessageEventHandler"] and issecurevariable("ChatFrame_MessageEventHandler") then
+			setfenv(_G.ChatFrame_MessageEventHandler, CF_MEH_env)
+		else
+			-- An addon has modified ChatFrame_MessageEventHandler and likely
+			-- replaced / hooked it, so we can't setfenv the original function.
+			-- TODO Print a warning
+			self:Output("Could not install hook")
+		end
 
-    for name, v in pairs(Prat.HookedFrames) do
-      self:SecureHook(v, "AddMessage")
-    end
-  end)
+		for _, v in pairs(Prat.HookedFrames) do
+			self:SecureHook(v, "AddMessage")
+		end
+	end)
 
   function module:OnModuleEnable()
     for name, v in pairs(Prat.HookedFrames) do

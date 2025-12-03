@@ -24,6 +24,7 @@
 --
 -------------------------------------------------------------------------------
 
+local ChatFrame_TimeBreakDown = _G.ChatFrame_TimeBreakDown or _G.ChatFrameUtil.TimeBreakDown
 
 Prat:AddModuleExtension(function()
   local function dbg(...) end

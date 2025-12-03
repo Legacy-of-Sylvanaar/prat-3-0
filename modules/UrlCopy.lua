@@ -23,6 +23,9 @@
 --
 --
 -------------------------------------------------------------------------------
+
+local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+
 Prat:AddModuleToLoad(function()
 
   local PRAT_MODULE = Prat:RequestModuleName("UrlCopy")
