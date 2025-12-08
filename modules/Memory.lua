@@ -559,14 +559,14 @@ end
     if success then
       self.needsLoading = nil
       self.working = nil
-      self.errorcount = nil
+      self.errorcount = 0
       self:Output(PL.msg_settingsloaded)
     else
       self.errorcount = self.errorcount + 1
 
       if self.errorcount > 10 then
         self.working = nil
-        self.errorcount = nil
+        self.errorcount = 0
         self:Output(PL.msg_loadfailed)
         return
       end
