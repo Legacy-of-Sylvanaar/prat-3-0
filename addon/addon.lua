@@ -39,8 +39,7 @@ local tostring = tostring
 local pairs = pairs
 local ipairs = ipairs
 local type = type
-local select = select
-local tinsert = tinsert
+local strsub = strsub
 local Prat = Prat
 local setmetatable, getmetatable = setmetatable, getmetatable
 local strfind = strfind
@@ -648,6 +647,15 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
   if type(arg1) == "string" and (arg1):find("\r") then -- Stupid exploit. Protect our users.
     arg1 = arg1:gsub("\r", " ")
   end
+
+	if strsub(event, 1, 8) == "CHAT_MSG" and _G.ChatFrameUtil and _G.ChatFrameUtil.ProcessMessageEventFilters then
+		local shouldDiscardMessage = false
+		shouldDiscardMessage , arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14
+			= _G.ChatFrameUtil.ProcessMessageEventFilters(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
+		if shouldDiscardMessage then
+			return true
+		end
+	end
 
   -- Create a message table. This table contains the chat message in a non-concatenated form
   -- so that it can be modified easily without lots of complex gsub's
