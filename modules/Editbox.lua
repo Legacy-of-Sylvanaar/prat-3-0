@@ -255,7 +255,7 @@ end
         set = function(_, v)
           mod.db.profile.colorByChannel = v
           if v then
-            mod:RawHook("ChatEdit_UpdateHeader", "SetBorderByChannel", true)
+            mod:SecureHook("ChatEdit_UpdateHeader", "SetBorderByChannel", true)
           else
             if mod:IsHooked("ChatEdit_UpdateHeader") then
               mod:Unhook("ChatEdit_UpdateHeader")
