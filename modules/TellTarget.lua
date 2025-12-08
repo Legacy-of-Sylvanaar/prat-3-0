@@ -137,7 +137,7 @@ Prat:AddModuleToLoad(function()
       Module Event Functions
   ------------------------------------------------]] --
   function module:OnModuleEnable()
-    self:HookScript(ChatFrame1EditBox, "OnTextChanged")
+    self:SecureHookScript(ChatFrame1EditBox, "OnTextChanged")
   end
 
   function module:OnModuleDisable()
@@ -157,7 +157,6 @@ Prat:AddModuleToLoad(function()
     if command == "/tt" or command == PL["/tt"] then
       self:SendTellToTarget(editBox.chatFrame, msg, editBox)
     end
-    self.hooks[editBox].OnTextChanged(editBox, ...)
   end
 
   function module:SendTellToTarget(frame, text, editBox)
