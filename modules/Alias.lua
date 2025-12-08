@@ -277,6 +277,9 @@ Prat:AddModuleToLoad(function()
 
 	function module:OnModuleDisable()
 		self:UnhookAll()
+		if _G.ChatFrameEditBoxBaseMixin and _G.ChatFrameEditBoxBaseMixin.HandleChatType then
+			_G.ChatFrame1EditBox.HandleChatType = _G.ChatFrameEditBoxBaseMixin.HandleChatType
+		end
 		self.Aliases = nil
 	end
 
