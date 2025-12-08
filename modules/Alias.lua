@@ -27,7 +27,6 @@
 local ChatEdit_ParseText = _G.ChatEdit_ParseText or _G.ChatFrameEditBoxMixin.ParseText
 
 Prat:AddModuleToLoad(function()
-
 	local PRAT_MODULE = Prat:RequestModuleName("Alias")
 
 	if PRAT_MODULE == nil then
