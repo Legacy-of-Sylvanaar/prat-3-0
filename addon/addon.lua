@@ -449,8 +449,11 @@ function addon:PostEnable()
 		end
 	end
 
-  -- Outbound hooking
-  self:SecureHook("ChatEdit_ParseText")
+	-- Outbound hooking
+	self:SecureHook("ChatEdit_ParseText")
+	if _G.ChatFrame1EditBox and _G.ChatFrame1EditBox.ParseText then
+		self:SecureHook(_G.ChatFrame1EditBox, 'ParseText', 'ChatEdit_ParseText')
+	end
 
   -- Display Hooking
   Prat.DummyFrame = _G.CreateFrame("ScrollingMessageFrame")
