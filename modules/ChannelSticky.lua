@@ -276,8 +276,8 @@ Prat:AddModuleToLoad(function()
 			SLASH_SMARTGROUP1 = "/smart"
 			SLASH_SMARTGROUP2 = "/smrt"
 			ChatTypeInfo["SMARTGROUP"] = { r = 0.5, g = 0.9, b = 0.9, sticky = 1 }
-			CHAT_SMARTGROUP_SEND = "SmartGroup:\32 "
-			CHAT_SMARTGROUP_GET = "SmartGroup: %1\32 "
+			CHAT_SMARTGROUP_SEND = "SmartGroup:\32"
+			CHAT_SMARTGROUP_GET = "SmartGroup: %1\32"
 		else
 			Prat.UnregisterAllChatEvents(self)
 			self:UnhookAll()
