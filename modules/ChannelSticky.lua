@@ -258,7 +258,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:GetChatCLR(name)
-		local info = ChatTypeInfo[name];
+		local info = ChatTypeInfo[name]
 		if not info then
 			return CLR.COLOR_NONE
 		end
