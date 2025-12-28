@@ -1,5 +1,3 @@
---if Prat.BN_CHAT then return end -- Removed in 3.3.5 
-
 --
 -- Prat - A framework for World of Warcraft chat mods
 --

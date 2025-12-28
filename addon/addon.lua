@@ -25,8 +25,6 @@
 --
 -------------------------------------------------------------------------------
 
-
-
 Prat = select(2, ...)
 
 --[[ BEGIN STANDARD HEADER ]] --
@@ -45,32 +43,16 @@ local setmetatable, getmetatable = setmetatable, getmetatable
 local strfind = strfind
 local IsSecureCmd = IsSecureCmd
 local wipe = table.wipe
-local print = print
 
 --[[ END STANDARD HEADER ]] --
 
---NEW_CHATFILTERS = select(4, _G.GetBuildInfo()) >= 30100
---CHAT_PLAYER_GUIDS = select(4, _G.GetBuildInfo()) >= 30200
---MOP = select(4, _G.GetBuildInfo()) >= 50000
-
-Prat.BN_CHAT = true --(_G.GetBuildInfo() == "3.3.5") or (_G.GetBuildInfo() == "0.3.5")
-
--- Debug
---PrintMainChunkUse=true
-
-
---ChunkSizes = {}
-
 --@debug@
 Prat.Version = "Prat |cff8080ff3.0|r (|cff8080ff" .. "DEBUG" .. "|r)"
-
-
 --@end-debug@
 
 --[===[@non-debug@
 Prat.Version = "Prat |cff8080ff3.0|r (|cff8080ff".."@project-version@".."|r)"
 --@end-non-debug@]===]
-
 
 local am = {}
 local om = getmetatable(Prat)
@@ -80,21 +62,11 @@ end
 am.__tostring = function() return "Prat |cff8080ff3.0|r" end
 setmetatable(Prat, am)
 
-
 Prat.Prat3 = true
 Prat.IsClassic = (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE)
 Prat.IsRetail =  (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE)
 
-
-local function dbg(...) end
-
---@debug@
-local function dbg(...) Prat:PrintLiteral(...) end
-
---@end-debug@
-
 Prat.Localizations = Prat.GetLocalizer({})
-local L = Prat.Localizations
 
 Prat.Frames = {
   ["ChatFrame1"] = _G.ChatFrame1,
@@ -109,9 +81,7 @@ Prat.Frames = {
   ["ChatFrame10"] = _G.ChatFrame10
 }
 Prat.HookedFrames = {}
-
 Prat.ExternalFrames = {}
-
 
 local builtinSounds = {
   ["Bell"] = "Interface\\AddOns\\Prat-3.0\\sounds\\Bell.ogg",
@@ -182,7 +152,7 @@ local SOUND
 function addon:OnInitialize()
 	local IsAddOnLoaded = _G.C_AddOns.IsAddOnLoaded or _G.IsAddOnLoaded
   if IsAddOnLoaded("Prat") == 1 then
-    Prat:Print(("Prat 2.0 was detected, and disabled. Please %s your UI."):format(GetReloadUILink()))
+    Prat:Print("Prat 2.0 was detected, and disabled. Please reload your UI.")
   end
 
 
@@ -208,7 +178,6 @@ function addon:OnInitialize()
 
   Prat.builtinSounds = nil
 
-
   -- Build the list of frames which we should hook addmessage on
   -- IsCombatLog is not correct yet it appears, so we resort to checking
   -- for chatframe2
@@ -218,35 +187,20 @@ function addon:OnInitialize()
     end
   end
 
-
   Prat.db.RegisterCallback(self, "OnProfileChanged", "UpdateProfile")
   Prat.db.RegisterCallback(self, "OnProfileCopied", "UpdateProfile")
   Prat.db.RegisterCallback(self, "OnProfileReset", "UpdateProfile")
 
-  --	_G.collectgarbage('collect')
-  --	Print("Pre-Module-Load Memory Use: "..MemoryUse())
-
   Prat.LoadModules()
-
-  --	_G.collectgarbage('collect')
-  --	Print("Post-Module-Load Memory Use: "..MemoryUse())
 
   self.OnInitalize = nil
 end
-
-local DEF_INFO = {
-  r = 1,
-  g = 1,
-  b = 1,
-  id = 1
-}
 
 -- Used for Prat/WIM integration
 function Prat.Format(smf, event, color, ...)
   local PRE_ADDMESSAGE = "Prat_PreAddMessage"
   local POST_ADDMESSAGE = "Prat_PostAddMessage"
   local FRAME_MESSAGE = "Prat_FrameMessage"
-  local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 = ...;
   local this = smf
   local formattedText = ""
   local m, info = Prat.SplitChatMessage(smf, event, ...)
@@ -311,7 +265,7 @@ function Prat.Format(smf, event, color, ...)
 end
 
 function addon:OnEnable()
-  for i, v in ipairs(Prat.EnableTasks) do
+  for _, v in ipairs(Prat.EnableTasks) do
     v(self)
   end
   Prat.EnableTasks = nil
@@ -330,7 +284,7 @@ function addon:UpdateProfile()
 end
 
 function addon:UpdateProfileDelayed()
-  for k, v in self:IterateModules() do
+  for _, v in self:IterateModules() do
     if v.db.profile.on then
       if v:IsEnabled() then
         v:Disable()
@@ -346,12 +300,6 @@ function addon:UpdateProfileDelayed()
   Prat.UpdateOptions()
 end
 
-function Prat.GetReloadUILink(Requestor)
-  return "Reload"
-end
-
-local module = {}
-
 do
   local org_GetChannelName = _G.GetChannelName
   local chanTable
@@ -359,35 +307,16 @@ do
   function Prat.GetChannelName(n)
     local a, b, c = org_GetChannelName(n)
 
-    --dbg("GetChannelName: "..tostring(n), a,b,c)
-
     if b == nil and chanTable then
       n = chanTable[n]
 
       if n ~= nil then
         a, b, c = org_GetChannelName(n)
-
-        --dbg("GetChannelName: "..n, a,b,c)
       end
     end
 
     return a, b, c
   end
-
-  -- Orignial GetChannelName
-  --Prat 3.0 (244): >> print(GetChannelName(1))
-  --Prat 3.0 (244): 1, "General - The Storm Peaks", 0
-  --Prat 3.0 (244): >> print(GetChannelName("General"))
-  --Prat 3.0 (244): 0, nil, 0
-
-  -- Replace the global version with one which sucks a bit less
-  --_G.GetChannelName = GetChannelName
-
-  -- Improved GetChannelName
-  --Prat 3.0 (244): >> print(GetChannelName(1))
-  --Prat 3.0 (244): 1, "General - The Storm Peaks", 0
-  --Prat 3.0 (244): >> print(GetChannelName("General"))
-  --Prat 3.0 (244): 1, "General - The Storm Peaks", 0
 end
 
 function addon:FCF_SetTemporaryWindowType(chatFrame, chatType, chatTarget)
@@ -401,7 +330,7 @@ function addon:FCF_SetTemporaryWindowType(chatFrame, chatType, chatTarget)
 end
 
 
-function addon:FCF_Close(frame, fallback)
+function addon:FCF_Close(frame)
   local name = frame:GetName()
 
   Prat.Frames[name] = nil
@@ -435,10 +364,7 @@ function addon:PostEnable()
   if Prat.PrintSlashCommand then
     self:RegisterChatCommand("print", Prat.PrintSlashCommand)
   end
-  -- 2.4 Changes
-  --	self:RegisterEvent("CVAR_UPDATE")
-
-  -- Inbound Hooking
+    -- Inbound Hooking
 	if _G["ChatFrame_MessageEventHandler"] then
 		self:RawHook("ChatFrame_MessageEventHandler", true)
 	elseif _G["ChatFrameMixin"] and _G["ChatFrameMixin"].MessageEventHandler then
@@ -475,20 +401,9 @@ function addon:PostEnable()
   Prat.callbacks:Fire(Prat.Events.ENABLED)
 
   --@debug@
-
-  --	if ChunkSizes then
-  --		local last = 0
-  --		for i, v in ipairs(ChunkSizes) do
-  --			self:Print("Chunk #"..tostring(i)..":"..("|cff80ffff%.0f|r KB"):format(v-last))
-  --			last = v
-  --		end
-  --		self:Print("Total Size: "..("|cff80ffff%.0f|r KB"):format(ChunkSizes[#ChunkSizes]))
-  --		ChunkSizes = nil
-  --	end
-
   if Prat.Modules then
     local total, loaded, enabled = 0, 0, 0
-    for k, v in pairs(Prat.Modules) do
+    for _, v in pairs(Prat.Modules) do
       total = total + 1
       if v ~= "EXISTS" then
         loaded = loaded + 1
@@ -539,7 +454,6 @@ function addon:ChatEdit_ParseText(editBox, send)
   wipe(m)
   CurrentMessage = m
 
-
   m.MESSAGE = command:gsub("^%s*(.-)%s*$", "%1") -- trim whitespace
 
   m.CTYPE = editBox:GetAttribute("chatType")
@@ -559,7 +473,6 @@ function addon:ChatEdit_ParseText(editBox, send)
   editBox:SetAttribute("channelTarget", m.CHANNEL)
   editBox.languague = m.LANGUAGE
 
-
   if m.DONOTPROCESS then
     editBox:SetText("")
   else
@@ -568,7 +481,6 @@ function addon:ChatEdit_ParseText(editBox, send)
 
   Prat.CurrentMessage = nil
 end
-
 
 function addon:ProcessUserEnteredChat(m)
   if (m.MESSAGE:len() <= 0) then
@@ -628,7 +540,6 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
   local POST_ADDMESSAGE = "Prat_PostAddMessage"
   local FRAME_MESSAGE = "Prat_FrameMessage"
   local POST_ADDMESSAGE_BLOCKED = "Prat_PostAddMessageBlocked"
-
 
   local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 = ...
 
@@ -719,7 +630,6 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
     m.CAPTUREOUTPUT = false
 
-    --        DBG_OUTPUT("CMEResult", CMEResult)
     if type(m.OUTPUT) == "string" and not m.DONOTPROCESS then
       Prat.CurrentMessage = m
       local r, g, b, id = m.INFO.r, m.INFO.g, m.INFO.b, m.INFO.id
@@ -775,7 +685,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
         if (not this:IsShown()) then
           if ((this == _G.DEFAULT_CHAT_FRAME and m.INFO.flashTabOnGeneral) or (this ~= _G.DEFAULT_CHAT_FRAME and m.INFO.flashTab)) then
-            if ((_G.CHAT_OPTIONS and not _G.CHAT_OPTIONS.HIDE_FRAME_ALERTS) or m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then --BN_WHISPER FIXME
+            if ((_G.CHAT_OPTIONS and not _G.CHAT_OPTIONS.HIDE_FRAME_ALERTS) or m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then
               if (not _G.FCFManager_ShouldSuppressMessageFlash(this, m.CHATGROUP, m.CHATTARGET)) then
                 _G.FCF_StartAlertFlash(this);
               end
@@ -801,8 +711,7 @@ end
 
 function addon:AddMessage(frame, text, r, g, b, id, ...)
   local s = Prat.SplitMessage
-  if s.OUTPUT == nil and s.CAPTUREOUTPUT == frame --[[ and Prat.dumping == false]] then
-    --    s.INFO.r, s.INFO.g, s.INFO.b, s.INFO.id = r, g, b, id
+  if s.OUTPUT == nil and s.CAPTUREOUTPUT == frame then
     s.ORG.OUTPUT = text
   else
     self.hooks[frame].AddMessage(frame, text, r, g, b, id, ...)
@@ -813,7 +722,7 @@ local wowsounds = {
   ["TellMessage"] = _G.SOUNDKIT.TELL_MESSAGE,
 }
 
-function Prat.PlaySound(self, sound)
+function Prat.PlaySound(_, sound)
   if not sound then return end
 
   if wowsounds[sound] then
@@ -829,10 +738,10 @@ function Prat.PlaySound(self, sound)
   end
 end
 
-function Prat.CanSendChatMessage(type)
-  if type == "SAY" or type == "YELL" then
+function Prat.CanSendChatMessage(chatType)
+  if chatType == "SAY" or chatType == "YELL" then
     return _G.IsInInstance("player")
-  elseif type == "RAID" or type == "GUILD" or type == "WHISPER" then
+  elseif chatType == "RAID" or chatType == "GUILD" or chatType == "WHISPER" then
     return true
   end
 
@@ -848,7 +757,7 @@ end
 Prat.RegisterChatCommand("pratblacklist",
   function(name)
     if name and #name > 0 then
-      Prat:Print("Blacklisting: '" .. tostring(name) .. "' to activate " .. Prat.GetReloadUILink())
+      Prat:Print("Blacklisting: '" .. tostring(name) .. "'. Reload to activate.")
       db.realm.PlayerNameBlackList[tostring(name):lower()] = true
     end
   end)
@@ -857,21 +766,21 @@ Prat.RegisterChatCommand("pratblacklist",
 Prat.RegisterChatCommand("pratunblacklist",
   function(name)
     if name and #name > 0 then
-      Prat:Print("Un-Blacklisting: '" .. tostring(name) .. "' to activate " .. Prat.GetReloadUILink())
+      Prat:Print("Un-Blacklisting: '" .. tostring(name) .. "'. Reload to activate")
       db.realm.PlayerNameBlackList[tostring(name):lower()] = nil
     end
   end)
 
 
 Prat.RegisterChatCommand("pratdebugmsg",
-  function(name)
+  function()
     Prat:PrintLiteral(LastMessage, Prat.LastMessage.ORG)
 
     local cc = addon:GetModule("CopyChat", true)
     if cc then cc:ScrapeFullChatFrame(printFrame or _G.DEFAULT_CHAT_FRAME, true) end
   end)
 
-Prat.RegisterChatCommand("pratdebug", function(name)
+Prat.RegisterChatCommand("pratdebug", function()
   local dm = addon:GetModule("DebugModules", true)
   if dm then
     dm:ShowCopyDialog()

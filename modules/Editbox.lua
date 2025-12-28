@@ -5,9 +5,6 @@ local GetCVar = _G.GetCVar or _G.C_CVar.GetCVar
 local ChatEdit_ChooseBoxForSend = _G.ChatEdit_ChooseBoxForSend or _G.ChatFrameUtil.ChooseBoxForSend
 local ChatEdit_DeactivateChat = _G.ChatEdit_DeactivateChat or _G.ChatFrameUtil.DeactivateChat
 
-
-if not Prat.BN_CHAT then return end -- Requires 3.3.5
-
 Prat:AddModuleToLoad(function()
 
   local PRAT_MODULE = Prat:RequestModuleName("Editbox")

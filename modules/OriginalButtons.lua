@@ -17,8 +17,8 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
@@ -385,8 +385,6 @@ end
   end
 
   function module:ButtonFrame(id, visible)
-    if not Prat.BN_CHAT then return end
-
     local f = _G["ChatFrame" .. id .. "ButtonFrame"]
     local cf = _G["ChatFrame" .. id]
 
@@ -452,7 +450,6 @@ end
 
     f.cfScrl = f.cfScrl or {}
     f.cf = f.cf or _G["ChatFrame" .. id]
-    if Prat.BN_CHAT then
       f.cfScrl.up = f.cfScrl.up or _G["ChatFrame" .. id .. "ButtonFrameUpButton"]
       f.cfScrl.down = f.cfScrl.down or _G["ChatFrame" .. id .. "ButtonFrameDownButton"]
       f.cfScrl.bottom = f.cfScrl.bottom or _G["ChatFrame" .. id .. "ButtonFrameBottomButton"]
@@ -480,11 +477,6 @@ end
         f.cfScrl.down:SetScript("OnClick", function() PlaySound(SOUNDKIT.IG_CHAT_SCROLL_DOWN); f.cf:ScrollDown() end)
         f.cfScrl.bottom:SetScript("OnClick", function() PlaySound(SOUNDKIT.IG_CHAT_BOTTOM); f.cf:ScrollToBottom() end)
       end
-    else
-      f.cfScrl.up = f.cfScrl.up or _G["ChatFrame" .. id .. "UpButton"]
-      f.cfScrl.down = f.cfScrl.down or _G["ChatFrame" .. id .. "DownButton"]
-      f.cfScrl.bottom = f.cfScrl.bottom or _G["ChatFrame" .. id .. "BottomButton"]
-    end
 
     f.cfScrlheight = (f.cfScrlheight and f.cfScrlheight > 0) and f.cfScrlheight or ((f.cfScrl.up and f.cfScrl.down and f.cfScrl.bottom) and
       (f.cfScrl.up:GetHeight() + f.cfScrl.down:GetHeight() + f.cfScrl.bottom:GetHeight()) or 0)
