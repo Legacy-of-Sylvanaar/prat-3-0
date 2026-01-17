@@ -383,6 +383,9 @@ function addon:PostEnable()
 
   -- Display Hooking
   Prat.DummyFrame = _G.CreateFrame("ScrollingMessageFrame")
+	if _G.Mixin and _G.ChatFrameMixin then
+		_G.Mixin(Prat.DummyFrame, _G.ChatFrameMixin)
+	end
   self:RawHook(Prat.DummyFrame, "AddMessage", true)
 
   -- ItemRef Hooking
