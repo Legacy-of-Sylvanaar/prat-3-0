@@ -453,7 +453,7 @@ end
       f.cfScrl.up = f.cfScrl.up or _G["ChatFrame" .. id .. "ButtonFrameUpButton"]
       f.cfScrl.down = f.cfScrl.down or _G["ChatFrame" .. id .. "ButtonFrameDownButton"]
       f.cfScrl.bottom = f.cfScrl.bottom or _G["ChatFrame" .. id .. "ButtonFrameBottomButton"]
-      f.cfScrl.min = f.cfScrl.min or _G["ChatFrame" .. id .. "ButtonFrameMinimizeButton"]
+      f.cfScrl.min = f.cfScrl.min or _G["ChatFrame" .. id .. "ButtonFrameMinimizeButton"] or _G["ChatFrame" .. id .. "MinimizeButton"]
 
       if f.cfScrl.up then
         f.cfScrl.up:SetParent(f.cf)

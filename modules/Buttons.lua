@@ -240,8 +240,6 @@ end
 
     self:UpdateChannelButton()
 
-    self:AdjustButtonFrames(self.db.profile.showButtons)
-
     self:UpdateReminder()
 
     self:MarkButtonFramesDirty()
@@ -348,22 +346,6 @@ end
     end
 
     self:AdjustMinimizeButtons()
-  end
-
-  function module:AdjustButtonFrames(visible)
-    for name, frame in pairs(Prat.Frames) do
-      local f = _G[name .. "ButtonFrame"]
-
-      if visible then
-        f:SetScript("OnShow", nil)
-        f:Show()
-        f:SetWidth(29)
-      else
-        f:SetScript("OnShow", hide)
-        f:Hide()
-        f:SetWidth(0.1)
-      end
-    end
   end
 
   function module:AdjustMinimizeButtons()
