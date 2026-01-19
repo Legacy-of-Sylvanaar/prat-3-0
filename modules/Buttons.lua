@@ -183,6 +183,7 @@ end
         desc = PL["showvoice_desc"],
         type = "toggle",
         order = 150,
+		hidden = not Prat.IsRetail,
       },
       showchannel = {
         name = PL["showchannel_name"],
@@ -274,11 +275,12 @@ end
   end
 
   function module:UpdateMenuButtons()
-    if QuickJoinToastButton then
+	  local socialBtn = _G.QuickJoinToastButton or _G.FriendsMicroButton
+    if socialBtn then
       if self.db.profile.showBnet then
-        QuickJoinToastButton:Show()
+		  socialBtn:Show()
       else
-        QuickJoinToastButton:Hide()
+		  socialBtn:Hide()
       end
     end
 
@@ -328,7 +330,7 @@ end
     local upButton, downButton, bottomButton, min
 
     for name, frame in pairs(Prat.Frames) do
-      if Prat.IsClassic then
+      if not Prat.IsRetail then
         upButton = _G[name .. "ButtonFrameUpButton"]
         upButton:SetScript("OnShow", hide)
         upButton:Hide()
@@ -389,7 +391,7 @@ end
     local upButton, downButton, bottomButton
 
     for name, frame in pairs(Prat.Frames) do
-      if Prat.IsClassic then
+      if not Prat.IsRetail then
         upButton = _G[name .. "ButtonFrameUpButton"]
         upButton:SetScript("OnShow", nil)
         upButton:Show()
@@ -423,7 +425,7 @@ end
     local f = _G[chatFrame:GetName() .. "ButtonFrameBottomButton"]
     local bf = _G[chatFrame:GetName() .. "ButtonFrame"]
 
-    if Prat.IsClassic then
+    if not Prat.IsRetail then
       if self.db.profile.showButtons then
         f:ClearAllPoints()
         f:SetPoint("BOTTOM", bf, "BOTTOM", 0, 0)

@@ -436,7 +436,7 @@ end
   function module:ShowHideTabTextures(tab)
     local tabButton = _G[tab:GetName() .. "Tab"]
     local alpha = self.db.profile.showtabtextures and 1 or 0
-    if not Prat.IsClassic then
+    if Prat.IsRetail then
       for _, field in ipairs(ChatTabTexturesRetail) do
         tabButton[field]:SetShown(self.db.profile.showtabtextures)
       end

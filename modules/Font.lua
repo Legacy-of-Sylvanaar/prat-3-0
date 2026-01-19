@@ -177,7 +177,7 @@ end
     min = 4,
     max = 100,
     step = 1,
-    hidden = Prat.IsClassic,
+    hidden = not Prat.IsRetail and not Prat.IsMop,
     order = 900,
   }
 

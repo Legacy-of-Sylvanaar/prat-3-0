@@ -63,8 +63,9 @@ am.__tostring = function() return "Prat |cff8080ff3.0|r" end
 setmetatable(Prat, am)
 
 Prat.Prat3 = true
-Prat.IsClassic = (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE)
+Prat.IsClassic = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
 Prat.IsRetail =  (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE)
+Prat.IsMop = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MISTS_CLASSIC)
 
 Prat.Localizations = Prat.GetLocalizer({})
 

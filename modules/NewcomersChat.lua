@@ -23,7 +23,7 @@
 --
 -------------------------------------------------------------------------------
 
-if Prat.IsClassic then
+if not Prat.IsRetail then
   return
 end
 
