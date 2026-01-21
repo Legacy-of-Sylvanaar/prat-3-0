@@ -6,5 +6,6 @@
 <Script file="addon.lua"/>
 <Script file="options.lua"/>
 <Script file="modules.lua"/>
+<Script file="profileAPI.lua"/>
 
 </Ui>
