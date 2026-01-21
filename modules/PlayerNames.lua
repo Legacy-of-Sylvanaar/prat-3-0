@@ -348,6 +348,7 @@ Prat:AddModuleToLoad(function()
         desc = PL["Toggle showing the raid target icon which is currently on the player."],
         type = "toggle",
         order = 142,
+		hidden = Prat.IsRetail,
       },
       tabcomplete = {
         name = PL["Enable TabComplete"],
@@ -965,7 +966,7 @@ Prat:AddModuleToLoad(function()
     end
 
     -- Add raid target icon
-    if self.db.profile.showtargeticon then
+    if not Prat.IsRetail and self.db.profile.showtargeticon then
       local icon = UnitExists(Name) and GetRaidTargetIndex(Name)
       if icon then
         icon = ICON_LIST[icon]

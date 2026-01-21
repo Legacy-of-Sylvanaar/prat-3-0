@@ -378,7 +378,7 @@ end
 
     local function TargetIcon()
       local icon = ""
-      if UnitExists("target") then
+      if not Prat.IsRetail and UnitExists("target") then
         local iconnum = GetRaidTargetIndex("target")
 
         if type(iconnum) ~= "nil" then
