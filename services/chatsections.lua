@@ -328,7 +328,9 @@ local function GetDecoratedSenderName(event, ...)
 	if _G.ChatFrameUtil.ProcessSenderNameFilters then
 		decoratedPlayerName = _G.ChatFrameUtil.ProcessSenderNameFilters(event, decoratedPlayerName, ...);
 	end
-	return "["..decoratedPlayerName.."]";
+	if decoratedPlayerName then
+		return "["..decoratedPlayerName.."]";
+	end
 end
 
 local function SanitizeCommunityData(clubId, streamId, epoch, position)
@@ -513,7 +515,7 @@ function SplitChatMessage(frame, event, ...)
     s.TYPEPREFIX = safestr(s.TYPEPREFIX)
 
     local arg2 = isSecret and arg2 or safestr(arg2)
-	if isSecret then
+	if isSecret and coloredName then
 		local playerWrapper = "[%s]"
 		local isCommunityType = type == "COMMUNITIES_CHANNEL";
 		if strsub(type,1,11) == 'ACHIEVEMENT' or strsub(type, 1, 18) == 'GUILD_ACHIEVEMENT' then
