@@ -105,48 +105,51 @@ SplitMessageSrc = {
 }
 
 SplitMessageIdx = {
-  "PRE",
-  "nN",
-  "CHANLINK",
-  "NN",
-  "cC",
-  "CHANNELNUM",
-  "CC",
-  "CHANNEL",
-  -- Zone is not usually included
-  --      "zZ",
-  --          "ZONE",
-  --      "Zz",
+	"PRE",
+	"nN",
+	"CHANLINK",
+	"NN",
+	"cC",
+	"CHANNELNUM",
+	"CC",
+	"CHANNEL",
+	-- Zone is not usually included
+	--      "zZ",
+	--          "ZONE",
+	--      "Zz",
 
-  "Cc",
-  "TYPEPREFIX",
-  "Nn",
+	"Cc",
+	"TYPEPREFIX",
+	"Nn",
 
-  "fF",
-  "FLAG",
-  "Ff",
-  "pP",
-  "TIMERUNNER",
-  "lL",
-  "PLAYERLINK",
-  "PLAYERLINKDATA",
-  "LL",
-  "PLAYER",
-  "NONPLAYER",
-  "sS",
-  "SERVER",
-  "Ss",
-  "Ll",
-  "Pp",
+	"fF",
+	"FLAG",
+	"Ff",
+	"pP",
+	"TIMERUNNER",
+	"lL",
+	"PLAYERLINK",
+	"PLAYERLINKDATA",
+	"LL",
+	"PLAYER",
+	"NONPLAYER",
+	"sS",
+	"SERVER",
+	"Ss",
+	"Ll",
+	"Pp",
+}
+SplitMessageIdx2 = {
   "TYPEPOSTFIX",
   "mM",
   "gG",
   "LANGUAGE",
   "Gg",
   "MOBILE",
-  "MESSAGE",
-  "Mm",
-  "POST",
+}
+SplitMessageIdx3 = {
+	"Mm",
+	"POST",
 }
 
 SplitMessage = {}
@@ -171,20 +174,31 @@ setmetatable(SplitMessage, {
 
 
 do
-  local t = {}
-  function BuildChatText(message, index)
-    local index = index or SplitMessageIdx --todo
+  local t, t2, t3 = {}, {}, {}
+  function BuildChatText(message)
     local s = message
 
     for k in pairs(t) do
       t[k] = nil
     end
+	  for k in pairs(t2) do
+		  t2[k] = nil
+	  end
+	  for k in pairs(t3) do
+		  t3[k] = nil
+	  end
 
-    for i, v in ipairs(index) do
+    for _, v in ipairs(SplitMessageIdx) do
       tinsert(t, s[v])
     end
+	  for _, v in ipairs(SplitMessageIdx2) do
+		  tinsert(t2, s[v])
+	  end
+	  for _, v in ipairs(SplitMessageIdx3) do
+		  tinsert(t3, s[v])
+	  end
 
-    return tconcat(t, "")
+    return tconcat(t, "") .. (s.SPLAYER or "") .. tconcat(t2, "") .. s.MESSAGE .. tconcat(t3, "")
   end
 end
 
@@ -264,8 +278,91 @@ end
 
 local function safestr(s) return s or "" end
 
+local function GetDecoratedSenderName(event, ...)
+	local text, senderName, languageName, channelName, playerName2, specialFlags, zoneChannelID, channelIndex, channelBaseName, languageID, lineID, senderGUID, bnSenderID, isMobile
+		= ...;
+	local chatType = string.sub(event, 10);
+
+	if string.find(chatType, "^WHISPER") then
+		chatType = "WHISPER";
+	end
+
+	if string.find(chatType, "^CHANNEL") then
+		chatType = "CHANNEL" .. channelIndex;
+	end
+
+	local chatTypeInfo = _G.ChatTypeInfo[chatType];
+	local decoratedPlayerName = senderName;
+
+	local localizedClass, englishClass, localizedRace, englishRace, sex, firstName
+	if senderGUID then
+		localizedClass, englishClass, localizedRace, englishRace, sex, firstName = _G.GetPlayerInfoByGUID(senderGUID);
+	end
+
+	-- Ambiguate guild chat names
+	if _G.Ambiguate and (not _G.issecretvalue or not _G.issecretvalue(senderName)) then
+		if chatType == "GUILD" then
+			decoratedPlayerName = _G.Ambiguate(decoratedPlayerName, "guild");
+		else
+			decoratedPlayerName = _G.Ambiguate(decoratedPlayerName, "none");
+		end
+	end
+
+	-- Add timerunning icon when necessary based on player guid
+	if senderGUID and (not _G.issecretvalue or not _G.issecretvalue(senderGUID)) and _G.C_ChatInfo.IsTimerunningPlayer(senderGUID) then
+		decoratedPlayerName = _G.TimerunningUtil.AddSmallIcon(decoratedPlayerName);
+	end
+
+	if senderGUID and chatTypeInfo and _G.GetPlayerInfoByGUID ~= nil then
+		if englishClass then
+			local classColor = GetClassGetColorNew(englishClass)
+
+			if classColor then
+				decoratedPlayerName = classColor:WrapTextInColorCode(decoratedPlayerName);
+			end
+		end
+	end
+
+	if _G.ChatFrameUtil.ProcessSenderNameFilters then
+		decoratedPlayerName = _G.ChatFrameUtil.ProcessSenderNameFilters(event, decoratedPlayerName, ...);
+	end
+	return "["..decoratedPlayerName.."]";
+end
+
+local function SanitizeCommunityData(clubId, streamId, epoch, position)
+	if type(clubId) == "number" then
+		clubId = ("%.f"):format(clubId);
+	end
+	if type(streamId) == "number" then
+		streamId = ("%.f"):format(streamId);
+	end
+	epoch = ("%.f"):format(epoch);
+	position = ("%.f"):format(position);
+
+	return clubId, streamId, epoch, position;
+end
+
+local function GetBNPlayerCommunityLink(playerName, linkDisplayText, bnetIDAccount, clubId, streamId, epoch, position)
+	clubId, streamId, epoch, position = SanitizeCommunityData(clubId, streamId, epoch, position);
+	return string.format("|HBNplayerCommunity:%s:%s:%s:%s:%s:%s|h%s|h", playerName, bnetIDAccount, clubId, streamId, epoch, position, linkDisplayText)
+end
+
+local function GetPlayerCommunityLink(playerName, linkDisplayText, clubId, streamId, epoch, position)
+	clubId, streamId, epoch, position = SanitizeCommunityData(clubId, streamId, epoch, position);
+	return string.format("|HBNplayerCommunity:%s:%s:%s:%s:%s|h%s|h", playerName, clubId, streamId, epoch, position, linkDisplayText)
+end
+
+local function GetPlayerLink(characterName, linkDisplayText, lineID, chatType, chatTarget)
+	return string.format("|Hplayer:%s:%s:%s:%s|h%s|h", characterName, lineID or 0, chatType or 0, chatTarget or "", linkDisplayText);
+end
+
+local function GetBNPlayerLink(name, linkDisplayText, bnetIDAccount, lineID, chatType, chatTarget)
+	return string.format("|HBNplayer:%s:%s:%s:%s:%s|h%s|h", name, bnetIDAccount, lineID, chatType, chatTarget, linkDisplayText);
+end
+
 function SplitChatMessage(frame, event, ...)
   local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17 = ...
+	local isSecret = _G.issecretvalue and _G.issecretvalue(arg1)
 
   if (strsub((event or ""), 1, 8) == "CHAT_MSG") then
     local type = strsub(event, 10)
@@ -276,9 +373,11 @@ function SplitChatMessage(frame, event, ...)
     end
 
     local info
+
+	local coloredName = GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
     local channelLength = arg4 and strlen(arg4) or 0
     local infoType = type;
-    if ( (type == "COMMUNITIES_CHANNEL") or ((strsub(type, 1, 7) == "CHANNEL") and (type ~= "CHANNEL_LIST") and ((arg1 ~= "INVITE") or (type ~= "CHANNEL_NOTICE_USER"))) ) then
+    if ( (type == "COMMUNITIES_CHANNEL") or ((strsub(type, 1, 7) == "CHANNEL") and (type ~= "CHANNEL_LIST") and ((not isSecret and arg1 ~= "INVITE") or (type ~= "CHANNEL_NOTICE_USER"))) ) then
       local found = 0;
       for index, value in pairs(frame.channelList) do
         if ( channelLength > strlen(value) ) then
@@ -305,7 +404,7 @@ function SplitChatMessage(frame, event, ...)
     s.INFOTYPE = infoType
     info = _G.ChatTypeInfo[infoType]
     -- blizzard bug, arg2 (player name) can have an extra space
-    if arg2 then
+    if not isSecret and arg2 then
       arg2 = arg2:trim()
     end
 
@@ -368,7 +467,7 @@ function SplitChatMessage(frame, event, ...)
 
 
     s.CHATTARGET = chatTarget
-    s.MESSAGE = safestr(arg1):gsub("^%s*(.-)%s*$", "%1")  -- trim spaces
+    s.MESSAGE = isSecret and arg1 or safestr(arg1):gsub("^%s*(.-)%s*$", "%1")  -- trim spaces
 
 
     if (_G.FCFManager_ShouldSuppressMessage(frame, s.CHATGROUP, s.CHATTARGET)) then
@@ -411,8 +510,30 @@ function SplitChatMessage(frame, event, ...)
     s.TYPEPOSTFIX = safestr(s.TYPEPOSTFIX)
     s.TYPEPREFIX = safestr(s.TYPEPREFIX)
 
-    local arg2 = safestr(arg2)
-    if strlen(arg2) > 0 then
+    local arg2 = isSecret and arg2 or safestr(arg2)
+	if isSecret then
+		local playerWrapper = "[%s]"
+		local isCommunityType = type == "COMMUNITIES_CHANNEL";
+		if strsub(type,1,11) == 'ACHIEVEMENT' or strsub(type, 1, 18) == 'GUILD_ACHIEVEMENT' then
+			s.SPLAYER = string.format("|Hplayer:%s|h%s|h", arg2, playerWrapper:format(coloredName))
+		elseif isCommunityType then
+			local isBattleNetCommunity = arg13 ~= nil and arg13 ~= 0;
+			local messageInfo, clubId, streamId, _ = _G.C_Club.GetInfoFromLastCommunityChatLine();
+			if messageInfo ~= nil then
+				if isBattleNetCommunity then
+					s.SPLAYER = GetBNPlayerCommunityLink(arg2, coloredName, arg13, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position);
+				else
+					s.SPLAYER = GetPlayerCommunityLink(arg2, coloredName, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position);
+				end
+			else
+				s.SPLAYER = coloredName;
+			end
+		elseif type == "BN_WHISPER" or type == "BN_WHISPER_INFORM" then
+			s.SPLAYER = GetBNPlayerLink(arg2, coloredName, arg13, arg11, chatGroup, chatTarget);
+		else
+			s.SPLAYER = GetPlayerLink(arg2, coloredName, arg11, chatGroup, chatTarget);
+		end
+	elseif not isSecret and strlen(arg2) > 0 then
 
       if (strsub(type, 1, 7) == "MONSTER" or type == "RAID_BOSS_EMOTE" or
         type == "CHANNEL_NOTICE" or type == "CHANNEL_NOTICE_USER") then
@@ -450,17 +571,6 @@ function SplitChatMessage(frame, event, ...)
         local isCommunityType = type == "COMMUNITIES_CHANNEL";
         local playerName, lineID, bnetIDAccount = arg2, arg11, arg13;
         if (isCommunityType) then
-          --          local isBattleNetCommunity = bnetIDAccount ~= nil and bnetIDAccount ~= 0;
-          --          local messageInfo, clubId, streamId, clubType = _G.C_Club.GetInfoFromLastCommunityChatLine();
-          --          if (messageInfo ~= nil) then
-          --            if ( isBattleNetCommunity ) then
-          --              playerLink = _G.GetBNPlayerCommunityLink(playerName, playerLinkDisplayText, bnetIDAccount, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position);
-          --            else
-          --              playerLink = _G.GetPlayerCommunityLink(playerName, playerLinkDisplayText, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position);
-          --            end
-          --          else
-          --            playerLink = playerLinkDisplayText;
-          --          end
         else
           if (type ~= "BN_WHISPER" and type ~= "BN_WHISPER_INFORM" and type ~= "BN_CONVERSATION") or arg2 == _G.UnitName("player") --[[or presenceID]] then
             s.PLAYERLINKDATA = ":" .. safestr(arg11) .. ":" .. chatGroup .. (chatTarget and (":" .. chatTarget) or "")
@@ -544,7 +654,7 @@ function SplitChatMessage(frame, event, ...)
       s.Ff = ""
     end
 
-    if arg12 and _G.C_ChatInfo.IsTimerunningPlayer and _G.C_ChatInfo.IsTimerunningPlayer(arg12) then
+    if not isSecret and arg12 and _G.C_ChatInfo.IsTimerunningPlayer and _G.C_ChatInfo.IsTimerunningPlayer(arg12) then
       s.TIMERUNNER = _G.CreateAtlasMarkup("timerunning-glues-icon", 12, 12)
     else
       s.TIMERUNNER = ""
@@ -638,34 +748,36 @@ function SplitChatMessage(frame, event, ...)
     -- Search for icon links and replace them with texture links.
     local term;
 
-    for tag in string.gmatch(arg1, "%b{}") do
-      term = strlower(string.gsub(tag, "[{}]", ""));
-      if (not arg17 and _G.ICON_TAG_LIST[term] and _G.ICON_LIST[_G.ICON_TAG_LIST[term]]) then
-        s.MESSAGE = string.gsub(s.MESSAGE, tag, _G.ICON_LIST[_G.ICON_TAG_LIST[term]] .. "0|t");
-        --
-        -- This would allow for ignoring unknown icon tags
-        --
-        --				else
-        --					s.MESSAGE = string.gsub(s.MESSAGE, tag, "");
-      elseif (_G.GROUP_TAG_LIST[term]) then
-        local groupIndex = _G.GROUP_TAG_LIST[term];
-        local groupList = "[";
-        for i = 1, _G.GetNumGroupMembers() do
-          local name, rank, subgroup, level, class, classFileName = _G.GetRaidRosterInfo(i);
-          if (name and subgroup == groupIndex) then
-            local t = _G.RAID_CLASS_COLORS[classFileName];
-            name = string.format("\124cff%.2x%.2x%.2x%s\124r", t.r * 255, t.g * 255, t.b * 255, name);
-            groupList = groupList .. (groupList == "[" and "" or _G.PLAYER_LIST_DELIMITER) .. name;
-          end
-        end
-        groupList = groupList .. "]";
-        s.MESSAGE = string.gsub(s.MESSAGE, tag, groupList);
-      end
-    end
+	  if not isSecret then
+		  for tag in string.gmatch(arg1, "%b{}") do
+			  term = strlower(string.gsub(tag, "[{}]", ""));
+			  if (not arg17 and _G.ICON_TAG_LIST[term] and _G.ICON_LIST[_G.ICON_TAG_LIST[term]]) then
+				  s.MESSAGE = string.gsub(s.MESSAGE, tag, _G.ICON_LIST[_G.ICON_TAG_LIST[term]] .. "0|t");
+				  --
+				  -- This would allow for ignoring unknown icon tags
+				  --
+				  --				else
+				  --					s.MESSAGE = string.gsub(s.MESSAGE, tag, "");
+			  elseif (_G.GROUP_TAG_LIST[term]) then
+				  local groupIndex = _G.GROUP_TAG_LIST[term];
+				  local groupList = "[";
+				  for i = 1, _G.GetNumGroupMembers() do
+					  local name, rank, subgroup, level, class, classFileName = _G.GetRaidRosterInfo(i);
+					  if (name and subgroup == groupIndex) then
+						  local t = _G.RAID_CLASS_COLORS[classFileName];
+						  name = string.format("\124cff%.2x%.2x%.2x%s\124r", t.r * 255, t.g * 255, t.b * 255, name);
+						  groupList = groupList .. (groupList == "[" and "" or _G.PLAYER_LIST_DELIMITER) .. name;
+					  end
+				  end
+				  groupList = groupList .. "]";
+				  s.MESSAGE = string.gsub(s.MESSAGE, tag, groupList);
+			  end
+		  end
+	  end
 
 
 
-    if type == "SYSTEM" or strsub(type, 1, 11) == "ACHIEVEMENT" or strsub(type, 1, 11) == "TARGETICONS" or strsub(type, 1, 18) == "GUILD_ACHIEVEMENT" then
+    if not isSecret and (type == "SYSTEM" or strsub(type, 1, 11) == "ACHIEVEMENT" or strsub(type, 1, 11) == "TARGETICONS" or strsub(type, 1, 18) == "GUILD_ACHIEVEMENT") then
       if strsub(type, 1, 11) == "ACHIEVEMENT" or strsub(type, 1, 18) == "GUILD_ACHIEVEMENT" then
         s.MESSAGE = s.MESSAGE:format("")
       end
@@ -693,8 +805,8 @@ function SplitChatMessage(frame, event, ...)
       end
     end
 
-    s.ACCESSID = _G.ChatHistory_GetAccessID(chatGroup, chatTarget);
-    s.TYPEID = _G.ChatHistory_GetAccessID(type, chatTarget, arg12 or arg13);
+    s.ACCESSID = not isSecret and _G.ChatHistory_GetAccessID(chatGroup, chatTarget);
+    s.TYPEID = not isSecret and _G.ChatHistory_GetAccessID(type, chatTarget, arg12 or arg13);
 
     SplitMessage.ORG = SplitMessageOrg
 

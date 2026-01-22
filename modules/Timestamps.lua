@@ -24,13 +24,6 @@
 --
 -------------------------------------------------------------------------------
 Prat:AddModuleToLoad(function()
-  local function dbg(...) end
-
-  --@debug@
-  function dbg(...) Prat:PrintLiteral(...) end
-
-  --@end-debug@
-
   local PRAT_MODULE = Prat:RequestModuleName("Timestamps")
 
   if PRAT_MODULE == nil then
@@ -285,9 +278,6 @@ Prat:AddModuleToLoad(function()
 		elseif _G["ChatFrame_MessageEventHandler"] and issecurevariable("ChatFrame_MessageEventHandler") then
 			setfenv(_G.ChatFrame_MessageEventHandler, CF_MEH_env)
 		else
-			-- An addon has modified ChatFrame_MessageEventHandler and likely
-			-- replaced / hooked it, so we can't setfenv the original function.
-			-- TODO Print a warning
 			self:Output("Could not install hook")
 		end
 
@@ -297,7 +287,7 @@ Prat:AddModuleToLoad(function()
 	end)
 
   function module:OnModuleEnable()
-    for name, v in pairs(Prat.HookedFrames) do
+    for _, v in pairs(Prat.HookedFrames) do
       if not self:IsHooked(v, "AddMessage") then
         self:SecureHook(v, "AddMessage")
       end
@@ -307,7 +297,7 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:OnModuleDisable()
-    for name, v in pairs(Prat.HookedFrames) do
+    for _, v in pairs(Prat.HookedFrames) do
       if self:IsHooked(v, "AddMessage") then
         self:Unhook(v, "AddMessage")
       end
@@ -333,12 +323,15 @@ Prat:AddModuleToLoad(function()
   --[[------------------------------------------------
       Core Functions
   ------------------------------------------------]] --
+	local lastParsed
   function module:AddMessage(frame, text, ...)
     if self.db.profile.on and self.db.profile.show and self.db.profile.show[frame:GetName()] and not Prat.loading then
-      local entry = frame.historyBuffer:GetEntryAtIndex(1)
-      if entry and text == entry.message then
-        entry.message = self:InsertTimeStamp(entry.message, frame)
-      end
+		local entry = frame.historyBuffer:GetEntryAtIndex(1)
+		if lastParsed == entry then
+			return
+		end
+		entry.message = self:InsertTimeStamp(entry.message, frame)
+		lastParsed = entry
     end
   end
 
@@ -347,11 +340,10 @@ Prat:AddModuleToLoad(function()
   end
 
   local function Timestamp(text)
-    if not module:IsTimestampPlain() then
-      return Prat.CLR:Colorize(module.db.profile.timestampcolor, text)
-    else
-      return text
-    end
+	  if not module:IsTimestampPlain() then
+		  return Prat.CLR:Colorize(module.db.profile.timestampcolor, text)
+	  end
+    return text
   end
 
   function module:PlainTimestampNotAllowed()
@@ -369,10 +361,9 @@ Prat:AddModuleToLoad(function()
       local fmt = db.formatpre .. code .. db.formatpost
 
       if cf and cf:GetJustifyH() == "RIGHT" then
-        text = text .. (space and " " or "") .. Timestamp(self:GetTime(fmt))
-      else
-        text = Timestamp(self:GetTime(fmt)) .. (space and " " or "") .. text
+        return text .. (space and " " or "") .. Timestamp(self:GetTime(fmt))
       end
+      return Timestamp(self:GetTime(fmt)) .. (space and " " or "") .. text
     end
 
     return text
@@ -381,9 +372,8 @@ Prat:AddModuleToLoad(function()
   function module:GetTime(format)
     if self.db.profile.localtime then
       return date(format)
-    else
-      return date(format, GetServerTime())
     end
+	  return date(format, GetServerTime())
   end
 
   return
