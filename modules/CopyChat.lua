@@ -276,7 +276,7 @@ Prat:AddModuleToLoad(function()
 				if visibleLine:IsMouseOver() then
 					local info = visibleLine.messageInfo
 					if info and info.message then
-						local text = _G.issecretvalue and _G.issecrettvalue(info.message) and "<SECRET>" or CleanText(info.message)
+						local text = _G.issecretvalue and _G.issecretvalue(info.message) and "<SECRET>" or CleanText(info.message)
 						local editBox = ChatEdit_ChooseBoxForSend(frame);
 
 						if (editBox ~= ChatEdit_GetActiveWindow()) then
