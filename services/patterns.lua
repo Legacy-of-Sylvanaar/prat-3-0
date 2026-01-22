@@ -166,6 +166,9 @@ do
       text = m
       m = nil
     end
+	  if _G.issecretvalue and _G.issecretvalue(text) then
+		  return text
+	  end
 
     ptype = ptype or "FRAME"
 
@@ -220,6 +223,9 @@ do
       text = m
       m = nil
     end
+	  if _G.issecretvalue and _G.issecretvalue(text) then
+		  return text
+	  end
 
     -- Substitute them (or something else) back in
     local mt = MatchTable[ptype or "FRAME"]

@@ -276,7 +276,7 @@ Prat:AddModuleToLoad(function()
 				if visibleLine:IsMouseOver() then
 					local info = visibleLine.messageInfo
 					if info and info.message then
-						local text = CleanText(info.message)
+						local text = _G.issecretvalue and _G.issecrettvalue(info.message) and "<SECRET>" or CleanText(info.message)
 						local editBox = ChatEdit_ChooseBoxForSend(frame);
 
 						if (editBox ~= ChatEdit_GetActiveWindow()) then
@@ -368,17 +368,20 @@ Prat:AddModuleToLoad(function()
 
 	function module:DoCopyChat(frame, noshow)
 		local lines = {}
-		local str
 
 		for i = 1, frame:GetNumMessages() do
 			local msg = frame:GetMessageInfo(i)
 
 			if msg then
-				lines[#lines + 1] = CleanText(msg)
+				if _G.issecretvalue and _G.issecretvalue(msg) then
+					lines[#lines + 1] = "<SECRET>"
+				else
+					lines[#lines + 1] = CleanText(msg)
+				end
 			end
 		end
 
-		str = table.concat(lines, "\n")
+		local str = table.concat(lines, "\n")
 
 		if not noshow then
 			if (self.copyformat and self.copyformat == "wowace") or self.db.profile.copyformat == "wowace" then
