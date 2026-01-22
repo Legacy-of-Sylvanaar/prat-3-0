@@ -24,6 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
+local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
+
 Prat:AddModuleToLoad(function()
   local PRAT_MODULE = Prat:RequestModuleName("HoverTips")
 

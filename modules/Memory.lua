@@ -24,6 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
+local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
+
 local Chat_GetChatFrame = _G.Chat_GetChatFrame or _G.ChatFrameUtil.GetChatFrame
 local ChatFrame_GetCommunityAndStreamFromChannel = _G.ChatFrame_GetCommunityAndStreamFromChannel or _G.ChatFrameUtil.GetCommunityAndStreamFromChannel
 local ChatFrame_AddNewCommunitiesChannel = _G.ChatFrame_AddNewCommunitiesChannel or _G.ChatFrameUtil.AddNewCommunitiesChannel

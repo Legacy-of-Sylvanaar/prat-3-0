@@ -24,6 +24,7 @@
 --
 -------------------------------------------------------------------------------
 
+local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
 
 

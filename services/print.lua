@@ -2,6 +2,8 @@ local name, addonTable = ...
 
 --[[ END STANDARD HEADER ]] --
 
+local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
+
 local function buildText(...)
   local text = "|cffffff78" .. tostring(addonTable) .. ":|r "
 
@@ -59,7 +61,7 @@ if not Prat.AddPrintMethods then
       Prat.AddPrintMethod(addonTable, _G["ChatFrame" .. i])
     end
   end
-  
+
   Prat.EnableTasks[#Prat.EnableTasks + 1] = Prat.AddPrintMethods
 end
 
