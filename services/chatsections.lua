@@ -306,6 +306,8 @@ local function GetDecoratedSenderName(event, ...)
 		else
 			decoratedPlayerName = _G.Ambiguate(decoratedPlayerName, "none");
 		end
+	else
+		decoratedPlayerName = firstName
 	end
 
 	-- Add timerunning icon when necessary based on player guid
