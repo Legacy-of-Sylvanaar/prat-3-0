@@ -1,5 +1,6 @@
 --[[ BEGIN STANDARD HEADER ]] --
 
+local Chat_GetChatCategory = _G.Chat_GetChatCategory or _G.ChatFrameUtil.GetChatCategory
 local ChatFrame_GetMentorChannelStatus = _G.ChatFrame_GetMentorChannelStatus or _G.ChatFrameUtil.GetMentorChannelStatus
 local ChatFrame_ResolvePrefixedChannelName = _G.ChatFrame_ResolvePrefixedChannelName or _G.ChatFrameUtil.ResolvePrefixedChannelName
 local ChatFrame_GetMobileEmbeddedTexture = _G.ChatFrame_GetMobileEmbeddedTexture or _G.ChatFrameUtil.GetMobileEmbeddedTexture
@@ -452,7 +453,7 @@ function SplitChatMessage(frame, event, ...)
 
     s.CHATTYPE = type
     s.EVENT = event
-    local chatGroup = _G.Chat_GetChatCategory(type)
+    local chatGroup = Chat_GetChatCategory(type)
     s.CHATGROUP = chatGroup
 
 
@@ -584,7 +585,7 @@ function SplitChatMessage(frame, event, ...)
             if _G.C_BattleNet and  _G.C_BattleNet.GetAccountInfoByID then
               battleTag =  _G.C_BattleNet.GetAccountInfoByID(arg13).battleTag
             else
-              _, _, battleTag = _G. BNGetFriendInfoByID(arg13)
+              _, _, battleTag = _G.BNGetFriendInfoByID(arg13)
             end
             s.PLAYERLINKDATA = ":" .. safestr(arg13) .. ":" .. safestr(arg11) .. ":" .. chatGroup ..  ":" .. chatTarget ..  (battleTag and (":" .. battleTag) or "")
             s.PRESENCE_ID = arg13
