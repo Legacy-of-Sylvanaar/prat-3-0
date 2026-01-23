@@ -491,10 +491,10 @@ Prat:AddModuleToLoad(function()
 			end
 			return true
 		end
-		if _G.ChatEdit_HandleChatType then
-			return self.hooks["ChatEdit_HandleChatType"](editBox, msg, command, send)
-		else
+		if _G.ChatFrameEditBoxBaseMixin and _G.ChatFrameEditBoxBaseMixin.HandleChatType then
 			return _G.ChatFrameEditBoxMixin.HandleChatType(editBox, msg, command, send)
+		else
+			return self.hooks["ChatEdit_HandleChatType"](editBox, msg, command, send)
 		end
 	end
 
