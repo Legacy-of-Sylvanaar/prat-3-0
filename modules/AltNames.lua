@@ -620,7 +620,7 @@ do
         TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip, data)
           if tooltip == GameTooltip and self.altertooltip then
             local unitid = UnitTokenFromGUID(data.guid)
-            if (not issecretvalue or not issecretvaluue(unitid)) and UnitIsPlayer(unitid) then
+            if (not issecretvalue or not issecretvalue(unitid)) and UnitIsPlayer(unitid) then
               self:ModifyUnitTooltip(unitid)
             end
           end
