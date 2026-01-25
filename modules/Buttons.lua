@@ -243,6 +243,7 @@ end
 
     self:UpdateReminder()
 
+	  self:AdjustButtonFrames()
     self:MarkButtonFramesDirty()
   end
 
@@ -350,6 +351,30 @@ end
     self:AdjustMinimizeButtons()
   end
 
+	function module:AdjustButtonFrames()
+		for name, _ in pairs(Prat.Frames) do
+			local f = _G[name .. "ButtonFrame"]
+
+			local hasChildren = false
+			for _, child in ipairs({ f:GetChildren() }) do
+				if child:IsShown() then
+					hasChildren = true
+					break
+				end
+			end
+
+			if hasChildren then
+				f:SetScript("OnShow", nil)
+				f:Show()
+				f:SetWidth(29)
+			else
+				f:SetScript("OnShow", hide)
+				f:Hide()
+				f:SetWidth(0.1)
+			end
+		end
+	end
+
   function module:AdjustMinimizeButtons()
     for name, frame in pairs(Prat.Frames) do
       local min = _G[name .. "ButtonFrameMinimizeButton"] or _G[name .. "MinimizeButton"]
@@ -403,14 +428,6 @@ end
         bottomButton:SetShown(self.showButtons)
         bottomButton:SetParent(_G[name .. "ButtonFrame"])
       end
-
-      --		frame.buttonSide = nil
-      --		bottomButton:ClearAllPoints()
-      --		bottomButton:SetPoint("BOTTOMRIGHT", _G[name.."ButtonFrame"], "BOTTOMLEFT", 2, 2)
-      --		bottomButton:SetPoint("BOTTOMLEFT", _G[name.."ButtonFrame"], "BOTTOMLEFT", -32, -4);
-      --FCF_UpdateButtonSide(frame)
-
-      --bottomButton:SetScript("OnClick", function() frame:ScrollToBottom() end)
 
       self:FCF_SetButtonSide(frame)
     end
