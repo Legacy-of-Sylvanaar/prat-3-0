@@ -54,11 +54,11 @@ Module system flow:
 5) The module code creates a new module calling NewModule
 6) Once the module has been created, we recieve OnModuleCreated, we want to
    remember that this module is installed, so we save that info
-7) The module will have its on initalize called after Prat's.  
+7) The module will have its on initalize called after Prat's.
 8) If the module is disabled it will stop at this point
 9) If the module is enabled, it will call its OnEnable
 
-That give us the states: EXISTS, INSTALLED, INITIALIZED, ENABLED, 
+That give us the states: EXISTS, INSTALLED, INITIALIZED, ENABLED,
                                                          DISABLED
 
 
@@ -121,7 +121,7 @@ do
     ["Prat_Font"] = "display",
     ["Prat_ChatTabs"] = "display",
     ["Prat_Buttons"] = "display",
-    ["Prat_Original Buttons"] = "display",
+    ["Prat_OriginalButtons"] = "display",
 
     --formatting
     ["Prat_ChannelNames"] = "formatting",
@@ -300,7 +300,7 @@ do
 end
 
 
---[[ 
+--[[
 
 For module options, i want to use the single closure style executed from the main chunk of the module,
 such as:
@@ -309,10 +309,10 @@ SetModuleOptionTable(name, function() return { ... } )
 
 This way the options can be GC'd by from the modules, before the decision is made as
 to whether we will actually load the module. they will go into a table here, and either
-free'd, given back to the module for it to execute, or possible executed on this end. 
+free'd, given back to the module for it to execute, or possible executed on this end.
 
 In any case there will only be 1 copy of the closure, and if executed it will create its data
-and then it can be freed leaving no code behind. Prat 2.0 used alot of memory solely because of 
+and then it can be freed leaving no code behind. Prat 2.0 used alot of memory solely because of
 its options tables, this tries to avoid that.
 
 ]]
@@ -381,4 +381,4 @@ do
     Prat.AddModuleExtension = loadNow
   end
 end
-	
+

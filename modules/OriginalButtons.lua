@@ -247,11 +247,12 @@ end
     -- stub variables for frame handling
     self.frames = {}
     self.reminders = {}
-    for i = 1, 10 do
-      table.insert(self.reminders, self:MakeReminder(i))
-      self:chatbutton(i, self.db.profile.chatarrows["ChatFrame" .. i])
-      self:ButtonFrame(i, self.db.profile.buttonframe)
-    end
+	  for name, frame in pairs(Prat.Frames) do
+		  local i = frame:GetID()
+		  table.insert(self.reminders, self:MakeReminder(i))
+		  self:chatbutton(i, self.db.profile.chatarrows[name])
+		  self:ButtonFrame(i, self.db.profile.buttonframe)
+	  end
     self:ChatMenu(self.db.profile.chatmenu)
     if QuickJoinToastButton then QuickJoinToastButton:Hide() end
 
@@ -270,7 +271,13 @@ end
     self.OnUpdateInterval = 0.05
     self.lastupdate = 0
     -- hook functions
-    self:SecureHook("ChatFrame_OnUpdate", "ChatFrame_OnUpdateHook")
+	  if _G.ChatFrame_OnUpdate then
+		  self:SecureHook("ChatFrame_OnUpdate", "ChatFrame_OnUpdateHook")
+	  else
+		  for _, v in pairs(Prat.Frames) do
+			  self:SecureHook(v, "OnUpdate", "ChatFrame_OnUpdateHook")
+		  end
+	  end
     self:SecureHook("FCF_SetTemporaryWindowType")
   end
 
