@@ -463,7 +463,7 @@ function SplitChatMessage(frame, event, ...)
     if (chatGroup == "CHANNEL" or chatGroup == "BN_CONVERSATION") then
       chatTarget = tostring(arg8);
     elseif (chatGroup == "WHISPER" or chatGroup == "BN_WHISPER") then
-      if (not (strsub(arg2, 1, 2) == "|K")) then
+      if (not issecretvalue or not issecretvalue(arg2)) and (not (strsub(arg2, 1, 2) == "|K")) then
         chatTarget = strupper(arg2);
       else
         chatTarget = arg2;
