@@ -1,6 +1,6 @@
-local name, addonTable = ...
+local _, Prat = ...
 
-function addonTable:ExportProfile(profileKey)
+function Prat:ExportProfile(profileKey)
 	local profile = Prat.db.sv.profiles[profileKey]
 	if not profile then return nil end
 	local namespaces = {}
@@ -19,7 +19,7 @@ function addonTable:ExportProfile(profileKey)
 	return dataString
 end
 
-function addonTable:ImportProfile(dataString, profileKey)
+function Prat:ImportProfile(dataString, profileKey)
 	local data = C_EncodingUtil.DeserializeCBOR(C_EncodingUtil.DecodeBase64(dataString))
 	if not data then return false end
 	Prat.db.sv.profiles[profileKey] = data.profile

@@ -66,7 +66,6 @@ am.__tostring = function()
 end
 setmetatable(Prat, am)
 
-Prat.Prat3 = true
 Prat.IsClassic = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
 Prat.IsRetail = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE)
 Prat.IsMop = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MISTS_CLASSIC)
@@ -462,7 +461,7 @@ function addon:ChatEdit_ParseText(editBox, send)
 
 	local m = Prat.SplitMessageOut
 	wipe(m)
-	CurrentMessage = m
+	Prat.CurrentMessage = m
 
 	m.MESSAGE = command:gsub("^%s*(.-)%s*$", "%1") -- trim whitespace
 
@@ -556,7 +555,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 = ...
 	local isSecret = issecretvalue and issecretvalue(arg1)
 
-	loading = nil -- clear any batch message loading that may be happening
+	Prat.loading = nil -- clear any batch message loading that may be happening
 
 	if not Prat.HookedFrames[this:GetName()] then
 		if _G["ChatFrame_MessageEventHandler"] then
@@ -776,7 +775,7 @@ Prat.RegisterChatCommand("pratblacklist",
 	function(name)
 		if name and #name > 0 then
 			Prat:Print("Blacklisting: '" .. tostring(name) .. "'. Reload to activate.")
-			db.realm.PlayerNameBlackList[tostring(name):lower()] = true
+			Prat.db.realm.PlayerNameBlackList[tostring(name):lower()] = true
 		end
 	end)
 
@@ -784,17 +783,17 @@ Prat.RegisterChatCommand("pratunblacklist",
 	function(name)
 		if name and #name > 0 then
 			Prat:Print("Un-Blacklisting: '" .. tostring(name) .. "'. Reload to activate")
-			db.realm.PlayerNameBlackList[tostring(name):lower()] = nil
+			Prat.db.realm.PlayerNameBlackList[tostring(name):lower()] = nil
 		end
 	end)
 
 Prat.RegisterChatCommand("pratdebugmsg",
 	function()
-		Prat:PrintLiteral(LastMessage, Prat.LastMessage.ORG)
+		Prat:PrintLiteral(Prat.LastMessage, Prat.LastMessage.ORG)
 
 		local cc = addon:GetModule("CopyChat", true)
 		if cc then
-			cc:ScrapeFullChatFrame(printFrame or _G.DEFAULT_CHAT_FRAME, true)
+			cc:ScrapeFullChatFrame(_G.DEFAULT_CHAT_FRAME, true)
 		end
 	end)
 
