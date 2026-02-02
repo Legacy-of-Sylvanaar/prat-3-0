@@ -275,7 +275,9 @@ end
 		  self:SecureHook("ChatFrame_OnUpdate", "ChatFrame_OnUpdateHook")
 	  else
 		  for _, v in pairs(Prat.Frames) do
-			  self:SecureHook(v, "OnUpdate", "ChatFrame_OnUpdateHook")
+			  if v and v.OnUpdate then
+				  self:SecureHook(v, "OnUpdate", "ChatFrame_OnUpdateHook")
+			  end
 		  end
 	  end
     self:SecureHook("FCF_SetTemporaryWindowType")
