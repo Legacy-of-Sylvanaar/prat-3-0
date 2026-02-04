@@ -37,9 +37,6 @@ Prat:AddModuleToLoad(function()
 
   local PL = module.PL
 
-  -- define localized strings
-  local PL = module.PL
-
   --@debug@
   PL:AddLocale(PRAT_MODULE, "enUS", {
     ["module_name"] = "LinkInfoIcons",
@@ -231,7 +228,7 @@ end
     },
   })
 
-  Prat:SetModuleInit(module, function(self)
+  Prat:SetModuleInit(module, function()
     Prat.RegisterMessageItem("PLAYERINFO", "PLAYER", "before")
   end)
 
@@ -252,7 +249,7 @@ end
   end
 
   -- replace text using prat event implementation
-  function module:Prat_FrameMessage(arg, message, frame, event)
+  function module:Prat_FrameMessage(_, message)
     if message.GUID == nil or (_G.issecretvalue and _G.issecretvalue(message.GUID)) then
       return
     end
