@@ -182,10 +182,8 @@ function addon:OnInitialize()
 	Prat.builtinSounds = nil
 
 	-- Build the list of frames which we should hook addmessage on
-	-- IsCombatLog is not correct yet it appears, so we resort to checking
-	-- for chatframe2
 	for _, v in pairs(Prat.Frames) do
-		if (not _G.IsCombatLog(v)) and v ~= _G.ChatFrame2 then
+		if (not _G.IsCombatLog(v)) then
 			Prat.HookedFrames[v:GetName()] = v
 		end
 	end
@@ -374,9 +372,11 @@ function addon:PostEnable()
 	if _G["ChatFrame_MessageEventHandler"] then
 		self:RawHook("ChatFrame_MessageEventHandler", true)
 	elseif _G["ChatFrameMixin"] and _G["ChatFrameMixin"].MessageEventHandler then
-		for _, chatFrame in ipairs(_G["CHAT_FRAMES"]) do
-			_G[chatFrame].MessageEventHandler = function(self, event, ...)
-				return addon:ChatFrame_MessageEventHandler(self, event, ...)
+		for _, v in pairs(Prat.Frames) do
+			if (not _G.IsCombatLog(v)) then
+				v.MessageEventHandler = function(self, event, ...)
+					return addon:ChatFrame_MessageEventHandler(self, event, ...)
+				end
 			end
 		end
 	end
