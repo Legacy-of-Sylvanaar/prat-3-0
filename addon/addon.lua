@@ -372,11 +372,9 @@ function addon:PostEnable()
 	if _G["ChatFrame_MessageEventHandler"] then
 		self:RawHook("ChatFrame_MessageEventHandler", true)
 	elseif _G["ChatFrameMixin"] and _G["ChatFrameMixin"].MessageEventHandler then
-		for _, v in pairs(Prat.Frames) do
-			if (not _G.IsCombatLog(v)) then
-				v.MessageEventHandler = function(self, event, ...)
-					return addon:ChatFrame_MessageEventHandler(self, event, ...)
-				end
+		for _, v in pairs(Prat.HookedFrames) do
+			v.MessageEventHandler = function(self, event, ...)
+				return addon:ChatFrame_MessageEventHandler(self, event, ...)
 			end
 		end
 	end
