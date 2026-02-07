@@ -75,55 +75,55 @@ Prat:AddModuleToLoad(function()
   do
       local L
 
-  
+
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Sounds")@
 
     PL:AddLocale(PRAT_MODULE, "enUS",L)
 
 
-  
+
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Sounds")@
 
     PL:AddLocale(PRAT_MODULE, "frFR",L)
 
 
-  
+
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Sounds")@
 
     PL:AddLocale(PRAT_MODULE, "deDE",L)
 
 
-  
+
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Sounds")@
 
     PL:AddLocale(PRAT_MODULE, "koKR",L)
 
 
-  
+
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Sounds")@
 
     PL:AddLocale(PRAT_MODULE, "esMX",L)
 
 
-  
+
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Sounds")@
 
     PL:AddLocale(PRAT_MODULE, "ruRU",L)
 
 
-  
+
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Sounds")@
 
     PL:AddLocale(PRAT_MODULE, "zhCN",L)
 
 
-  
+
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Sounds")@
 
     PL:AddLocale(PRAT_MODULE, "esES",L)
 
 
-  
+
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Sounds")@
 
     PL:AddLocale(PRAT_MODULE, "zhTW",L)
@@ -139,7 +139,7 @@ Prat:AddModuleToLoad(function()
       on = false,
       ["incoming"] = {
         ["GUILD"] = "Kachink",
-        ["OFFICER"] = "Link",
+        ["OFFICER"] = "popup",
         ["PARTY"] = "Text1",
         ["RAID"] = "Text1",
         ["WHISPER"] = "Heart",
@@ -184,6 +184,8 @@ Prat:AddModuleToLoad(function()
 
     media.RegisterCallback(self, "LibSharedMedia_Registered", "SharedMedia_Registered")
     media.RegisterCallback(self, "LibSharedMedia_SetGlobal", "SharedMedia_Registered")
+
+	  _G.MuteSoundFile(567421)
   end
 
 
@@ -193,6 +195,7 @@ Prat:AddModuleToLoad(function()
     self:UnregisterAllEvents()
     Prat.UnregisterAllChatEvents(self)
     media.UnregisterAllCallbacks(self)
+	  _G.UnmuteSoundFile(567421)
   end
 
   local soundslist = {}

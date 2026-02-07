@@ -731,28 +731,17 @@ function addon:AddMessage(frame, text, r, g, b, id, ...)
 	end
 end
 
-local wowsounds = {
-	["TellMessage"] = _G.SOUNDKIT.TELL_MESSAGE,
-}
-
 function Prat.PlaySound(_, sound)
 	if not sound then
 		return
 	end
 
-	if wowsounds[sound] then
-		_G.PlaySound(wowsounds[sound], "Master")
-	else
-		local play
-		if play == nil then
-			play = Prat.Media:Fetch(SOUND, sound)
-		end
-		if play == nil then
-			return
-		end
-
-		_G.PlaySoundFile(play, "Master")
+	local play = Prat.Media:Fetch(SOUND, sound)
+	if play == nil then
+		return
 	end
+
+	_G.PlaySoundFile(play, "Master")
 end
 
 function Prat.CanSendChatMessage(chatType)
