@@ -198,8 +198,8 @@ Prat:AddModuleExtension(function()
 			local info = battleTagLookup[battleTag]
 			if info then
 				name, bnetIDAccount = info.accountName, info.bnetAccountID
-				display = display:gsub(PL.bnet_removed, name)
-				chatTarget = chatTarget:gsub(PL.bnet_removed, name)
+				display = display:gsub("???", name)
+				chatTarget = chatTarget:gsub("???", name)
 			end
 		end
 
@@ -226,7 +226,7 @@ Prat:AddModuleExtension(function()
 									timeShown = true
 								end
 
-								line.message = line.message:gsub("|K.-|k", PL.bnet_removed)
+								line.message = line.message:gsub("|K.-|k", "???")
 								line.message = line.message:gsub([[|HBNplayer:(.-)|h(.-)|h]], updateBnet)
 								f.historyBuffer:PushBack(line)
 							end

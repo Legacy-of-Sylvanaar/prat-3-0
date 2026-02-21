@@ -122,7 +122,7 @@ Prat.Events = {
 
 Prat.EnableTasks = {}
 
-local addon = LibStub("AceAddon-3.0"):NewAddon("Prat", "AceConsole-3.0", "AceTimer-3.0", "AceHook-3.0")
+local addon = LibStub("AceAddon-3.0"):NewAddon("Prat", "AceEvent-3.0", "AceConsole-3.0", "AceTimer-3.0", "AceHook-3.0")
 Prat.Addon = addon
 
 --local  callbacks
@@ -394,14 +394,13 @@ function addon:PostEnable()
 	self:RawHook(Prat.DummyFrame, "AddMessage", true)
 
 	-- ItemRef Hooking
-
 	self:RawHook(_G.ItemRefTooltip, "SetHyperlink", true)
-
 	self:SecureHook("FCF_SetTemporaryWindowType")
-
 	self:SecureHook("FCF_Close")
-
 	self:SecureHook("FCF_CopyChatSettings")
+
+	-- Combat hooking
+	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 	--    -- This event fires after Prat's hooks are installed
 	--    -- Prat's core wont operate until after this event
@@ -433,6 +432,10 @@ function addon:PostEnable()
 	if Prat.EnableGlobalCompletions then
 		Prat.EnableGlobalCompletions(Prat, "Prat-Global-Autocomplete")
 	end
+end
+
+function addon:PLAYER_REGEN_ENABLED()
+	Prat.RebuildChannelTable()
 end
 
 function addon:SetHyperlink(frame, ...)

@@ -686,19 +686,6 @@ end
 
   Prat:SetModuleInit(module,
     function(self)
-      --      local function tailChan(t, cnum, cname, ...)
-      --        if not cnum then return t end
-      --        if Prat.IsPrivateChannel(cnum) then
-      --          t[#t + 1] = cname
-      --        end
-      --        return tailChan(t, ...)
-      --      end
-      --
-      --      self:RegisterSink(PL["ForwardCustom"],
-      --        PL["ForwardMessageCustom"],
-      --        PL["Forward the message to a custom chat channel."],
-      --        "ForwardCustom",
-      --        function() return tailChan({}, GetChannelList()) end)
 
       self:RegisterSink(PL.chatframesink_name,
         PL.chatframesink_name,

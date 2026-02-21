@@ -24,49 +24,48 @@
 --
 -------------------------------------------------------------------------------
 
-
 Prat.EventProcessingType = {
-  Full = 1,
-  PatternsOnly = 2,
+	Full = 1,
+	PatternsOnly = 2,
 }
 
 local eventMap = {
-  CHAT_MSG_CHANNEL = Prat.EventProcessingType.Full,
-  CHAT_MSG_SAY = Prat.EventProcessingType.Full,
-  CHAT_MSG_GUILD = Prat.EventProcessingType.Full,
-  CHAT_MSG_WHISPER = Prat.EventProcessingType.Full,
-  CHAT_MSG_WHISPER_INFORM = Prat.EventProcessingType.Full,
-  CHAT_MSG_YELL = Prat.EventProcessingType.Full,
-  CHAT_MSG_PARTY = Prat.EventProcessingType.Full,
-  CHAT_MSG_PARTY_LEADER = Prat.EventProcessingType.Full,
-  CHAT_MSG_OFFICER = Prat.EventProcessingType.Full,
-  CHAT_MSG_RAID = Prat.EventProcessingType.Full,
-  CHAT_MSG_RAID_LEADER = Prat.EventProcessingType.Full,
-  CHAT_MSG_RAID_WARNING = Prat.EventProcessingType.Full,
-  CHAT_MSG_INSTANCE_CHAT = Prat.EventProcessingType.Full,
-  CHAT_MSG_INSTANCE_CHAT_LEADER = Prat.EventProcessingType.Full,
-  CHAT_MSG_SYSTEM = Prat.EventProcessingType.Full,
-  CHAT_MSG_DND = Prat.EventProcessingType.Full,
-  CHAT_MSG_AFK = Prat.EventProcessingType.Full,
-  CHAT_MSG_BN_WHISPER = Prat.EventProcessingType.Full,
-  CHAT_MSG_BN_WHISPER_INFORM = Prat.EventProcessingType.Full,
-  CHAT_MSG_BN_CONVERSATION = Prat.EventProcessingType.Full,
-  CHAT_MSG_COMMUNITIES_CHANNEL = Prat.EventProcessingType.Full,
-  CHAT_MSG_LOOT = Prat.EventProcessingType.PatternsOnly,
+	CHAT_MSG_CHANNEL = Prat.EventProcessingType.Full,
+	CHAT_MSG_SAY = Prat.EventProcessingType.Full,
+	CHAT_MSG_GUILD = Prat.EventProcessingType.Full,
+	CHAT_MSG_WHISPER = Prat.EventProcessingType.Full,
+	CHAT_MSG_WHISPER_INFORM = Prat.EventProcessingType.Full,
+	CHAT_MSG_YELL = Prat.EventProcessingType.Full,
+	CHAT_MSG_PARTY = Prat.EventProcessingType.Full,
+	CHAT_MSG_PARTY_LEADER = Prat.EventProcessingType.Full,
+	CHAT_MSG_OFFICER = Prat.EventProcessingType.Full,
+	CHAT_MSG_RAID = Prat.EventProcessingType.Full,
+	CHAT_MSG_RAID_LEADER = Prat.EventProcessingType.Full,
+	CHAT_MSG_RAID_WARNING = Prat.EventProcessingType.Full,
+	CHAT_MSG_INSTANCE_CHAT = Prat.EventProcessingType.Full,
+	CHAT_MSG_INSTANCE_CHAT_LEADER = Prat.EventProcessingType.Full,
+	CHAT_MSG_SYSTEM = Prat.EventProcessingType.Full,
+	CHAT_MSG_DND = Prat.EventProcessingType.Full,
+	CHAT_MSG_AFK = Prat.EventProcessingType.Full,
+	CHAT_MSG_BN_WHISPER = Prat.EventProcessingType.Full,
+	CHAT_MSG_BN_WHISPER_INFORM = Prat.EventProcessingType.Full,
+	CHAT_MSG_BN_CONVERSATION = Prat.EventProcessingType.Full,
+	CHAT_MSG_COMMUNITIES_CHANNEL = Prat.EventProcessingType.Full,
+	CHAT_MSG_LOOT = Prat.EventProcessingType.PatternsOnly,
 }
 
 function Prat.EnableProcessingForEvent(event, flag)
-  if flag == nil or flag == true then
-    eventMap[event] = Prat.EventProcessingType.Full
-  elseif flag ~= false then
-    eventMap[event] = flag
-  else
-    eventMap[event] = nil
-  end
+	if flag == nil or flag == true then
+		eventMap[event] = Prat.EventProcessingType.Full
+	elseif flag ~= false then
+		eventMap[event] = flag
+	else
+		eventMap[event] = nil
+	end
 end
 
 function Prat.EventIsProcessed(event)
-  return eventMap[event]
+	return eventMap[event]
 end
 
 

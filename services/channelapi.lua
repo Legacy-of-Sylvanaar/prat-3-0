@@ -24,108 +24,98 @@
 --
 -------------------------------------------------------------------------------
 
-local ChatFrame_ResolveChannelName = ChatFrame_ResolveChannelName or ChatFrameUtil.ResolveChannelName
+local _, private = ...
 
---[[ BEGIN STANDARD HEADER ]] --
-
--- Imports
-local _G = _G
-local type = type
-local select = select
-local wipe = table.wipe
-local pairs = pairs
-local tostring = tostring
-
--- Isolate the environment
-setfenv(1, select(2, ...))
-
---[[ END STANDARD HEADER ]] --
-
-do
-  local chanTable = {}
-  local function buildChanTable(t, num, name, _, ...)
-    if name and num then
-      name = ChatFrame_ResolveChannelName(name)
-      t[num] = name
-      t[name] = num
-      return buildChanTable(t, ...)
-    end
-
-    return t
-  end
-
-  function GetChannelTable(t)
-    if not t then
-      t = chanTable
-    end
-
-    wipe(t)
-
-    buildChanTable(t, _G.GetChannelList())
-
-    if not t["LookingForGroup"] then
-      local lfgnum = GetChannelName("LookingForGroup")
-      if lfgnum and lfgnum > 0 then
-        t["LookingForGroup"] = lfgnum
-        t[lfgnum] = "LookingForGroup"
-      end
-    end
-
-    for k, v in pairs(t) do
-      if type(k) == "string" then
-        t[k:lower()] = v
-      end
-    end
-    return t
-  end
+-- Start hacks for in-combat ResolveChannelName
+private.GetCommunityAndStreamFromChannel = function(communityChannel)
+	local clubId, streamId = communityChannel:match("(%d+)%:(%d+)")
+	return tonumber(clubId), tonumber(streamId)
 end
 
-function GetChannelNumber(channel)
-  if not channel then return end
+private.GetCommunityAndStreamName = function(clubId, streamId)
+	local streamInfo = C_Club.GetStreamInfo(clubId, streamId)
 
-  local num = GetChannelName(channel)
+	if streamInfo and (streamInfo.streamType == Enum.ClubStreamType.Guild or streamInfo.streamType == Enum.ClubStreamType.Officer) then
+		return streamInfo.name
+	end
 
-  if num and num > 0 then return num end
+	local streamName = streamInfo and streamInfo.name or ""
 
-  local t = GetChannelTable()
-
-  num = t[channel] or t[channel:lower()]
-
-  if num == nil then
-    local trynum = tonumber(channel)
-
-    if trynum ~= nil and t[trynum] then
-      channel = trynum
-      num = t[trynum]
-    end
-  end
-
-  if type(num) == "string" then
-    return channel
-  end
-
-
-  return num
+	local clubInfo = C_Club.GetClubInfo(clubId);
+	if streamInfo and streamInfo.streamType == Enum.ClubStreamType.General then
+		local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or ""
+		return communityName
+	else
+		local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or ""
+		return communityName .. " - " .. streamName
+	end
 end
 
--- "CHANNEL_CATEGORY_CUSTOM", "CHANNEL_CATEGORY_WORLD", "CHANNEL_CATEGORY_GROUP"
-local name, header, collapsed, channelNumber, active, count, category, voiceEnabled, voiceActive;
-function GetChannelCategory(num)
-  num = GetChannelNumber(num)
-  for i = 1, _G.GetNumDisplayChannels(), 1 do
-    name, header, collapsed, channelNumber, count, active, category, voiceEnabled, voiceActive = _G.GetChannelDisplayInfo(i)
+private.ResolveChannelName = function(communityChannel)
+	local clubId, streamId = private.GetCommunityAndStreamFromChannel(communityChannel)
+	if not clubId or not streamId then
+		return communityChannel
+	end
 
-    if channelNumber == num then
-      return category
-    end
-  end
+	return private.GetCommunityAndStreamName(clubId, streamId)
 end
 
-local name, t
-function IsPrivateChannel(num)
-  return select(4, _G.GetChannelName(num))
+private.ResolvePrefixedChannelName = function(communityChannelArg)
+	local prefix, communityChannel = communityChannelArg:match("(%d+. )(.*)");
+	return prefix .. private.ResolveChannelName(communityChannel);
+end
+-- End hacks for in-combat ResolveChannelName
+
+local chanTable = {}
+local function RebuildChannelTable()
+	local channels = {GetChannelList()}
+	if #channels > 0 then
+		for i = 1, #channels, 3 do
+			local num, name = channels[i], channels[i+1]
+			name = private.ResolveChannelName(name)
+			if not issecretvalue or not issecretvalue(name) then
+				chanTable[num] = name
+				chanTable[name] = num
+			end
+		end
+	end
+	if not chanTable["LookingForGroup"] then
+		local lfgnum = GetChannelName("LookingForGroup")
+		if lfgnum and lfgnum > 0 then
+			chanTable["LookingForGroup"] = lfgnum
+			chanTable[lfgnum] = "LookingForGroup"
+		end
+	end
+	for k, v in pairs(chanTable) do
+		if type(k) == "string" then
+			chanTable[k:lower()] = v
+		end
+	end
 end
 
-function IsCustomChannel(num)
-  return GetChannelCategory(num) == "CHANNEL_CATEGORY_CUSTOM"
+private.GetChannelTable = function()
+	if #chanTable == 0 then
+		RebuildChannelTable()
+	end
+	return chanTable
 end
+
+-- Update logic
+if ChatFrame_AddCommunitiesChannel then
+	hooksecurefunc("ChatFrame_AddCommunitiesChannel", function()
+		RebuildChannelTable()
+	end)
+	hooksecurefunc("ChatFrame_RemoveCommunitiesChannel", function()
+		RebuildChannelTable()
+	end)
+elseif ChatFrameUtil and ChatFrameUtil.AddCommunitiesChannel then
+	hooksecurefunc(ChatFrameUtil, "AddCommunitiesChannel", function()
+		RebuildChannelTable()
+	end)
+	hooksecurefunc(ChatFrameUtil, "RemoveCommunitiesChannel", function()
+		RebuildChannelTable()
+	end)
+end
+hooksecurefunc(C_ChatInfo, "SwapChatChannelsByChannelIndex", function()
+	RebuildChannelTable()
+end)

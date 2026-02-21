@@ -8,9 +8,6 @@
 <Script file="print.lua"/>
 <Script file="classcolor.lua"/>
 <Script file="textcolor.lua"/>
-<Script file="classgenderfix.lua"/>
-<Script file="folderlocation.lua"/>
 <Script file="channelapi.lua"/>
-<Script file="unitpopupmenus.lua"/>
 <Script file="bayesclassifier.lua" />
 </Ui>

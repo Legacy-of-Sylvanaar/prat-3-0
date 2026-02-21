@@ -14,24 +14,20 @@ private.GetClassGetColorNew = function(class)
 end
 
 private.GetClassGetColor = function(class)
-  if private.GetGenderNeutralClass then
-    class = private.GetGenderNeutralClass(class)
-  end
+	if class then
+		class = class:upper()
 
-  if class then
-    class = class:upper()
+		if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] then
+			return CUSTOM_CLASS_COLORS[class].r, CUSTOM_CLASS_COLORS[class].g, CUSTOM_CLASS_COLORS[class].b
+		end
 
-    if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] then
-      return CUSTOM_CLASS_COLORS[class].r, CUSTOM_CLASS_COLORS[class].g, CUSTOM_CLASS_COLORS[class].b
-    end
+		if Prat.IsClassic and class == "SHAMAN" then
+			return 0.00, 0.44, 0.87
+		end
 
-    if Prat.IsClassic and class == "SHAMAN" then
-      return 0.00, 0.44, 0.87
-    end
-
-    if RAID_CLASS_COLORS and RAID_CLASS_COLORS[class] then
-      return RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
-    end
-  end
-  return 0.63, 0.63, 0.63
+		if RAID_CLASS_COLORS and RAID_CLASS_COLORS[class] then
+			return RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+		end
+	end
+	return 0.63, 0.63, 0.63
 end
