@@ -67,7 +67,8 @@ end
 -- End hacks for in-combat ResolveChannelName
 
 local chanTable = {}
-local function RebuildChannelTable()
+private.RebuildChannelTable = function()
+	table.wipe(chanTable)
 	local channels = {GetChannelList()}
 	if #channels > 0 then
 		for i = 1, #channels, 3 do
@@ -95,7 +96,7 @@ end
 
 private.GetChannelTable = function()
 	if #chanTable == 0 then
-		RebuildChannelTable()
+		private.RebuildChannelTable()
 	end
 	return chanTable
 end
@@ -103,19 +104,19 @@ end
 -- Update logic
 if ChatFrame_AddCommunitiesChannel then
 	hooksecurefunc("ChatFrame_AddCommunitiesChannel", function()
-		RebuildChannelTable()
+		private.RebuildChannelTable()
 	end)
 	hooksecurefunc("ChatFrame_RemoveCommunitiesChannel", function()
-		RebuildChannelTable()
+		private.RebuildChannelTable()
 	end)
 elseif ChatFrameUtil and ChatFrameUtil.AddCommunitiesChannel then
 	hooksecurefunc(ChatFrameUtil, "AddCommunitiesChannel", function()
-		RebuildChannelTable()
+		private.RebuildChannelTable()
 	end)
 	hooksecurefunc(ChatFrameUtil, "RemoveCommunitiesChannel", function()
-		RebuildChannelTable()
+		private.RebuildChannelTable()
 	end)
 end
 hooksecurefunc(C_ChatInfo, "SwapChatChannelsByChannelIndex", function()
-	RebuildChannelTable()
+	private.RebuildChannelTable()
 end)
