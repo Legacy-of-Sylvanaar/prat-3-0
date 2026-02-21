@@ -299,7 +299,10 @@ local function GetDecoratedSenderName(event, ...)
 	if _G.ChatFrameUtil.ProcessSenderNameFilters then
 		decoratedPlayerName = _G.ChatFrameUtil.ProcessSenderNameFilters(event, decoratedPlayerName, ...);
 	end
-	if decoratedPlayerName and decoratedPlayerName ~= "" then
+	if decoratedPlayerName then
+		if (not _G.issecretvalue or not _G.issecretvalue(decoratedPlayerName)) and decoratedPlayerName == "" then
+			return decoratedPlayerName
+		end
 		return "[" .. decoratedPlayerName .. "]";
 	end
 end
