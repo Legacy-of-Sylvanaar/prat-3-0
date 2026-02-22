@@ -20,8 +20,8 @@ local next, wipe = next, wipe
 local select = select
 
 local RunMessageEventFilters
-if ChatFrameUtil.ProcessMessageEventFilter then
-	RunMessageEventFilters = ChatFrameUtil.ProcessMessageEventFilter
+if ChatFrameUtil.ProcessMessageEventFilters then
+	RunMessageEventFilters = ChatFrameUtil.ProcessMessageEventFilters
 else
 	RunMessageEventFilters = function(frame, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17)
 		local filter = false
