@@ -1,13 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-
-<Script file="events.lua"/>
-<Script file="links.lua"/>
-<Script file="patterns.lua"/>
-<Script file="chatsections.lua"/>
-<Script file="print.lua"/>
-<Script file="classcolor.lua"/>
-<Script file="textcolor.lua"/>
-<Script file="channelapi.lua"/>
-<Script file="bayesclassifier.lua" />
+	<Script file="events.lua"/>
+	<Script file="links.lua"/>
+	<Script file="patterns.lua"/>
+	<Script file="chatsections.lua"/>
+	<Script file="print.lua"/>
+	<Script file="classcolor.lua"/>
+	<Script file="textcolor.lua"/>
+	<Script file="channelapi.lua"/>
+	<Script file="bayesclassifier.lua" />
 </Ui>

@@ -1,10 +1,10 @@
-local _, Prat = ...
+local _, private = ...
 
-function Prat:ExportProfile(profileKey)
-	local profile = Prat.db.sv.profiles[profileKey]
+function private:ExportProfile(profileKey)
+	local profile = private.db.sv.profiles[profileKey]
 	if not profile then return nil end
 	local namespaces = {}
-	for namespaceKey, namespaceData in pairs(Prat.db.sv.namespaces) do
+	for namespaceKey, namespaceData in pairs(private.db.sv.namespaces) do
 		if namespaceData.profiles[profileKey] then
 			namespaces[namespaceKey] = {}
 			namespaces[namespaceKey].profiles = {}
@@ -19,15 +19,17 @@ function Prat:ExportProfile(profileKey)
 	return dataString
 end
 
-function Prat:ImportProfile(dataString, profileKey)
+function private:ImportProfile(dataString, profileKey)
 	local data = C_EncodingUtil.DeserializeCBOR(C_EncodingUtil.DecodeBase64(dataString))
-	if not data then return false end
-	Prat.db.sv.profiles[profileKey] = data.profile
-	Prat.db.sv.profileKeys[UnitName("player") .. " - " .. GetRealmName()] = profileKey
+	if not data then
+		return false
+	end
+	private.db.sv.profiles[profileKey] = data.profile
+	private.db.sv.profileKeys[UnitName("player") .. " - " .. GetRealmName()] = profileKey
 	for namespaceKey, namespaceData in pairs(data.namespaces) do
-		if not Prat.db.sv.namespaces[namespaceKey] then
-			Prat.db.sv.namespaces[namespaceKey] = { profiles = {} }
+		if not private.db.sv.namespaces[namespaceKey] then
+			private.db.sv.namespaces[namespaceKey] = { profiles = {} }
 		end
-		Prat.db.sv.namespaces[namespaceKey].profiles[profileKey] = namespaceData.profiles[profileKey]
+		private.db.sv.namespaces[namespaceKey].profiles[profileKey] = namespaceData.profiles[profileKey]
 	end
 end

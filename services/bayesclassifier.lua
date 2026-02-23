@@ -43,12 +43,6 @@ local LN2               = math.log(2) -- used frequently by chi-combining
 setfenv(1, select(2, ...))
 
 --[[ END STANDARD HEADER ]] --
-local dbg = function() end
---@debug@
---dbg = function(...) PrintLiteral(nil, ...) end
---@end-debug@
-
-
 
 local function chi2Q(x2, v)
 	-- Return prob(chisq >= x2, with v degrees of freedom).
@@ -132,7 +126,6 @@ local function _getclues(db, wordstream)
 	local minimum_prob_strength = 0.1
 	-- The all-unigram scheme just scores the tokens as-is.  A set()
 	-- is used to weed out duplicates at high speed.
-  dbg(nil, "_getclues", wordstream)
 
 	local clues = {}
 	for _, word in ipairs(wordstream) do
@@ -154,7 +147,6 @@ local function _getclues(db, wordstream)
 end
 
 local function add_msg(db, wordstream, is_spam)
-  dbg(nil, "add", wordstream, is_spam)
 	db.probcache = {}    -- nuke the prob cache
 	if is_spam then
 		db.nspam = db.nspam + 1
@@ -201,7 +193,6 @@ end
 
 local function remove_msg(db, wordstream, is_spam)
 	db.probcache = {} -- nuke the prob cache
-  dbg(mil, "remove", wordstream, is_spam)
 	local vcache = verify_cache(db, wordstream, is_spam) -- if one token does not exist, the phrase has never been trained and no tokens will be deleted  - <Mera>
 	if vcache == nil then return 0 end
 	for word, record in pairs(vcache) do
@@ -243,7 +234,6 @@ local function chi2_spamprob(db, wordstream, evidence)
 	local Hexp, Sexp = 0, 0
 	local ln         = math_log
 	local prob, word, record
-  dbg(nil, "spamprob", wordstream, evidence)
 
 	local clues = _getclues(db, wordstream)
 	for _, data in ipairs(clues) do

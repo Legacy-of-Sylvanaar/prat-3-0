@@ -7,7 +7,7 @@ tinsert(Prat.EnableTasks, function()
 		text = "Prat |cff8080ff3.0|r",
 		icon = "Interface\\Addons\\Prat-3.0\\textures\\prat-logo-dark-small",
 		OnClick = function()
-			Prat.ToggleOptionsWindow()
+			Prat:ToggleOptionsWindow()
 		end,
 		OnTooltipShow = function(tooltip)
 			tooltip:AddLine(Prat.Version)

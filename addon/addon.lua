@@ -70,8 +70,6 @@ Prat.IsClassic = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
 Prat.IsRetail = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE)
 Prat.IsMop = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MISTS_CLASSIC)
 
-Prat.Localizations = Prat.GetLocalizer({})
-
 Prat.Frames = {
 	["ChatFrame1"] = _G.ChatFrame1,
 	["ChatFrame2"] = _G.ChatFrame2,
@@ -192,7 +190,7 @@ function addon:OnInitialize()
 	Prat.db.RegisterCallback(self, "OnProfileCopied", "UpdateProfile")
 	Prat.db.RegisterCallback(self, "OnProfileReset", "UpdateProfile")
 
-	Prat.LoadModules()
+	Prat:LoadModules()
 
 	self.OnInitalize = nil
 end
@@ -222,12 +220,12 @@ function Prat.Format(smf, event, color, ...)
 		local r, g, b, id = color.r or 1, color.g or 1, color.b or 1, 1
 
 		-- Remove all the pattern matches ahead of time
-		m.MESSAGE = Prat.MatchPatterns(m)
+		m.MESSAGE = Prat:MatchPatterns(m)
 
 		Prat.callbacks:Fire(PRE_ADDMESSAGE, m, this, event, Prat.BuildChatText(m), r, g, b, id)
 
 		-- Pattern Matches Put Back IN
-		m.MESSAGE = Prat.ReplaceMatches(m)
+		m.MESSAGE = Prat:ReplaceMatches(m)
 
 		if process == Prat.EventProcessingType.Full then
 			-- We are about to send the message
@@ -300,7 +298,7 @@ function addon:UpdateProfileDelayed()
 		end
 	end
 
-	Prat.UpdateOptions()
+	Prat:UpdateOptions()
 end
 
 do
@@ -407,28 +405,6 @@ function addon:PostEnable()
 	Prat.callbacks:Fire(Prat.Events.SECTIONS_UPDATED)
 	Prat.callbacks:Fire(Prat.Events.ENABLED)
 
-	--@debug@
-	if Prat.Modules then
-		local total, loaded, enabled = 0, 0, 0
-		for _, v in pairs(Prat.Modules) do
-			total = total + 1
-			if v ~= "EXISTS" then
-				loaded = loaded + 1
-			end
-			if v == "ENABLED" then
-				enabled = enabled + 1
-			end
-		end
-
-		Prat:Print(("Module Count: |cff80ffff%d|r total |cff80ffff%d|r loaded, |cff80ffff%d|r enabled"):format(total, loaded, enabled))
-	end
-
-	if Prat.MemoryUse then
-		_G.collectgarbage("collect")
-		Prat:Print("Memory Use: " .. Prat.MemoryUse())
-	end
-	--@end-debug@
-
 	if Prat.EnableGlobalCompletions then
 		Prat.EnableGlobalCompletions(Prat, "Prat-Global-Autocomplete")
 	end
@@ -500,12 +476,12 @@ function addon:ProcessUserEnteredChat(m)
 	Prat.callbacks:Fire(Prat.Events.PRE_OUTBOUND, m)
 
 	-- Remove all the pattern matches ahead of time
-	m.MESSAGE = Prat.MatchPatterns(m, "OUTBOUND")
+	m.MESSAGE = Prat:MatchPatterns(m, "OUTBOUND")
 
 	Prat.callbacks:Fire(Prat.Events.OUTBOUND, m)
 
 	-- Pattern Matches Put Back IN
-	m.MESSAGE = Prat.ReplaceMatches(m, "OUTBOUND")
+	m.MESSAGE = Prat:ReplaceMatches(m, "OUTBOUND")
 end
 
 local fieldBlacklist = {
@@ -649,14 +625,14 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
 			if not isSecret and process == Prat.EventProcessingType.Full or process == Prat.EventProcessingType.PatternsOnly then
 				-- Remove all the pattern matches ahead of time
-				m.MESSAGE = Prat.MatchPatterns(m, "FRAME")
+				m.MESSAGE = Prat:MatchPatterns(m, "FRAME")
 			end
 
 			Prat.callbacks:Fire(PRE_ADDMESSAGE, message, this, message.EVENT, Prat.BuildChatText(message), r, g, b, id)
 
 			if not isSecret and process == Prat.EventProcessingType.Full or process == Prat.EventProcessingType.PatternsOnly then
 				-- Pattern Matches Put Back IN
-				m.MESSAGE = Prat.ReplaceMatches(m, "FRAME")
+				m.MESSAGE = Prat:ReplaceMatches(m, "FRAME")
 			end
 
 			if process == Prat.EventProcessingType.Full then
@@ -757,39 +733,58 @@ function Prat.CanSendChatMessage(chatType)
 	return false
 end
 
+Prat.MULTIBYTE_FIRST_CHAR = "^([%a\192-\255]?[\128-\191]*)"
+Prat.AnyNamePattern = "%f[%a\128-\255]([%a\128-\255]+)%f[^%a\128-\255]"
+
+function Prat.GetNamePattern(name)
+	local u = name:match(Prat.MULTIBYTE_FIRST_CHAR):upper()
+
+	if not u or u:len() == 0 then
+		_G.Prat:Print("GetNamePattern: name error ", name)
+		return
+	end
+
+	local l = u:lower()
+	local namepat
+	if u == l then
+		namepat = name:lower()
+	elseif u:len() == 1 then
+		namepat = "[" .. u .. l .. "]" .. name:sub(2):lower()
+	elseif u:len() > 1 then
+		namepat = ""
+		for i = 1, u:len() do
+			namepat = namepat .. "[" .. u:sub(i, i) .. l:sub(i, i) .. "]"
+		end
+		namepat = namepat .. name:sub(u:len() + 1)
+	end
+
+	return "%f[%a\128-\255]" .. namepat .. "%f[^%a\128-\255]"
+end
+
 function Prat.RegisterChatCommand(cmd, func)
 	addon:RegisterChatCommand(cmd, func)
 end
 
-Prat.RegisterChatCommand("pratblacklist",
-	function(name)
-		if name and #name > 0 then
-			Prat:Print("Blacklisting: '" .. tostring(name) .. "'. Reload to activate.")
-			Prat.db.realm.PlayerNameBlackList[tostring(name):lower()] = true
-		end
-	end)
-
-Prat.RegisterChatCommand("pratunblacklist",
-	function(name)
-		if name and #name > 0 then
-			Prat:Print("Un-Blacklisting: '" .. tostring(name) .. "'. Reload to activate")
-			Prat.db.realm.PlayerNameBlackList[tostring(name):lower()] = nil
-		end
-	end)
-
-Prat.RegisterChatCommand("pratdebugmsg",
-	function()
-		Prat:PrintLiteral(Prat.LastMessage, Prat.LastMessage.ORG)
-
-		local cc = addon:GetModule("CopyChat", true)
-		if cc then
-			cc:ScrapeFullChatFrame(_G.DEFAULT_CHAT_FRAME, true)
-		end
-	end)
-
-Prat.RegisterChatCommand("pratdebug", function()
-	local dm = addon:GetModule("DebugModules", true)
-	if dm then
-		dm:ShowCopyDialog()
+Prat.RegisterChatCommand("pratblacklist", function(name)
+	if name and #name > 0 then
+		Prat:Print("Blacklisting: '" .. tostring(name) .. "'. Reload to activate.")
+		Prat.db.realm.PlayerNameBlackList[tostring(name):lower()] = true
 	end
 end)
+
+Prat.RegisterChatCommand("pratunblacklist", function(name)
+	if name and #name > 0 then
+		Prat:Print("Un-Blacklisting: '" .. tostring(name) .. "'. Reload to activate")
+		Prat.db.realm.PlayerNameBlackList[tostring(name):lower()] = nil
+	end
+end)
+
+Prat.RegisterChatCommand("pratdebugmsg", function()
+	Prat:PrintLiteral(Prat.LastMessage, Prat.LastMessage.ORG)
+
+	local cc = addon:GetModule("CopyChat", true)
+	if cc then
+		cc:ScrapeFullChatFrame(_G.DEFAULT_CHAT_FRAME, true)
+	end
+end)
+

@@ -17,8 +17,8 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
@@ -26,20 +26,13 @@
 
 
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("AddonMsgs")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local mod = Prat:NewModule(PRAT_MODULE, "AceEvent-3.0")
+  local mod = Prat:NewModule("AddonMsgs", "AceEvent-3.0")
 
   -- define localized strings
   local PL = mod.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["AddonMsgs"] = true,
     ["Addon message options."] = true,
     ["show_name"] = "Show Addon Messages",
@@ -59,67 +52,67 @@ do
 
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
+PL:AddLocale("enUS", L)
 
 
 
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
+PL:AddLocale("itIT", L)
 
 
 
 
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
+PL:AddLocale("ptBR", L)
 
 
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "frFR", L)
+PL:AddLocale("frFR", L)
 
 
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
+PL:AddLocale("deDE", L)
 
 
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "koKR", L)
+PL:AddLocale("koKR", L)
 
 
 
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "esMX", L)
+PL:AddLocale("esMX", L)
 
 
 
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "ruRU", L)
+PL:AddLocale("ruRU", L)
 
 
 
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "zhCN", L)
+PL:AddLocale("zhCN", L)
 
 
 
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "esES", L)
+PL:AddLocale("esES", L)
 
 
 
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "zhTW", L)
+PL:AddLocale("zhTW", L)
 
 
 end

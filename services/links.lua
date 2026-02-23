@@ -27,9 +27,6 @@
 --[[ BEGIN STANDARD HEADER ]] --
 
 -- Imports
-local _G = _G
-local LibStub = LibStub
-
 local pairs, ipairs = pairs, ipairs
 local tinsert, tremove, tconcat = table.insert, table.remove, table.concat
 
@@ -37,11 +34,6 @@ local tinsert, tremove, tconcat = table.insert, table.remove, table.concat
 setfenv(1, select(2, ...))
 
 --[[ END STANDARD HEADER ]] --
-
-
-local function debug(...)
-  --  _G.ChatFrame1:print(...)
-end
 
 function BuildLink(linktype, data, text, color, link_start, link_end)
   return "|cff" .. (color or "ffffff") .. "|H" .. linktype .. ":" .. data .. "|h" .. (link_start or "[") .. text .. (link_end or "]") .. "|h|r"
@@ -69,16 +61,11 @@ do
       tinsert(LinkRegistry, linktype)
 
       local idx = #LinkRegistry
-
-      debug([[DBG_LINK("RegisterLinkType", who, linktype.linkid, idx)]])
-
       return idx
     end
   end
 
   function UnregisterAllLinkTypes(who)
-    debug([[DBG_LINK("UnregisterAllLinkTypes", who)]])
-
     for i, linktype in ipairs(LinkRegistry) do
       if linktype.owner == who then
         UnregisterLinkType(i)
@@ -91,7 +78,6 @@ do
   end
 
   function SetHyperlinkHook(hooks, tooltip, link, ...)
-    debug("SetItemRef ", link, ...)
     for i, reg_link in ipairs(LinkRegistry) do
       if reg_link.linkid == link:sub(1, (reg_link.linkid):len()) then
         local frame
@@ -102,7 +88,6 @@ do
           end
         end
         if (reg_link.linkfunc(reg_link.handler, link, frame, ...) == false) then
-          debug([[DUMP_LINK("SetHyperlink ", "Link Handled Internally")]])
           return false
         end
       end

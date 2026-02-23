@@ -36,20 +36,7 @@ local ChatFrame_RemoveAllChannels = _G.ChatFrame_RemoveAllChannels or _G.ChatFra
 local ChatFrame_ReceiveAllPrivateMessages = _G.ChatFrame_ReceiveAllPrivateMessages or _G.ChatFrameMixin.ReceiveAllPrivateMessages
 
 Prat:AddModuleToLoad(function()
-  local function dbg(...) end
-
-  --@debug@
---  function dbg(...) Prat:PrintLiteral(...) end
-
-  --@end-debug@
-
-  local PRAT_MODULE = Prat:RequestModuleName("Memory")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local module = Prat:NewModule(PRAT_MODULE, "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
+  local module = Prat:NewModule("Memory", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
 
   -- define localized strings
   local PL = module.PL
@@ -66,7 +53,7 @@ Prat:AddModuleToLoad(function()
   })
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["module_name"] = "Memory",
     ["module_desc"] = "Support saving the Blizzard chat settings to your profile so they can be synced across all your characters",
     module_info = "|cffff8888THIS MODULE IS EXPERIMENTAL|r \n\n This module allows you to load/save all your chat settings and frame layout. These settings can be loaded on any of your characters",
@@ -94,52 +81,52 @@ do
 
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
+PL:AddLocale("enUS", L)
 
 
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
+PL:AddLocale("itIT", L)
 
 
 
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
+PL:AddLocale("ptBR", L)
 
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "frFR", L)
+PL:AddLocale("frFR", L)
 
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
+PL:AddLocale("deDE", L)
 
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "koKR",  L)
+PL:AddLocale("koKR",  L)
 
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "esMX",  L)
+PL:AddLocale("esMX",  L)
 
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "ruRU",  L)
+PL:AddLocale("ruRU",  L)
 
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "zhCN",  L)
+PL:AddLocale("zhCN",  L)
 
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "esES",  L)
+PL:AddLocale("esES",  L)
 
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-PL:AddLocale(PRAT_MODULE, "zhTW",  L)
+PL:AddLocale("zhTW",  L)
 end
 --@end-non-debug@]===]
 
@@ -335,7 +322,6 @@ end
 			chan = f:AddChannel(db.channels[i])
 		end
       if not chan then
-        dbg("failed to load", db.channels[i], chan)
         success = false
       end
     end
@@ -350,7 +336,6 @@ end
       local snum, sname = select(i, ...);
       local num, name = map[sname], map[snum];
       if snum ~= num or sname ~= name then
-        dbg("leave", snum, sname, num, name)
         LeaveChannelByName(snum)
       end
     end
@@ -362,11 +347,9 @@ end
   end
 
   function module:LeavePlaceholderChannels(...)
-    dbg("leave placeholders", ...)
     for i = 1, select("#", ...), 3 do
       local num, name = select(i, ...);
       if name:match("^LeaveMe") then
-        dbg("leave", num, name)
         LeaveChannelByName(num)
       end
     end
@@ -386,7 +369,6 @@ end
   end
 
   function module:CheckChannels(...)
-    dbg("check channels", ...)
     local db = self.db.profile
     local map = self:GetChannelMap(unpack(db.channels))
 
@@ -398,13 +380,11 @@ end
         local snum, sname = select(i, ...);
         local num, name = db.channels[i], db.channels[i + 1];
         if snum ~= num or sname ~= name then
-          dbg("mismatch", snum, num, sname, name, map[sname])
           correct = map[sname] and "order" or "wrong"
         end
       end
     end
 
-    dbg("channels correct", correct)
     if type(correct) == "boolean" or self.errorcount >= 3 then
       self:ScheduleTimer("LoadSettings", 0)
     else
@@ -413,15 +393,12 @@ end
         self:ScheduleTimer("RestoreChannels", getDelay(), unpack(db.channels))
         self.errorcount = self.errorcount + 1
       elseif correct == "order" then
-        dbg(GetChannelList())
         for i = 1, select("#", ...), 3 do
           local snum, sname = select(i, GetChannelList());
           local curnum = map[sname]
-          dbg("check", snum, curnum)
           -- we check if the channel is joined and was joined in the past before
           -- doing anything (avoids nil reference error on some new characters)
           if curnum ~= nil and snum ~= nil and snum ~= curnum then
-            dbg("swap", snum, curnum)
             if Prat.IsClassic then
               SwapChatChannelByLocalID(snum, curnum)
             else
@@ -440,19 +417,14 @@ end
       local index = 1
       for i = 1, select("#", ...), 3 do
         local num, name = select(i, ...);
-        dbg("restore", name, num)
         while index < num do
           if GetChannelName(index) == 0 then
             JoinTemporaryChannel("LeaveMe" .. index)
-            dbg("join", "LeaveMe" .. index)
           end
           index = index + 1
         end
         if GetChannelName(index) == 0 then
-          dbg("join", name)
           JoinChannelByName(name)
-        else
-          dbg("occupied", name, select(2, GetChannelName(index)))
         end
         index = index + 1
       end
@@ -464,28 +436,19 @@ end
       local index = 1
       for i = 1, select("#", ...), 3 do
         local num, name = select(i, ...);
-        dbg("restore", name, num)
         while index < num do
           if GetChannelName(index) == 0 then
             JoinTemporaryChannel("LeaveMe" .. index)
-            dbg("join", "LeaveMe" .. index)
-          else
-            dbg("skip", index)
           end
           index = index + 1
         end
         if GetChannelName(index) == 0 then
           local clubId, streamId = ChatFrame_GetCommunityAndStreamFromChannel(name);
           if not clubId or not streamId then
-            dbg("join", name)
-
             JoinChannelByName(name)
           else
-            dbg("addclub", clubId, streamId)
             ChatFrame_AddNewCommunitiesChannel(1, clubId, streamId)
           end
-        else
-          dbg("occupied", name, select(2, GetChannelName(index)))
         end
         index = index + 1
       end
@@ -511,7 +474,6 @@ end
       for k, v in pairs(cvars) do
         local val = db.cvars[k]
         if val ~= nil then
-          dbg("set cvar", k, val)
           SetCVar(k, val)
         end
       end

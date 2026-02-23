@@ -17,36 +17,19 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
 -------------------------------------------------------------------------------
 
-
-
-
-
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("Filtering")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local dbg = function() end
-  --@debug@
---  dbg = function(...) Prat:PrintLiteral(...) end
-  --@end-debug@
-
-  local module = Prat:NewModule(PRAT_MODULE, "AceEvent-3.0")
-
+  local module = Prat:NewModule("Filtering", "AceEvent-3.0")
   local PL = module.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["Filtering"] = true,
     ["A module to provide basic chat filtering."] = true,
     ["leavejoin_name"] = "Filter Channel Leave/Join",
@@ -76,46 +59,46 @@ do
 
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
+PL:AddLocale("enUS", L)
 
 
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
+PL:AddLocale("itIT", L)
 
 
 
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
+PL:AddLocale("ptBR", L)
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "frFR",L)
+PL:AddLocale("frFR",L)
 
 
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
+PL:AddLocale("deDE", L)
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "koKR",L)
+PL:AddLocale("koKR",L)
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "esMX",L)
+PL:AddLocale("esMX",L)
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "ruRU",L)
+PL:AddLocale("ruRU",L)
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "zhCN",L)
+PL:AddLocale("zhCN",L)
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "esES",L)
+PL:AddLocale("esES",L)
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Filtering")@
-PL:AddLocale(PRAT_MODULE, "zhTW",L)
+PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
 
@@ -314,7 +297,6 @@ end
   function module:Learn(id, found, frame)
     id = tonumber(id)
     local text = self.lineTable[id]
-    dbg(text, id)
     if not text then return end
     local learned = self.trainTable[id]
     if learned ~= nil then
@@ -329,7 +311,6 @@ end
   function module:Unlearn(id, found, frame)
     id = tonumber(id)
     local text = self.lineTable[id]
-    dbg(text, id)
     if not text then return end
     local learned = self.trainTable[id]
     self.trainTable[id] = nil
@@ -343,7 +324,6 @@ end
 
   function module:ToggleLearn(id, found, frame)
     id = tonumber(id)
-    dbg("ToggleLearn", id, found)
     local learned = self.trainTable[id]
     if learned ~= nil then
       self:Unlearn(id, learned, frame)
@@ -381,7 +361,6 @@ end
     if self.db.profile.useai and  eventsToHandle[event] and message.GUID ~= UnitGUID("player") then
       local msg = tokenize(message.ORG.MESSAGE)
       local prob = self.classifier.getprob(msg)
-      --    dbg("filter:fraee", prob, msg)
       local isHam = prob <= HAM_CUTOFF
       local isSpam = prob >= SPAM_CUTOFF
       if self.db.profile.training then

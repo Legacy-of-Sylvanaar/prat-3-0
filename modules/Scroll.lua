@@ -17,8 +17,8 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
@@ -29,19 +29,11 @@
 
 
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("Scroll")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local module = Prat:NewModule(PRAT_MODULE, "AceHook-3.0", "AceTimer-3.0")
-
+  local module = Prat:NewModule("Scroll", "AceHook-3.0", "AceTimer-3.0")
   local PL = module.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["Scroll"] = true,
     ["Chat window scrolling options."] = true,
     ["mousewheel_name"] = "Enable MouseWheel",
@@ -71,46 +63,46 @@ do
 
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
+PL:AddLocale("enUS", L)
 
 
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
+PL:AddLocale("itIT", L)
 
 
 
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
+PL:AddLocale("ptBR", L)
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "frFR",L)
+PL:AddLocale("frFR",L)
 
 
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
+PL:AddLocale("deDE", L)
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "koKR",L)
+PL:AddLocale("koKR",L)
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "esMX",L)
+PL:AddLocale("esMX",L)
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "ruRU",L)
+PL:AddLocale("ruRU",L)
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "zhCN",L)
+PL:AddLocale("zhCN",L)
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "esES",L)
+PL:AddLocale("esES",L)
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Scroll")@
-PL:AddLocale(PRAT_MODULE, "zhTW",L)
+PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
 
