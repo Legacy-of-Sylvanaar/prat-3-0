@@ -155,7 +155,6 @@ function BuildChatText(message)
 			out = out .. message[v]
 		end
 	end
-	--_G.print(_G.dump(message))
 	return out
 end
 
@@ -465,7 +464,6 @@ function SplitChatMessage(frame, event, ...)
 			elseif type == "BN_WHISPER" or type == "BN_WHISPER_INFORM" then
 				s.PLAYER = GetBNPlayerLink(arg2, coloredName, arg13, arg11, chatGroup, chatTarget)
 			else
-				_G.print("DERP")
 				s.PLAYER = GetPlayerLink(arg2, coloredName, arg11, chatGroup, chatTarget)
 			end
 		elseif not isSecret and strlen(arg2) > 0 then
