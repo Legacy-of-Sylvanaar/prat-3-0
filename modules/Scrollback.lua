@@ -198,8 +198,8 @@ Prat:AddModuleExtension(function()
 			local info = battleTagLookup[battleTag]
 			if info then
 				name, bnetIDAccount = info.accountName, info.bnetAccountID
-				display = display:gsub("???", name)
-				chatTarget = chatTarget:gsub("???", name)
+				display = display:gsub("%?%?%?", name)
+				chatTarget = chatTarget:gsub("%?%?%?", name)
 			end
 		end
 
