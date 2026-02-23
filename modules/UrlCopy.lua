@@ -86,7 +86,6 @@ do
   PL:AddLocale(PRAT_MODULE, "koKR",L)
 
 
-
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="UrlCopy")@
 
   PL:AddLocale(PRAT_MODULE, "esMX",L)
