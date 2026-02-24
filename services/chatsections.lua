@@ -327,7 +327,7 @@ function SplitChatMessage(frame, event, ...)
 	local isSecret = _G.issecretvalue and _G.issecretvalue(arg1)
 
 	if (strsub((event or ""), 1, 8) == "CHAT_MSG") then
-		type = strsub(event, 10)
+		local type = strsub(event, 10)
 
 		if (arg16) then
 			-- hiding sender in letterbox: do NOT even show in chat window (only shows in cinematic frame)
