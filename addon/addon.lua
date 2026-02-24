@@ -25,7 +25,9 @@
 --
 -------------------------------------------------------------------------------
 
-Prat = select(2, ...)
+local _, private = ...
+
+Prat = private
 
 --[[ BEGIN STANDARD HEADER ]] --
 
@@ -534,12 +536,9 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
 	Prat.loading = nil -- clear any batch message loading that may be happening
 
+	-- This is only ever called on classic
 	if not Prat.HookedFrames[this:GetName()] then
-		if _G["ChatFrame_MessageEventHandler"] then
-			return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
-		else
-			return _G["ChatFrameMixin"].MessageEventHandler(this, event, ...)
-		end
+		return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
 	end
 
 	local message, info
@@ -580,123 +579,122 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 		else
 			return _G["ChatFrameMixin"].MessageEventHandler(this, event, ...)
 		end
+	end
+
+	local m = message --SplitMessage
+
+
+	-- Prat_FrameMessage is fired for every message going to the
+	-- chatframe which is displayable (has a chat infotype)
+	-- It may not be displayed, in which case no Pre/Post Addmessage
+	-- events will fire
+	-- Any addons which hook things will operate following this event
+	-- but before Prat_PreAddMessage, OUTPUT will contain the chat line
+	-- it may be modified by other addons.
+	--
+	-- Right now, prat will discard the chat line for chat types that
+	-- it is handling
+	--
+	m.OUTPUT = nil
+	m.DONOTPROCESS = nil
+
+	Prat.callbacks:Fire(FRAME_MESSAGE, message, this, message.EVENT)
+
+	-- A return value of true means that the message was processed
+	-- normally this would result in the OnEvent returning
+	-- for that chatframe
+	local proxy = Prat.CreateProxy(this)
+	m.CAPTUREOUTPUT = proxy
+	if isSecret then
+		Prat.MessageEventHandler(proxy, event, ...)
 	else
-		local m = message --SplitMessage
-
-
-		-- Prat_FrameMessage is fired for every message going to the
-		-- chatframe which is displayable (has a chat infotype)
-		-- It may not be displayed, in which case no Pre/Post Addmessage
-		-- events will fire
-		-- Any addons which hook things will operate following this event
-		-- but before Prat_PreAddMessage, OUTPUT will contain the chat line
-		-- it may be modified by other addons.
-		--
-		-- Right now, prat will discard the chat line for chat types that
-		-- it is handling
-		--
-		m.OUTPUT = nil
-		m.DONOTPROCESS = nil
-
-		Prat.callbacks:Fire(FRAME_MESSAGE, message, this, message.EVENT)
-
-		-- A return value of true means that the message was processed
-		-- normally this would result in the OnEvent returning
-		-- for that chatframe
-		if not isSecret then
-			local proxy = Prat.CreateProxy(this)
-			m.CAPTUREOUTPUT = proxy
-			if _G["ChatFrame_MessageEventHandler"] then
-				CMEResult = self.hooks["ChatFrame_MessageEventHandler"](proxy, event, ...) -- This specifically does not use message.EVENT
-			else
-				CMEResult = _G["ChatFrameMixin"].MessageEventHandler(proxy, event, ...)
-			end
-			Prat.RestoreProxy()
+		if _G["ChatFrame_MessageEventHandler"] then
+			CMEResult = self.hooks["ChatFrame_MessageEventHandler"](proxy, event, ...)
 		else
-			CMEResult = true
-			m.OUTPUT = arg1
+			CMEResult = _G["ChatFrameMixin"].MessageEventHandler(proxy, event, ...)
+		end
+	end
+	Prat.RestoreProxy()
+
+	m.CAPTUREOUTPUT = false
+
+	if type(m.OUTPUT) == "string" and not m.DONOTPROCESS then
+		Prat.CurrentMessage = m
+		local r, g, b, id = m.INFO.r, m.INFO.g, m.INFO.b, m.INFO.id
+
+		if not isSecret and process == Prat.EventProcessingType.Full or process == Prat.EventProcessingType.PatternsOnly then
+			-- Remove all the pattern matches ahead of time
+			m.MESSAGE = Prat:MatchPatterns(m, "FRAME")
 		end
 
-		m.CAPTUREOUTPUT = false
+		Prat.callbacks:Fire(PRE_ADDMESSAGE, message, this, message.EVENT, Prat.BuildChatText(message), r, g, b, id)
 
-		if type(m.OUTPUT) == "string" and not m.DONOTPROCESS then
-			Prat.CurrentMessage = m
-			local r, g, b, id = m.INFO.r, m.INFO.g, m.INFO.b, m.INFO.id
+		if not isSecret and process == Prat.EventProcessingType.Full or process == Prat.EventProcessingType.PatternsOnly then
+			-- Pattern Matches Put Back IN
+			m.MESSAGE = Prat:ReplaceMatches(m, "FRAME")
+		end
 
-			if not isSecret and process == Prat.EventProcessingType.Full or process == Prat.EventProcessingType.PatternsOnly then
-				-- Remove all the pattern matches ahead of time
-				m.MESSAGE = Prat:MatchPatterns(m, "FRAME")
-			end
+		if process == Prat.EventProcessingType.Full then
+			-- We are about to send the message
+			m.OUTPUT = Prat.BuildChatText(message) -- Combine all the chat sections
+		elseif process == Prat.EventProcessingType.PatternsOnly then
 
-			Prat.callbacks:Fire(PRE_ADDMESSAGE, message, this, message.EVENT, Prat.BuildChatText(message), r, g, b, id)
+			m.OUTPUT = (m.PRE or "") .. m.MESSAGE .. (m.POST or "")
+		else
 
-			if not isSecret and process == Prat.EventProcessingType.Full or process == Prat.EventProcessingType.PatternsOnly then
-				-- Pattern Matches Put Back IN
-				m.MESSAGE = Prat:ReplaceMatches(m, "FRAME")
-			end
+			-- Now we have the chatstring that the client was planning to output
+			-- For now just do it. (Tack on POST too)
+			m.OUTPUT = (m.PRE or "") .. m.OUTPUT .. (m.POST or "")
+		end
 
-			if process == Prat.EventProcessingType.Full then
-				-- We are about to send the message
-				m.OUTPUT = Prat.BuildChatText(message) -- Combine all the chat sections
-			elseif process == Prat.EventProcessingType.PatternsOnly then
+		-- Allow for message blocking during the patern match phase
+		if m.DONOTPROCESS then
+			Prat.callbacks:Fire(POST_ADDMESSAGE_BLOCKED, m, this, message.EVENT, m.OUTPUT, r, g, b, id)
+		elseif isSecret then
+			this:AddMessage(m.OUTPUT, r, g, b, id, m.ACCESSID, m.TYPEID);
+		elseif m.OUTPUT:len() > 0 then
 
-				m.OUTPUT = (m.PRE or "") .. m.MESSAGE .. (m.POST or "")
+			-- Hack to get the censored message display working with Prat
+			local isChatLineCensored = arg11 and C_ChatInfo.IsChatLineCensored(arg11);
+			local msg = isChatLineCensored and arg1 or m.OUTPUT
+
+			if isChatLineCensored then
+				local eventLabel = event
+				local eventArgs = SafePack(...);
+				this:AddMessage(msg, r, g, b, id, m.ACCESSID, m.TYPEID, eventLabel, eventArgs, function(text)
+					return text
+				end);
 			else
-
-				-- Now we have the chatstring that the client was planning to output
-				-- For now just do it. (Tack on POST too)
-				m.OUTPUT = (m.PRE or "") .. m.OUTPUT .. (m.POST or "")
+				this:AddMessage(msg, r, g, b, id, m.ACCESSID, m.TYPEID);
 			end
 
-			-- Allow for message blocking during the patern match phase
-			if m.DONOTPROCESS then
-				Prat.callbacks:Fire(POST_ADDMESSAGE_BLOCKED, m, this, message.EVENT, m.OUTPUT, r, g, b, id)
-			elseif isSecret then
-				this:AddMessage(m.OUTPUT, r, g, b, id, m.ACCESSID, m.TYPEID);
-			elseif m.OUTPUT:len() > 0 then
+			-- We have called addmessage by now, or we have skipped it
+			-- regardless, we call postaddmessage. This was changed to allow
+			-- for more flexibility in the customfilters module, speficially
+			-- it allows for replacements to occur in blocked messages
 
-				-- Hack to get the censored message display working with Prat
-				local isChatLineCensored = arg11 and C_ChatInfo.IsChatLineCensored(arg11);
-				local msg = isChatLineCensored and arg1 or m.OUTPUT
+			Prat.callbacks:Fire(POST_ADDMESSAGE, m, this, message.EVENT, m.OUTPUT, r, g, b, id, m.ACCESSID, m.TYPEID)
 
-				if isChatLineCensored then
-					local eventLabel = event
-					local eventArgs = SafePack(...);
-					this:AddMessage(msg, r, g, b, id, m.ACCESSID, m.TYPEID, eventLabel, eventArgs, function(text)
-						return text
-					end);
-				else
-					this:AddMessage(msg, r, g, b, id, m.ACCESSID, m.TYPEID);
-				end
-
-				-- We have called addmessage by now, or we have skipped it
-				-- regardless, we call postaddmessage. This was changed to allow
-				-- for more flexibility in the customfilters module, speficially
-				-- it allows for replacements to occur in blocked messages
-
-				Prat.callbacks:Fire(POST_ADDMESSAGE, m, this, message.EVENT, m.OUTPUT, r, g, b, id, m.ACCESSID, m.TYPEID)
-
-				if (not this:IsShown()) then
-					if ((this == _G.DEFAULT_CHAT_FRAME and m.INFO.flashTabOnGeneral) or (this ~= _G.DEFAULT_CHAT_FRAME and m.INFO.flashTab)) then
-						if ((_G.CHAT_OPTIONS and not _G.CHAT_OPTIONS.HIDE_FRAME_ALERTS) or m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then
-							if (not _G.FCFManager_ShouldSuppressMessageFlash(this, m.CHATGROUP, m.CHATTARGET)) then
-								_G.FCF_StartAlertFlash(this);
-							end
+			if (not this:IsShown()) then
+				if ((this == _G.DEFAULT_CHAT_FRAME and m.INFO.flashTabOnGeneral) or (this ~= _G.DEFAULT_CHAT_FRAME and m.INFO.flashTab)) then
+					if ((_G.CHAT_OPTIONS and not _G.CHAT_OPTIONS.HIDE_FRAME_ALERTS) or m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then
+						if (not _G.FCFManager_ShouldSuppressMessageFlash(this, m.CHATGROUP, m.CHATTARGET)) then
+							_G.FCF_StartAlertFlash(this);
 						end
 					end
 				end
+			end
 
-				Prat.LastMessage = m
-				if not _G["ChatFrame_MessageEventHandler"] then
-					CMEResult = true
-				end
+			Prat.LastMessage = m
+			if not _G["ChatFrame_MessageEventHandler"] then
+				CMEResult = true
 			end
 		end
-
-		m.CAPTUREOUTPUT = nil
-
-		Prat.CurrentMessage = nil
 	end
+
+	m.CAPTUREOUTPUT = nil
+
+	Prat.CurrentMessage = nil
 
 	return CMEResult
 end

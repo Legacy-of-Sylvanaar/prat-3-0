@@ -27,7 +27,6 @@
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
 local Chat_GetChatFrame = _G.Chat_GetChatFrame or _G.ChatFrameUtil.GetChatFrame
-local ChatFrame_GetCommunityAndStreamFromChannel = _G.ChatFrame_GetCommunityAndStreamFromChannel or _G.ChatFrameUtil.GetCommunityAndStreamFromChannel
 local ChatFrame_AddNewCommunitiesChannel = _G.ChatFrame_AddNewCommunitiesChannel or _G.ChatFrameUtil.AddNewCommunitiesChannel
 
 local ChatFrame_RemoveAllMessageGroups = _G.ChatFrame_RemoveAllMessageGroups or _G.ChatFrameMixin.RemoveAllMessageGroups
@@ -37,6 +36,9 @@ local ChatFrame_ReceiveAllPrivateMessages = _G.ChatFrame_ReceiveAllPrivateMessag
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Memory", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
+	if not module:IsEnabled() then
+		return
+	end
 
   -- define localized strings
   local PL = module.PL
@@ -443,7 +445,7 @@ end
           index = index + 1
         end
         if GetChannelName(index) == 0 then
-          local clubId, streamId = ChatFrame_GetCommunityAndStreamFromChannel(name);
+          local clubId, streamId = Prat.GetCommunityAndStreamFromChannel(name);
           if not clubId or not streamId then
             JoinChannelByName(name)
           else

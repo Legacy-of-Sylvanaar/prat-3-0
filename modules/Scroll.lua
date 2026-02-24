@@ -30,6 +30,9 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Scroll", "AceHook-3.0", "AceTimer-3.0")
+	if not module:IsEnabled() then
+		return
+	end
   local PL = module.PL
 
   --@debug@

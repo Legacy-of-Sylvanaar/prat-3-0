@@ -30,6 +30,9 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("ChannelNames", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0")
+	if not module:IsEnabled() then
+		return
+	end
 
   local PL = module.PL
 
@@ -474,7 +477,7 @@ end
       cfg = eventMap[event .. (message.CHANNELNUM or "")]
     end
 
-    if self.db.profile.nickname[message.CHANNEL] then
+    if (not issecretvalue or not issecretvalue(message.CHANNEL)) and self.db.profile.nickname[message.CHANNEL] then
       message.CHANNEL = self.db.profile.nickname[message.CHANNEL]
       if message.CHANNEL:sub(1, 1) == "#" then
         message.CHANNEL = message.CHANNEL:sub(2)

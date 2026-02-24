@@ -28,6 +28,9 @@ local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("UrlCopy")
+	if not module:IsEnabled() then
+		return
+	end
   local PL = module.PL
 
   --@debug@

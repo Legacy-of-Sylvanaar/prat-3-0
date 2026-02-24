@@ -30,6 +30,9 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("ChatLog")
+	if not module:IsEnabled() then
+		return
+	end
 
   local PL = module.PL
 

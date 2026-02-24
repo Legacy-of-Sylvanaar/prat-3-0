@@ -31,6 +31,9 @@ local InviteUnit = _G.InviteUnit or _G.C_PartyInfo.InviteUnit
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Invites", "AceHook-3.0")
+	if not module:IsEnabled() then
+		return
+	end
 	local PL = module.PL
 
 	--@debug@

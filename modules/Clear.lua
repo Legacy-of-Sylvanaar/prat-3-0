@@ -29,6 +29,9 @@ local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxCha
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Clear")
+	if not module:IsEnabled() then
+		return
+	end
 
   local PL = module.PL
 

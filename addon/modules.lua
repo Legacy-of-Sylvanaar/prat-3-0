@@ -254,12 +254,15 @@ do
 	}
 
 	function private:NewModule(name, ...)
-		local addon = private.Addon:NewModule(name, prototype, ...)
-		addon.PL = private:GetLocalizer()
+		local module = private.Addon:NewModule(name, prototype, ...)
+		module.PL = private:GetLocalizer()
 
 		private:CreateModuleControlOption(name)
+		if private.db.profile.modules[module.moduleName] == 1 then
+			module:Disable()
+		end
 
-		return addon
+		return module
 	end
 
 	function private:GetModule(name, ...)

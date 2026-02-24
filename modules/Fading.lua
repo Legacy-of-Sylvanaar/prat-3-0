@@ -25,6 +25,9 @@
 -------------------------------------------------------------------------------
 Prat:AddModuleToLoad(function()
   local mod = Prat:NewModule("Fading")
+	if not mod:IsEnabled() then
+		return
+	end
   local PL = mod.PL
 
   --@debug@

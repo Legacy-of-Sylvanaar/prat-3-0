@@ -31,6 +31,9 @@ local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxCha
 
 Prat:AddModuleToLoad(function()
   local mod = Prat:NewModule("Frames", "AceHook-3.0")
+	if not mod:IsEnabled() then
+		return
+	end
 
   local PL = mod.PL
 

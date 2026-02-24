@@ -7,6 +7,9 @@ local ChatEdit_DeactivateChat = _G.ChatEdit_DeactivateChat or _G.ChatFrameUtil.D
 
 Prat:AddModuleToLoad(function()
   local mod = Prat:NewModule("Editbox", "AceHook-3.0")
+	if not mod:IsEnabled() then
+		return
+	end
 
   local PL = mod.PL
 

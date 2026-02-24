@@ -30,6 +30,9 @@
 
 Prat:AddModuleExtension(function()
   local module = Prat:GetModule("PlayerNames", true)
+	if not module:IsEnabled() then
+		return
+	end
 
   if not module then return end
 

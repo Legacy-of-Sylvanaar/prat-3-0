@@ -27,6 +27,9 @@
 
 Prat:AddModuleToLoad(function()
   local mod = Prat:NewModule("EventNames")
+	if not mod:IsEnabled() then
+		return
+	end
 
   local PL = mod.PL
 

@@ -26,46 +26,6 @@
 
 local _, private = ...
 
--- Start hacks for in-combat ResolveChannelName
-private.GetCommunityAndStreamFromChannel = function(communityChannel)
-	local clubId, streamId = communityChannel:match("(%d+)%:(%d+)")
-	return tonumber(clubId), tonumber(streamId)
-end
-
-private.GetCommunityAndStreamName = function(clubId, streamId)
-	local streamInfo = C_Club.GetStreamInfo(clubId, streamId)
-
-	if streamInfo and (streamInfo.streamType == Enum.ClubStreamType.Guild or streamInfo.streamType == Enum.ClubStreamType.Officer) then
-		return streamInfo.name
-	end
-
-	local streamName = streamInfo and streamInfo.name or ""
-
-	local clubInfo = C_Club.GetClubInfo(clubId);
-	if streamInfo and streamInfo.streamType == Enum.ClubStreamType.General then
-		local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or ""
-		return communityName
-	else
-		local communityName = clubInfo and (clubInfo.shortName or clubInfo.name) or ""
-		return communityName .. " - " .. streamName
-	end
-end
-
-private.ResolveChannelName = function(communityChannel)
-	local clubId, streamId = private.GetCommunityAndStreamFromChannel(communityChannel)
-	if not clubId or not streamId then
-		return communityChannel
-	end
-
-	return private.GetCommunityAndStreamName(clubId, streamId)
-end
-
-private.ResolvePrefixedChannelName = function(communityChannelArg)
-	local prefix, communityChannel = communityChannelArg:match("(%d+. )(.*)");
-	return prefix .. private.ResolveChannelName(communityChannel);
-end
--- End hacks for in-combat ResolveChannelName
-
 local chanTable = {}
 private.RebuildChannelTable = function()
 	table.wipe(chanTable)

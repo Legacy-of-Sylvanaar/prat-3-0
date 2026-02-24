@@ -27,6 +27,9 @@
 
 Prat:AddModuleToLoad(function()
   local mod = Prat:NewModule("AddonMsgs", "AceEvent-3.0")
+	if not mod:IsEnabled() then
+		return
+	end
 
   -- define localized strings
   local PL = mod.PL

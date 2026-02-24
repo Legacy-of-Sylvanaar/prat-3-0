@@ -29,6 +29,9 @@ end
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("NewcomersChat")
+	if not module:IsEnabled() then
+		return
+	end
   local PL = module.PL
 
   --@debug@
