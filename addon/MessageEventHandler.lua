@@ -226,8 +226,6 @@ function private.MessageEventHandler(self, event, ...)
 		end
 
 		if ( type == "WHISPER" or type == "BN_WHISPER" ) then
-			ChatFrameUtil.SetLastTellTarget(arg2, type);
-
 			if ( not self.tellTimer or (GetTime() > self.tellTimer) ) then
 				PlaySound(SOUNDKIT.TELL_MESSAGE);
 			end
