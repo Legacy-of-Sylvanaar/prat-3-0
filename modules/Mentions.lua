@@ -26,9 +26,6 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Mentions", "AceHook-3.0")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
 
   Prat:SetModuleDefaults(module.name, {
@@ -104,6 +101,9 @@ PL:AddLocale("zhTW",  L)
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
   local toggleOption = {
     name = function(info) return info.handler.PL[info[#info] .. "_name"] end,
     desc = function(info) return info.handler.PL[info[#info] .. "_desc"] end,

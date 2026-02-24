@@ -26,9 +26,6 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("KeyBindings")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
 
   --@debug@
@@ -117,6 +114,9 @@ Prat:AddModuleToLoad(function()
  end
  --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
   Prat:SetModuleInit(module,
     function(self)

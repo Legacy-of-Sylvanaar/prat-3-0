@@ -26,9 +26,6 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("ChatTabs", "AceHook-3.0")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
 
   --@debug@
@@ -118,6 +115,9 @@ PL:AddLocale("esES",L)
 PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
+	if not module:IsEnabled() then
+		return
+	end
   module.HighlightTabsPlugin = {}
 
 

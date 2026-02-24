@@ -1,8 +1,5 @@
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Search")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
 
   --@debug@
@@ -74,6 +71,9 @@ Prat:AddModuleToLoad(function()
  --@end-non-debug@]===]
 
 
+	if not module:IsEnabled() then
+		return
+	end
 
 
   Prat:SetModuleDefaults(module.name, {

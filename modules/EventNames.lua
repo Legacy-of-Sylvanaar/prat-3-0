@@ -24,14 +24,9 @@
 --
 -------------------------------------------------------------------------------
 
-
 Prat:AddModuleToLoad(function()
-  local mod = Prat:NewModule("EventNames")
-	if not mod:IsEnabled() then
-		return
-	end
-
-  local PL = mod.PL
+  local module = Prat:NewModule("EventNames")
+  local PL = module.PL
 
 
   --@debug@
@@ -110,8 +105,11 @@ Prat:AddModuleToLoad(function()
  end
  --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
-  Prat:SetModuleDefaults(mod.name, {
+  Prat:SetModuleDefaults(module.name, {
     profile = {
       on = true,
       show = {},
@@ -119,7 +117,7 @@ Prat:AddModuleToLoad(function()
     }
   })
 
-  Prat:SetModuleOptions(mod.name, {
+  Prat:SetModuleOptions(module.name, {
     name = PL["EventNames"],
     desc = PL["Chat window event name options."],
     type = "group",
@@ -140,30 +138,30 @@ Prat:AddModuleToLoad(function()
     }
   })
 
-  function mod:OnModuleEnable()
+  function module:OnModuleEnable()
     Prat.RegisterChatEvent(self, "Prat_PreAddMessage", "Prat_PreAddMessage")
     self:SetAllEvents(self.db.profile.allevents)
   end
 
-  function mod:OnModuleDisable()
+  function module:OnModuleDisable()
     self:SetAllEvents(false)
     Prat.UnregisterAllChatEvents(self)
   end
 
-  function mod:GetDescription()
+  function module:GetDescription()
     return PL["Chat window event name options."]
   end
 
   --[[------------------------------------------------
     Core Functions
   ------------------------------------------------]] --
-  function mod:OnValueChanged(...)
+  function module:OnValueChanged(...)
     self:SetAllEvents(self.db.profile.allevents)
   end
 
   local function allEventsEnabled() return Prat.EventProcessingType.Full end
 
-  function mod:SetAllEvents(allevents)
+  function module:SetAllEvents(allevents)
     if not allevents then
       Prat.EventIsProcessed = self.origEventIsProcessed or Prat.EventIsProcessed
       self.origEventIsProcessed = nil
@@ -181,7 +179,7 @@ Prat:AddModuleToLoad(function()
 
     local desat = 192 * 0.7 + 63
     local c
-    function mod:Prat_PreAddMessage(arg, message, frame, event, t, r, g, b)
+    function module:Prat_PreAddMessage(arg, message, frame, event, t, r, g, b)
       if self.db.profile.show[frame:GetName()] then
         c = ("%02x%02x%02x"):format((r or 1.0) * desat, (g or 1.0) * desat, (b or 1.0) * desat)
         message.POST = "  " .. EventBrackets("(") .. EventName(tostring(event), c) .. EventBrackets(")")

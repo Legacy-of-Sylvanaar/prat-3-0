@@ -26,9 +26,6 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Filtering", "AceEvent-3.0")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
 
   --@debug@
@@ -105,6 +102,9 @@ PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
 
   Prat:SetModuleDefaults(module, {

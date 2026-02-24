@@ -28,9 +28,6 @@ local ChatEdit_ParseText = _G.ChatEdit_ParseText or _G.ChatFrameEditBoxMixin.Par
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Alias", "AceHook-3.0")
-	if not module:IsEnabled() then
-		return
-	end
 	local PL = module.PL
 
 	--@debug@
@@ -118,6 +115,9 @@ Prat:AddModuleToLoad(function()
 		PL:AddLocale("zhTW", L)
 	end
 	--@end-non-debug@]===]
+	if not module:IsEnabled() then
+		return
+	end
 
 	Prat:SetModuleDefaults(module.name, {
 		profile = {

@@ -26,9 +26,6 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Paragraph")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
 
   --@debug@
@@ -101,28 +98,9 @@ end
 --@end-non-debug@]===]
 
 
-
-
-  --- -[[
-  -- Chinese Local : CWDG Translation Team 昏睡墨鱼 (Thomas Mo)
-  -- CWDG site: http://Cwowaddon.com
-  -- $Rev: 80705 $
-  -- ]]
-  --
-
-  --
-
-  --
-
-  --
-
-  --
-
-  --
-
-  --
-
-  -- create prat module
+	if not module:IsEnabled() then
+		return
+	end
 
   Prat:SetModuleDefaults(module, {
     profile = {

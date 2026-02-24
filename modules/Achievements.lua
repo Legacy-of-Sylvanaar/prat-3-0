@@ -26,9 +26,6 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Achievements")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
 
   --@debug@
@@ -129,6 +126,9 @@ PL:AddLocale("esES",  L)
 PL:AddLocale("zhTW",  L)
 end
 --@end-non-debug@]===]
+	if not module:IsEnabled() then
+		return
+	end
 
 
   local repeatPrevention = {}

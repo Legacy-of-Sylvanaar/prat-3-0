@@ -26,9 +26,6 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Bubbles")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
   module._classic_era = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
 
@@ -117,6 +114,9 @@ do
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
 
   Prat:SetModuleDefaults(module.name, {

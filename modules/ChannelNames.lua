@@ -24,16 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
-
-
-
-
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("ChannelNames", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0")
-	if not module:IsEnabled() then
-		return
-	end
-
   local PL = module.PL
 
   --@debug@
@@ -133,6 +125,9 @@ PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
   -- order to show channels
   local orderMap = {
     "say",

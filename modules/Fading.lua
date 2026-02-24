@@ -24,11 +24,8 @@
 --
 -------------------------------------------------------------------------------
 Prat:AddModuleToLoad(function()
-  local mod = Prat:NewModule("Fading")
-	if not mod:IsEnabled() then
-		return
-	end
-  local PL = mod.PL
+  local module = Prat:NewModule("Fading")
+  local PL = module.PL
 
   --@debug@
   PL:AddLocale("enUS", {
@@ -104,10 +101,13 @@ Prat:AddModuleToLoad(function()
   end
   --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
 
   -- define the default db values
-  Prat:SetModuleDefaults(mod.name, {
+  Prat:SetModuleDefaults(module.name, {
     profile = {
       on = true,
       textfade = { ["*"] = true },
@@ -115,7 +115,7 @@ Prat:AddModuleToLoad(function()
     }
   })
 
-  Prat:SetModuleOptions(mod.name, {
+  Prat:SetModuleOptions(module.name, {
     name = PL["module_name"],
     desc = PL["module_desc"],
     type = "group",
@@ -146,30 +146,30 @@ Prat:AddModuleToLoad(function()
   ------------------------------------------------]] --
 
   -- things to do when the module is enabled
-  function mod:OnModuleEnable()
+  function module:OnModuleEnable()
     self:OnValueChanged()
     Prat.RegisterChatEvent(self, Prat.Events.FRAMES_UPDATED)
   end
 
   -- things to do when the module is disabled
-  function mod:OnModuleDisable()
+  function module:OnModuleDisable()
     for k, v in pairs(Prat.HookedFrames) do
       self:Fade(v, true)
     end
   end
 
 
-  function mod:Prat_FramesUpdated(_, name, chatFrame)
+  function module:Prat_FramesUpdated(_, name, chatFrame)
     self:Fade(chatFrame, self.db.profile.textfade[name])
   end
 
-  function mod:OnValueChanged(...)
+  function module:OnValueChanged(...)
     for k, v in pairs(Prat.HookedFrames) do
       self:Fade(v, self.db.profile.textfade[k])
     end
   end
 
-  mod.OnSubValueChanged = mod.OnValueChanged
+  module.OnSubValueChanged = module.OnValueChanged
 
 
   --[[------------------------------------------------
@@ -177,10 +177,10 @@ Prat:AddModuleToLoad(function()
   ------------------------------------------------]] --
 
   -- enable/disable fading
-  function mod:Fade(cf, textfade)
+  function module:Fade(cf, textfade)
     if textfade then
       cf:SetFading(true)
-      cf:SetTimeVisible(mod.db.profile.duration)
+      cf:SetTimeVisible(module.db.profile.duration)
     else
       cf:SetFading(false)
     end

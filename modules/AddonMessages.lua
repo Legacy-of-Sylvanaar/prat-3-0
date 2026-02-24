@@ -26,13 +26,10 @@
 
 
 Prat:AddModuleToLoad(function()
-  local mod = Prat:NewModule("AddonMsgs", "AceEvent-3.0")
-	if not mod:IsEnabled() then
-		return
-	end
+  local module = Prat:NewModule("AddonMsgs", "AceEvent-3.0")
 
   -- define localized strings
-  local PL = mod.PL
+  local PL = module.PL
 
   --@debug@
   PL:AddLocale("enUS", {
@@ -120,18 +117,21 @@ PL:AddLocale("zhTW", L)
 
 end
 --@end-non-debug@]===]
+	if not module:IsEnabled() then
+		return
+	end
 
 
 
 
-  Prat:SetModuleDefaults(mod.name, {
+  Prat:SetModuleDefaults(module.name, {
     profile = {
       on = false,
       show = {},
     }
   })
 
-  Prat:SetModuleOptions(mod.name, {
+  Prat:SetModuleOptions(module.name, {
     name = PL["AddonMsgs"],
     desc = PL["Addon message options."],
     type = "group",
@@ -150,11 +150,11 @@ end
   --[[------------------------------------------------
       Module Event Functions
   ------------------------------------------------]] --
-  function mod:OnModuleEnable()
+  function module:OnModuleEnable()
     self:RegisterEvent("CHAT_MSG_ADDON")
   end
 
-  function mod:OnModuleDisable()
+  function module:OnModuleDisable()
     self:UnregisterEvent("CHAT_MSG_ADDON")
   end
 
@@ -162,7 +162,7 @@ end
       Core Functions
   ------------------------------------------------]] --
 
-  function mod:GetDescription()
+  function module:GetDescription()
     return PL["Addon message options."]
   end
 
@@ -178,7 +178,7 @@ end
   local function c4(text) return CLR:Colorize("4040ff", text) end
 
   -- show hidden addon channel messages
-  function mod:CHAT_MSG_ADDON(arg1, arg2, arg3, arg4)
+  function module:CHAT_MSG_ADDON(arg1, arg2, arg3, arg4)
     for k, v in pairs(Prat.HookedFrames) do
       if self.db.profile.show[k] then
         v:AddMessage("[" .. c1(arg1) .. "][" .. c2(arg2) .. "][" .. c3(arg3) .. "][" .. c4(arg4) .. "]")

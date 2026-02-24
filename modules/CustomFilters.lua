@@ -24,14 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
-
-
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("CustomFilters", "LibSink-2.0")
-	if not module:IsEnabled() then
-		return
-	end
-
   local PL = module.PL
 
   --@debug@
@@ -147,6 +141,9 @@ do
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
   local eventMap = {
     CHAT_MSG_CHANNEL_LIST = true,

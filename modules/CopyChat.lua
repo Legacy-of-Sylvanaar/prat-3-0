@@ -32,9 +32,6 @@ local StripHyperlinks = _G.StripHyperlinks or _G.C_StringUtil.StripHyperlinks
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("CopyChat", "AceHook-3.0", "AceTimer-3.0")
-	if not module:IsEnabled() then
-		return
-	end
 	local PL = module.PL
 
 	--@debug@
@@ -109,6 +106,9 @@ Prat:AddModuleToLoad(function()
 	end
 	--@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 	Prat:SetModuleDefaults(module.name, {
 		profile = {
 			on = true,

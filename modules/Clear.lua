@@ -26,13 +26,8 @@
 
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
-
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Clear")
-	if not module:IsEnabled() then
-		return
-	end
-
   local PL = module.PL
 
   --@debug@
@@ -98,6 +93,9 @@ PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
   Prat:SetModuleDefaults(module.name, {
     profile = {

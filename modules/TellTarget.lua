@@ -29,9 +29,6 @@ local ChatEdit_UpdateHeader = _G.ChatEdit_UpdateHeader or _G.ChatFrameEditBoxMix
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("TellTarget", "AceHook-3.0")
-	if not module:IsEnabled() then
-		return
-	end
 	local PL = module.PL
 
 	--@debug@
@@ -81,6 +78,9 @@ Prat:AddModuleToLoad(function()
 	end
 	--@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 	Prat:SetModuleDefaults(module.name, {
 		profile = {
 			on = true,

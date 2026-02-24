@@ -307,7 +307,7 @@ do
 	end
 
 	function private:AddModuleExtension(extension_closure)
-		extensions_toload[#modules_toload + 1] = extension_closure
+		extensions_toload[#extensions_toload + 1] = extension_closure
 	end
 
 	local function loadNow(_, mod)

@@ -27,9 +27,6 @@
 
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("PopupMessage", "LibSink-2.0")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
 
   --@debug@
@@ -116,25 +113,9 @@ PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
 
-
-
-  --
-
-  --
-
-  --
-  --- -[[
-  -- Chinese Local : CWDG Translation Team 昏睡墨鱼 (Thomas Mo)
-  -- CWDG site: http://Cwowaddon.com
-  -- $Rev: 80460 $
-  -- ]]
-  --
-
-  --
-
-  --
-
-  --
+	if not module:IsEnabled() then
+		return
+	end
 
 
   local EVENTS_EMOTES = {

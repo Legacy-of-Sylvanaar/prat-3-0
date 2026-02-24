@@ -24,15 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
-
-
-
-
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Scroll", "AceHook-3.0", "AceTimer-3.0")
-	if not module:IsEnabled() then
-		return
-	end
   local PL = module.PL
 
   --@debug@
@@ -109,28 +102,9 @@ PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
 
-
-
-
-  --- -[[
-  -- Chinese Local : CWDG Translation Team 昏睡墨鱼 (Thomas Mo)
-  -- CWDG site: http://Cwowaddon.com
-  -- $Rev: 82149 $
-  -- ]]
-  --
-
-  --
-
-  --
-
-  --
-
-  --
-
-  --
-
-
-
+	if not module:IsEnabled() then
+		return
+	end
 
 
   Prat:SetModuleDefaults(module.name, {

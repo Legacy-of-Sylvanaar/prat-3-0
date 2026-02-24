@@ -26,13 +26,8 @@
 
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
-
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("History", "AceHook-3.0")
-	if not module:IsEnabled() then
-		return
-	end
-
   local PL = module.PL
 
   --@debug@
@@ -115,6 +110,9 @@ Prat:AddModuleToLoad(function()
  end
  --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
   Prat:SetModuleDefaults(module.name, {
     profile = {
       on = true,
@@ -213,14 +211,6 @@ Prat:AddModuleToLoad(function()
     Prat3CharDB.history = Prat3CharDB.history or {}
     Prat3CharDB.history.cmdhistory = Prat3CharDB.history.cmdhistory or {}
 
-
-    --                if self.db.profile.cmdhistory then
-    --                    Prat3CharDB.history.cmdhistory = self.db.profile.cmdhistory
-    --                    self.db.profile.cmdhistory = nil
-    --                end
-
-
-
     for i, v in ipairs(Prat3CharDB.history.cmdhistory) do
       if (type(v) == "string" and v:sub(1, 9) ~= "ChatFrame") then
         Prat3CharDB.history.cmdhistory[i] = nil
@@ -232,9 +222,7 @@ Prat:AddModuleToLoad(function()
       Prat3CharDB.history.cmdhistory[name] = Prat3CharDB.history.cmdhistory[name] or {}
     end)
 
-
     self:ConfigureAllChatFrames()
-
 
     for k in pairs(Prat3CharDB.history.cmdhistory) do
       local edit = _G[k]
@@ -252,23 +240,6 @@ Prat:AddModuleToLoad(function()
     if self.db.profile.cmdhistory then
       self.db.profile.cmdhistory = nil
     end
-
-
-
---    if IsInGuild() then
---      self.frame = self.frame or CreateFrame("Frame")
---
---      if self.db.profile.delaygmotd then
---        self:DelayGMOTD(self.frame)
---      end
---
---      if self.db.profile.colorgmotd then
---        local a, b = strsplit(":", GUILD_MOTD_TEMPLATE)
---        if a and b then
---          GUILD_MOTD_TEMPLATE = "|cffffffff" .. a .. "|r:" .. b
---        end
---      end
---    end
   end
 
 
@@ -309,33 +280,6 @@ Prat:AddModuleToLoad(function()
   function module:OnValueChanged()
     self:ConfigureAllChatFrames()
   end
-
-
---  function module:DelayGMOTD(frame)
---    local delay = 2.5
---    local maxtime = 60
---    ChatFrame1:UnregisterEvent("GUILD_MOTD")
---    frame:SetScript("OnUpdate", function(this, expired)
---      delay = delay - expired
---      if delay < 0 then
---        local msg = GetGuildRosterMOTD()
---        if maxtime < 0 or (msg and msg:len() > 0) then
---          ChatFrame1:RegisterEvent("GUILD_MOTD")
---
---          for _, f in pairs(Prat.Frames) do
---            if f:IsEventRegistered("GUILD_MOTD") then
---              ChatFrame_SystemEventHandler(f, "GUILD_MOTD", msg)
---            end
---          end
---          this:Hide()
---        else
---          delay = 2.5
---          maxtime = maxtime - 2.5
---        end
---      end
---    end)
---  end
-
 
   --[[------------------------------------------------
       Core Functions
