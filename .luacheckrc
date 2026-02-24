@@ -1,7 +1,7 @@
 std = "lua51"
 max_line_length = false
 exclude_files = {
-	"**/libraries/**/*.lua",
+	"**/Libs/**/*.lua",
 	".luacheckrc",
 }
 ignore = {
@@ -10,105 +10,61 @@ ignore = {
 	"21.", -- Unused argument
 }
 globals = {
-  -- Saved Variables
-  "Prat3CharDB",
-  "Prat3HighCPUPerCharDB",
+	-- Saved Variables
+	"Prat3DB",
+	"Prat3CharDB",
+	"Prat3HighCPUPerCharDB",
 
-  -- Prat / Libraries
-  "Prat",
-  "Prat_PopupFrame",
-  "Prat_PopupFrameText",
-  "LibStub",
+	-- Prat
+	"Prat",
+	"Prat_PopupFrame",
+	"Prat_PopupFrameText",
 
-  -- Lua
-  "date",
-  "table.wipe",
-  "time",
+	-- Libraries
+	"LibStub",
 
-  -- Utility functions
-  "geterrorhandler",
-  "strsplit",
-  "tinsert",
-  "tremove",
+	-- Lua
+	"date",
+	"table.wipe",
+	"time",
 
-  -- WoW
-  "ACCEPT",
-  "CANCEL",
-  "CHAT_MSG_BN_WHISPER_INFORM",
-  "CHAT_MSG_CHANNEL_LIST",
-  "CHAT_MSG_INSTANCE_CHAT",
-  "CHAT_MSG_INSTANCE_CHAT_LEADER",
-  "CHAT_MSG_SAY",
-  "CHAT_MSG_WHISPER_INFORM",
-  "DEFAULT_CHAT_FRAME",
-  "LE_PARTY_CATEGORY_INSTANCE",
-  "LE_REALM_RELATION_SAME",
-  "NUM_CHAT_WINDOWS",
-  "SELECTED_CHAT_FRAME",
+	-- Utility functions
+	"geterrorhandler",
+	"strsplit",
+	"tinsert",
+	"tremove",
 
-  "ChatEdit_ChooseBoxForSend",
-  "ChatEdit_GetActiveWindow",
-  "ChatFrame1",
-  "ChatFrame1EditBox",
-  "ChatFrameChannelButton",
-  "ChatFrameMenuButton",
-  "ChatFrameToggleVoiceDeafenButton",
-  "ChatFrameToggleMuteButton",
-  "ChatFrame_OpenChat",
-  "GameFontNormal",
-  "UIParent",
-  "SlashCmdList",
-  "StaticPopupDialogs",
-  "StaticPopup_Show",
+	-- WoW
+	"CUSTOM_CLASS_COLORS",
+	"DEFAULT_CHAT_FRAME",
+	"LE_REALM_RELATION_SAME",
+	"NUM_CHAT_WINDOWS",
+	"RAID_CLASS_COLORS",
 
-  "Ambiguate",
-  "BNGetFriendInfo", -- Classic
-  "BNGetFriendInfoByID", -- Classic
-  "BNGetGameAccountInfo", -- Classic
-  "BNGetNumFriends",
-  "ChatTypeInfo",
-  "CreateFrame",
-  "GameTooltip",
-  "GetAverageItemLevel",
-  "GetBattlefieldScore",
-  "GetCVar",
-  "GetLocale",
-  "GetGuildRosterInfo",
-  "GetNumBattlefieldScores",
-  "GetNmGroupMembers",
-  "GetNumGuildMembers",
-  "GetMinimapZoneText",
-  "GetPlayerInfoByGUID",
-  "GetRaidTargetIndex",
-  "GetRealmName",
-  "GetRealZoneText",
-  "GetServerTime",
-  "GetTime",
-  "GetUnitName",
-  "IsCombatLog",
-  "IsControlKeyDown",
-  "IsInGroup",
-  "IsInGuild",
-  "IsInInstance",
-  "IsInRaid",
-  "IsShiftKeyDown",
-  "LoggingChat",
-  "LoggingCombat",
-  "PlaySound",
-  "UnitClass",
-  "UnitCreatureFamily",
-  "UnitCreatureType",
-  "UnitGUID",
-  "UnitExists",
-  "UnitHealth",
-  "UnitHealthMax",
-  "UnitIsFriend",
-  "UnitIsPlayer",
-  "UnitLevel",
-  "UnitName",
-  "UnitPower",
-  "UnitPowerMax",
-  "UnitRace",
-  "UnitSex",
-  "UnitRealmRelationship",
+	"ACCEPT",
+	"TIME_DAYHOURMINUTESECOND",
+	"UNKNOWN",
+
+	"ChatFrame1",
+	"GameFontNormal",
+	"StaticPopupDialogs",
+	"StaticPopup_Show",
+
+	"issecretvalue",
+	"Ambiguate",
+	"GetRaidTargetIndex",
+	"IsCombatLog",
+	"IsControlKeyDown",
+	"IsInRaid",
+	"IsShiftKeyDown",
+	"UnitExists",
+	"UnitHealth",
+	"UnitHealthMax",
+	"UnitIsPlayer",
+	"UnitLevel",
+	"UnitName",
+	"UnitPower",
+	"UnitPowerMax",
+	"UnitRace",
+	"UnitSex",
 }

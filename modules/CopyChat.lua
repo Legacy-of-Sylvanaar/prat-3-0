@@ -211,7 +211,7 @@ Prat:AddModuleToLoad(function()
 
 		Prat.RegisterLinkType({ linkid = "pratcopy", linkfunc = self.CopyLink, handler = module }, self.name)
 
-		module.timestamps = Prat.Addon:GetModule("Timestamps", true)
+		module.timestamps = Prat:GetModule("Timestamps", true)
 
 		if self.timestamps then
 			self:RawHook(self.timestamps, "GetTime")

@@ -962,7 +962,7 @@ do
             self.db.profile.pncol = 'no'
           end
 
-          playernames = playernames or Prat.Addon:GetModule("PlayerNames")
+          playernames = playernames or Prat:GetModule("PlayerNames")
           if charname then
             local class, level, subgroup = playernames:GetData(charname)
             if class then

@@ -29,7 +29,7 @@
 
 
 Prat:AddModuleExtension(function()
-  local module = Prat.Addon:GetModule("PlayerNames", true)
+  local module = Prat:GetModule("PlayerNames", true)
 
   if not module then return end
 

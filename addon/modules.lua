@@ -261,6 +261,14 @@ do
 
 		return addon
 	end
+
+	function private:GetModule(name, ...)
+		local module = private.Addon:GetModule(name, ...)
+		if not module or private.db.profile.modules[module.moduleName] == 1 then
+			return
+		end
+		return module
+	end
 end
 
 do

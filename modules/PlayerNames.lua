@@ -856,7 +856,7 @@ Prat:AddModuleToLoad(function()
 
       if Server and Server:len() > 0 then
         nosave = true
-        servernames = servernames or Prat.Addon:GetModule("ServerNames", true)
+        servernames = servernames or Prat:GetModule("ServerNames", true)
 
         if servernames then
           servernames:GetServerKey(Server)
@@ -1154,7 +1154,7 @@ Prat:AddModuleToLoad(function()
     local AceTab = LibStub("AceTab-3.0")
 
     if enabled then
-      servernames = servernames or Prat.Addon:GetModule("ServerNames", true)
+      servernames = servernames or Prat:GetModule("ServerNames", true)
 
       if not AceTab:IsTabCompletionRegistered(PL["tabcomplete_name"]) then
         local foundCache = {}

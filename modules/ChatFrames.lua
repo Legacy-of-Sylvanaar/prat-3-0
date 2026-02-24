@@ -224,7 +224,7 @@ end
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
     Prat.Frames[frame:GetName()] = frame
-    local m = Prat.Addon:GetModule("Font", true)
+    local m = Prat:GetModule("Font", true)
     if m then m:ConfigureAllChatFrames() end
   end
   function mod:FCF_DockFrame(frame, ...)
@@ -232,7 +232,7 @@ end
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
     Prat.Frames[frame:GetName()] = frame
-    local m = Prat.Addon:GetModule("Font", true)
+    local m = Prat:GetModule("Font", true)
     if m then m:ConfigureAllChatFrames() end
   end
 
@@ -241,7 +241,7 @@ end
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
     Prat.Frames[frame:GetName()] = frame
-    local m = Prat.Addon:GetModule("Font", true)
+    local m = Prat:GetModule("Font", true)
     if m then m:ConfigureAllChatFrames() end
   end
 

@@ -212,8 +212,8 @@ end
     local CLR = Prat.CLR
     local AceTab = LibStub("AceTab-3.0")
     local tabcompleteName = "mentions-tab-complete"
-    local servernames = Prat.Addon:GetModule("ServerNames", true)
-    local playernames = Prat.Addon:GetModule("PlayerNames", true)
+    local servernames = Prat:GetModule("ServerNames", true)
+    local playernames = Prat:GetModule("PlayerNames", true)
 
     if not AceTab:IsTabCompletionRegistered(tabcompleteName) then
       local foundCache = {}
