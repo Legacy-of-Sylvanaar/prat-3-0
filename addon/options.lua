@@ -214,7 +214,7 @@ do
 		local function getModuleDesc(info)
 			local m = getModuleFromShortName(info[#info])
 			local controlMsg = "\n\n" .. private.CLR:Colorize("a0a0ff", PL.load_desc)
-			if not m then
+			if not m or not m:IsEnabled() then
 				return PL.unloaded_desc .. controlMsg
 			end
 
