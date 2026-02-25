@@ -32,7 +32,6 @@ Prat = private
 --[[ BEGIN STANDARD HEADER ]] --
 
 -- Imports
-local _G = _G
 local LibStub = LibStub
 local tonumber = tonumber
 local tostring = tostring
@@ -68,21 +67,21 @@ am.__tostring = function()
 end
 setmetatable(Prat, am)
 
-Prat.IsClassic = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
-Prat.IsRetail = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE)
-Prat.IsMop = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MISTS_CLASSIC)
+Prat.IsClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+Prat.IsRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
+Prat.IsMop = (WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC)
 
 Prat.Frames = {
-	["ChatFrame1"] = _G.ChatFrame1,
-	["ChatFrame2"] = _G.ChatFrame2,
-	["ChatFrame3"] = _G.ChatFrame3,
-	["ChatFrame4"] = _G.ChatFrame4,
-	["ChatFrame5"] = _G.ChatFrame5,
-	["ChatFrame6"] = _G.ChatFrame6,
-	["ChatFrame7"] = _G.ChatFrame7,
-	["ChatFrame8"] = _G.ChatFrame8,
-	["ChatFrame9"] = _G.ChatFrame9,
-	["ChatFrame10"] = _G.ChatFrame10
+	["ChatFrame1"] = ChatFrame1,
+	["ChatFrame2"] = ChatFrame2,
+	["ChatFrame3"] = ChatFrame3,
+	["ChatFrame4"] = ChatFrame4,
+	["ChatFrame5"] = ChatFrame5,
+	["ChatFrame6"] = ChatFrame6,
+	["ChatFrame7"] = ChatFrame7,
+	["ChatFrame8"] = ChatFrame8,
+	["ChatFrame9"] = ChatFrame9,
+	["ChatFrame10"] = ChatFrame10
 }
 Prat.HookedFrames = {}
 Prat.ExternalFrames = {}
@@ -99,7 +98,6 @@ local builtinSounds = {
 	["Text2"] = "Interface\\AddOns\\Prat-3.0\\Sounds\\Text2.ogg",
 	["Xylo"] = "Interface\\AddOns\\Prat-3.0\\Sounds\\Xylo.ogg",
 }
-
 
 -- Symbolic names for all the events which Prat uses
 Prat.Events = {
@@ -154,14 +152,14 @@ local defaults = {
 }
 local SOUND
 function addon:OnInitialize()
-	local IsAddOnLoaded = _G.C_AddOns.IsAddOnLoaded or _G.IsAddOnLoaded
+	local IsAddOnLoaded = C_AddOns.IsAddOnLoaded or IsAddOnLoaded
 	if IsAddOnLoaded("Prat") == 1 then
 		Prat:Print("Prat 2.0 was detected, and disabled. Please reload your UI.")
 	end
 
 	Prat.db = LibStub("AceDB-3.0"):New("Prat3DB", defaults, "Default")
 
-	_G.Prat3CharDB = _G.Prat3CharDB or {}
+	Prat3CharDB = Prat3CharDB or {}
 
 	Prat.PlayerNameBlackList = Prat.db.realm.PlayerNameBlackList or {}
 
@@ -183,7 +181,7 @@ function addon:OnInitialize()
 
 	-- Build the list of frames which we should hook addmessage on
 	for _, v in pairs(Prat.Frames) do
-		if (not _G.IsCombatLog(v)) then
+		if (not IsCombatLog(v)) then
 			Prat.HookedFrames[v:GetName()] = v
 		end
 	end
@@ -233,7 +231,6 @@ function Prat.Format(smf, event, color, ...)
 			-- We are about to send the message
 			m.OUTPUT = Prat.BuildChatText(m) -- Combine all the chat sections
 		elseif process == Prat.EventProcessingType.PatternsOnly then
-
 			m.OUTPUT = (m.PRE or "") .. m.MESSAGE .. (m.POST or "")
 		else
 			if type(m.OUTPUT) == "string" then
@@ -274,7 +271,7 @@ function addon:OnEnable()
 	Prat.RegisterLinkType({
 		linkid = "rldui",
 		linkfunc = function(...)
-			_G.ReloadUI()
+			ReloadUI()
 			return false
 		end
 	}, "Prat")
@@ -304,7 +301,7 @@ function addon:UpdateProfileDelayed()
 end
 
 do
-	local org_GetChannelName = _G.GetChannelName
+	local org_GetChannelName = GetChannelName
 	local chanTable
 	Prat.EnableTasks[#Prat.EnableTasks + 1] = function()
 		chanTable = Prat.GetChannelTable()
@@ -328,8 +325,13 @@ function addon:FCF_SetTemporaryWindowType(chatFrame, chatType, chatTarget)
 	local name = chatFrame:GetName()
 
 	Prat.Frames[name] = chatFrame
-
 	Prat.HookedFrames[name] = chatFrame
+
+	if ChatFrameMixin and ChatFrameMixin.MessageEventHandler then
+		chatFrame.MessageEventHandler = function(self, event, ...)
+			return addon:ChatFrame_MessageEventHandler(self, event, ...)
+		end
+	end
 
 	Prat.callbacks:Fire(Prat.Events.FRAMES_UPDATED, name, chatFrame, chatType, chatTarget)
 end
@@ -338,7 +340,6 @@ function addon:FCF_Close(frame)
 	local name = frame:GetName()
 
 	Prat.Frames[name] = nil
-
 	Prat.HookedFrames[name] = nil
 
 	Prat.callbacks:Fire(Prat.Events.FRAMES_REMOVED, name, frame)
@@ -350,7 +351,7 @@ function addon:FCF_CopyChatSettings(chatFrame)
 
 		Prat.Frames[name] = chatFrame
 
-		if not _G.IsCombatLog(chatFrame) then
+		if not IsCombatLog(chatFrame) then
 			Prat.HookedFrames[name] = chatFrame
 		end
 
@@ -359,19 +360,15 @@ function addon:FCF_CopyChatSettings(chatFrame)
 end
 
 function addon:PostEnable()
-	--@debug@
-	Prat:Print(Prat.Version)
-	--@end-debug@
-
 	Prat.AddPrintMethods()
 
 	if Prat.PrintSlashCommand then
 		self:RegisterChatCommand("print", Prat.PrintSlashCommand)
 	end
 	-- Inbound Hooking
-	if _G["ChatFrame_MessageEventHandler"] then
+	if ChatFrame_MessageEventHandler then
 		self:RawHook("ChatFrame_MessageEventHandler", true)
-	elseif _G["ChatFrameMixin"] and _G["ChatFrameMixin"].MessageEventHandler then
+	elseif ChatFrameMixin and ChatFrameMixin.MessageEventHandler then
 		for _, v in pairs(Prat.HookedFrames) do
 			v.MessageEventHandler = function(self, event, ...)
 				return addon:ChatFrame_MessageEventHandler(self, event, ...)
@@ -380,21 +377,21 @@ function addon:PostEnable()
 	end
 
 	-- Outbound hooking
-	if _G.ChatFrame1EditBox and _G.ChatFrame1EditBox.ParseText then
-		self:SecureHook(_G.ChatFrame1EditBox, 'ParseText', 'ChatEdit_ParseText')
+	if ChatFrame1EditBox and ChatFrame1EditBox.ParseText then
+		self:SecureHook(ChatFrame1EditBox, 'ParseText', 'ChatEdit_ParseText')
 	else
 		self:SecureHook("ChatEdit_ParseText")
 	end
 
 	-- Display Hooking
-	Prat.DummyFrame = _G.CreateFrame("ScrollingMessageFrame")
-	if _G.Mixin and _G.ChatFrameMixin then
-		_G.Mixin(Prat.DummyFrame, _G.ChatFrameMixin)
+	Prat.DummyFrame = CreateFrame("ScrollingMessageFrame")
+	if Mixin and ChatFrameMixin then
+		Mixin(Prat.DummyFrame, ChatFrameMixin)
 	end
 	self:RawHook(Prat.DummyFrame, "AddMessage", true)
 
 	-- ItemRef Hooking
-	self:RawHook(_G.ItemRefTooltip, "SetHyperlink", true)
+	self:RawHook(ItemRefTooltip, "SetHyperlink", true)
 	self:SecureHook("FCF_SetTemporaryWindowType")
 	self:SecureHook("FCF_Close")
 	self:SecureHook("FCF_CopyChatSettings")
@@ -402,8 +399,8 @@ function addon:PostEnable()
 	-- Combat hooking
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 
-	--    -- This event fires after Prat's hooks are installed
-	--    -- Prat's core wont operate until after this event
+	-- This event fires after Prat's hooks are installed
+	-- Prat's core wont operate until after this event
 	Prat.callbacks:Fire(Prat.Events.SECTIONS_UPDATED)
 	Prat.callbacks:Fire(Prat.Events.ENABLED)
 
@@ -423,7 +420,7 @@ end
 function addon:ChatEdit_ParseText(editBox, send)
 	local command = editBox:GetText()
 
-	-- this is what blizzard does
+	-- This is what blizzard does
 	local cmd = command:match("^(#%s*[Ss][Hh][Oo][Ww]:*)%s[^%s]") or
 		command:match("^(#%s*[Ss][Hh][Oo][Ww][Tt][Oo][Oo][Ll][Tt][Ii][Pp]:*)%s[^%s]") or
 		command:match("^(/[^%s]+)");
@@ -471,7 +468,7 @@ function addon:ChatEdit_ParseText(editBox, send)
 end
 
 function addon:ProcessUserEnteredChat(m)
-	if (m.MESSAGE:len() <= 0) then
+	if m.MESSAGE:len() <= 0 then
 		return
 	end
 
@@ -551,10 +548,10 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 		arg1 = arg1:gsub("\r", " ")
 	end
 
-	if strsub(event, 1, 8) == "CHAT_MSG" and _G.ChatFrameUtil and _G.ChatFrameUtil.ProcessMessageEventFilters then
+	if strsub(event, 1, 8) == "CHAT_MSG" and ChatFrameUtil and ChatFrameUtil.ProcessMessageEventFilters then
 		local shouldDiscardMessage = false
 		shouldDiscardMessage, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14 =
-			_G.ChatFrameUtil.ProcessMessageEventFilters(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
+			ChatFrameUtil.ProcessMessageEventFilters(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
 		if shouldDiscardMessage then
 			return true
 		end
@@ -574,10 +571,10 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 	end
 
 	if not isSecret and not info then
-		if _G["ChatFrame_MessageEventHandler"] then
+		if ChatFrame_MessageEventHandler then
 			return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
 		else
-			return _G["ChatFrameMixin"].MessageEventHandler(this, event, ...)
+			return ChatFrameMixin.MessageEventHandler(this, event, ...)
 		end
 	end
 
@@ -607,12 +604,10 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 	m.CAPTUREOUTPUT = proxy
 	if isSecret then
 		Prat.MessageEventHandler(proxy, event, ...)
+	elseif ChatFrame_MessageEventHandler then
+		CMEResult = self.hooks["ChatFrame_MessageEventHandler"](proxy, event, ...)
 	else
-		if _G["ChatFrame_MessageEventHandler"] then
-			CMEResult = self.hooks["ChatFrame_MessageEventHandler"](proxy, event, ...)
-		else
-			CMEResult = _G["ChatFrameMixin"].MessageEventHandler(proxy, event, ...)
-		end
+		CMEResult = ChatFrameMixin.MessageEventHandler(proxy, event, ...)
 	end
 	Prat.RestoreProxy()
 
@@ -638,10 +633,8 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 			-- We are about to send the message
 			m.OUTPUT = Prat.BuildChatText(message) -- Combine all the chat sections
 		elseif process == Prat.EventProcessingType.PatternsOnly then
-
 			m.OUTPUT = (m.PRE or "") .. m.MESSAGE .. (m.POST or "")
 		else
-
 			-- Now we have the chatstring that the client was planning to output
 			-- For now just do it. (Tack on POST too)
 			m.OUTPUT = (m.PRE or "") .. m.OUTPUT .. (m.POST or "")
@@ -653,7 +646,6 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 		elseif isSecret then
 			this:AddMessage(m.OUTPUT, r, g, b, id, m.ACCESSID, m.TYPEID);
 		elseif m.OUTPUT:len() > 0 then
-
 			-- Hack to get the censored message display working with Prat
 			local isChatLineCensored = arg11 and C_ChatInfo.IsChatLineCensored(arg11);
 			local msg = isChatLineCensored and arg1 or m.OUTPUT
@@ -676,17 +668,17 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 			Prat.callbacks:Fire(POST_ADDMESSAGE, m, this, message.EVENT, m.OUTPUT, r, g, b, id, m.ACCESSID, m.TYPEID)
 
 			if (not this:IsShown()) then
-				if ((this == _G.DEFAULT_CHAT_FRAME and m.INFO.flashTabOnGeneral) or (this ~= _G.DEFAULT_CHAT_FRAME and m.INFO.flashTab)) then
-					if ((_G.CHAT_OPTIONS and not _G.CHAT_OPTIONS.HIDE_FRAME_ALERTS) or m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then
-						if (not _G.FCFManager_ShouldSuppressMessageFlash(this, m.CHATGROUP, m.CHATTARGET)) then
-							_G.FCF_StartAlertFlash(this);
+				if ((this == DEFAULT_CHAT_FRAME and m.INFO.flashTabOnGeneral) or (this ~= DEFAULT_CHAT_FRAME and m.INFO.flashTab)) then
+					if ((CHAT_OPTIONS and not CHAT_OPTIONS.HIDE_FRAME_ALERTS) or m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then
+						if (not FCFManager_ShouldSuppressMessageFlash(this, m.CHATGROUP, m.CHATTARGET)) then
+							FCF_StartAlertFlash(this);
 						end
 					end
 				end
 			end
 
 			Prat.LastMessage = m
-			if not _G["ChatFrame_MessageEventHandler"] then
+			if not ChatFrame_MessageEventHandler then
 				CMEResult = true
 			end
 		end
@@ -718,12 +710,12 @@ function Prat.PlaySound(_, sound)
 		return
 	end
 
-	_G.PlaySoundFile(play, "Master")
+	PlaySoundFile(play, "Master")
 end
 
 function Prat.CanSendChatMessage(chatType)
 	if chatType == "SAY" or chatType == "YELL" then
-		return _G.IsInInstance("player")
+		return IsInInstance("player")
 	elseif chatType == "RAID" or chatType == "GUILD" or chatType == "WHISPER" then
 		return true
 	end
@@ -738,7 +730,7 @@ function Prat.GetNamePattern(name)
 	local u = name:match(Prat.MULTIBYTE_FIRST_CHAR):upper()
 
 	if not u or u:len() == 0 then
-		_G.Prat:Print("GetNamePattern: name error ", name)
+		Prat:Print("GetNamePattern: name error ", name)
 		return
 	end
 
@@ -782,7 +774,7 @@ Prat.RegisterChatCommand("pratdebugmsg", function()
 
 	local cc = Prat:GetModule("CopyChat", true)
 	if cc then
-		cc:ScrapeFullChatFrame(_G.DEFAULT_CHAT_FRAME, true)
+		cc:ScrapeFullChatFrame(DEFAULT_CHAT_FRAME, true)
 	end
 end)
 
