@@ -330,6 +330,11 @@ function addon:FCF_SetTemporaryWindowType(chatFrame, chatType, chatTarget)
 	Prat.Frames[name] = chatFrame
 
 	Prat.HookedFrames[name] = chatFrame
+	if _G["ChatFrameMixin"] and _G["ChatFrameMixin"].MessageEventHandler then
+		chatFrame.MessageEventHandler = function(self, event, ...)
+			return addon:ChatFrame_MessageEventHandler(self, event, ...)
+		end
+	end
 
 	Prat.callbacks:Fire(Prat.Events.FRAMES_UPDATED, name, chatFrame, chatType, chatTarget)
 end
