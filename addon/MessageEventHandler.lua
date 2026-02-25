@@ -181,7 +181,7 @@ function private.MessageEventHandler(self, event, ...)
 				local outMsg;
 				if ( usingDifferentLanguage ) then
 					local languageHeader = "["..arg3.."] ";
-					if ( showLink and (arg2 ~= "") ) then
+					if showLink then
 						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type)..languageHeader..message, pflag..playerLink);
 					else
 						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type)..languageHeader..message, pflag..arg2);
