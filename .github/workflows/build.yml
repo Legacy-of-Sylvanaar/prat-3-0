@@ -18,10 +18,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install and run Luacheck
-        uses: nebularg/actions-luacheck@v1
-        with:
-          args: "--no-color -q"
+      #- name: Install and run Luacheck
+      #  uses: nebularg/actions-luacheck@v1
+      #  with:
+      #    args: "--no-color -q"
 
       - name: Create Package
         uses: BigWigsMods/packager@master

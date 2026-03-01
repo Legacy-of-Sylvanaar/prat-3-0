@@ -315,7 +315,7 @@ function SplitChatMessage(frame, event, ...)
 		s.MESSAGE = isSecret and arg1 or safestr(arg1):gsub("^%s*(.-)%s*$", "%1")  -- trim spaces
 
 
-		if (_G.FCFManager_ShouldSuppressMessage(frame, s.CHATGROUP, s.CHATTARGET)) then
+		if not isSecret and _G.FCFManager_ShouldSuppressMessage(frame, s.CHATGROUP, s.CHATTARGET) then
 			s.DONOTPROCESS = true
 		end
 
