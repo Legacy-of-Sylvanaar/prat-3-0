@@ -169,7 +169,6 @@ do
 		local text = m.MESSAGE
 		if type(m) == "string" then
 			text = m
-			m = nil
 		end
 		if issecretvalue and issecretvalue(text) then
 			return text
