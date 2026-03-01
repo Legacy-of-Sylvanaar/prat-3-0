@@ -17,26 +17,18 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
 -------------------------------------------------------------------------------
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("ServerNames")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local module = Prat:NewModule(PRAT_MODULE)
-
+  local module = Prat:NewModule("ServerNames")
   local PL = module.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["ServerNames"] = true,
     ["Server name abbreviation options."] = true,
     ["randomclr_name"] = "Random Colors",
@@ -56,63 +48,66 @@ Prat:AddModuleToLoad(function()
  do
      local L
 
- 
+
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ServerNames")@
 
-   PL:AddLocale(PRAT_MODULE, "enUS",L)
+   PL:AddLocale("enUS",L)
 
 
- 
+
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ServerNames")@
 
-   PL:AddLocale(PRAT_MODULE, "frFR",L)
+   PL:AddLocale("frFR",L)
 
 
- 
+
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ServerNames")@
 
-   PL:AddLocale(PRAT_MODULE, "deDE",L)
+   PL:AddLocale("deDE",L)
 
 
- 
+
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ServerNames")@
 
-   PL:AddLocale(PRAT_MODULE, "koKR",L)
+   PL:AddLocale("koKR",L)
 
 
- 
+
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ServerNames")@
 
-   PL:AddLocale(PRAT_MODULE, "esMX",L)
+   PL:AddLocale("esMX",L)
 
 
- 
+
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ServerNames")@
 
-   PL:AddLocale(PRAT_MODULE, "ruRU",L)
+   PL:AddLocale("ruRU",L)
 
 
- 
+
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ServerNames")@
 
-   PL:AddLocale(PRAT_MODULE, "zhCN",L)
+   PL:AddLocale("zhCN",L)
 
 
- 
+
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ServerNames")@
 
-   PL:AddLocale(PRAT_MODULE, "esES",L)
+   PL:AddLocale("esES",L)
 
 
- 
+
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ServerNames")@
 
-   PL:AddLocale(PRAT_MODULE, "zhTW",L)
+   PL:AddLocale("zhTW",L)
 
 
  end
  --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
   Prat:SetModuleDefaults(module.name, {
     profile = {

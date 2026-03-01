@@ -27,9 +27,8 @@
 local ChatFrame_TimeBreakDown = _G.ChatFrame_TimeBreakDown or _G.ChatFrameUtil.TimeBreakDown
 
 Prat:AddModuleExtension(function()
-	local module = Prat.Addon:GetModule("History", true)
-
-	if not module then
+	local module = Prat:GetModule("History", true)
+	if not module or not module:IsEnabled() then
 		return
 	end
 

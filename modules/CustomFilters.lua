@@ -24,22 +24,12 @@
 --
 -------------------------------------------------------------------------------
 
-
-
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("CustomFilters")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local module = Prat:NewModule(PRAT_MODULE, "LibSink-2.0")
-
+  local module = Prat:NewModule("CustomFilters", "LibSink-2.0")
   local PL = module.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["module_name"] = "CustomFilters",
     ["module_desc"] = "Module to support custom filters.",
     ["Add Pattern"] = true,
@@ -97,60 +87,63 @@ do
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="CustomFilters")@
 
-  PL:AddLocale(PRAT_MODULE, "enUS",L)
+  PL:AddLocale("enUS",L)
 
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="CustomFilters")@
 
-  PL:AddLocale(PRAT_MODULE, "frFR",L)
+  PL:AddLocale("frFR",L)
 
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="CustomFilters")@
 
-  PL:AddLocale(PRAT_MODULE, "deDE",L)
+  PL:AddLocale("deDE",L)
 
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="CustomFilters")@
 
-  PL:AddLocale(PRAT_MODULE, "koKR",L)
+  PL:AddLocale("koKR",L)
 
 
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="CustomFilters")@
 
-  PL:AddLocale(PRAT_MODULE, "esMX",L)
+  PL:AddLocale("esMX",L)
 
 
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="CustomFilters")@
 
-  PL:AddLocale(PRAT_MODULE, "ruRU",L)
+  PL:AddLocale("ruRU",L)
 
 
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="CustomFilters")@
 
-  PL:AddLocale(PRAT_MODULE, "zhCN",L)
+  PL:AddLocale("zhCN",L)
 
 
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="CustomFilters")@
 
-  PL:AddLocale(PRAT_MODULE, "esES",L)
+  PL:AddLocale("esES",L)
 
 
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="CustomFilters")@
 
-  PL:AddLocale(PRAT_MODULE, "zhTW",L)
+  PL:AddLocale("zhTW",L)
 
 
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
   local eventMap = {
     CHAT_MSG_CHANNEL_LIST = true,
@@ -625,7 +618,7 @@ end
       priority = 46
     }
 
-    Prat.RegisterPattern(patterninfo, self.name)
+    Prat:RegisterPattern(patterninfo, self.name)
 
     table.insert(self.modulePatterns, patterninfo)
   end
@@ -641,7 +634,7 @@ end
     if patterninfo == nil then return end
 
     if patterninfo.idx then
-      Prat.UnregisterPattern(patterninfo.idx)
+      Prat:UnregisterPattern(patterninfo.idx)
     end
 
     local idx

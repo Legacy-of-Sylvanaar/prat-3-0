@@ -26,25 +26,12 @@
 
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
-
-
-
 Prat:AddModuleToLoad(function()
-
-  local Prat = Prat
-
-  local PRAT_MODULE = Prat:RequestModuleName("Frames")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local mod = Prat:NewModule(PRAT_MODULE, "AceHook-3.0")
-
-  local PL = mod.PL
+  local module = Prat:NewModule("Frames", "AceHook-3.0")
+  local PL = module.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["Frames"] = true,
     ["Chat window frame parameter options"] = true,
     ["removeclamp_name"] = "Zero Clamp Size",
@@ -75,40 +62,43 @@ do
 
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
+PL:AddLocale("enUS", L)
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
+PL:AddLocale("itIT", L)
 
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
+PL:AddLocale("ptBR", L)
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "frFR", L)
+PL:AddLocale("frFR", L)
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
+PL:AddLocale("deDE", L)
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "koKR", L)
+PL:AddLocale("koKR", L)
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "esMX", L)
+PL:AddLocale("esMX", L)
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "ruRU", L)
+PL:AddLocale("ruRU", L)
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "zhCN", L)
+PL:AddLocale("zhCN", L)
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "esES",  L)
+PL:AddLocale("esES",  L)
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale(PRAT_MODULE, "zhTW", L)
+PL:AddLocale("zhTW", L)
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
 
   -- We have to set the insets here before blizzard has a chance to move them
@@ -118,7 +108,7 @@ end
   end
 
 
-  Prat:SetModuleDefaults(mod.name, {
+  Prat:SetModuleDefaults(module.name, {
     profile = {
       on = true,
       minchatwidth = 160,
@@ -152,7 +142,7 @@ end
       step = 1
     }
 
-    Prat:SetModuleOptions(mod.name, {
+    Prat:SetModuleOptions(module.name, {
       name = PL["Frames"],
       desc = PL["Chat window frame parameter options"],
       type = "group",
@@ -191,9 +181,9 @@ end
       Module Event Functions
   ------------------------------------------------]] --
 
-  Prat:SetModuleInit(mod, function(self) mod:GetDefaults() end)
+  Prat:SetModuleInit(module, function(self) module:GetDefaults() end)
 
-  function mod:OnModuleEnable()
+  function module:OnModuleEnable()
     CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0
     self:ConfigureAllChatFrames(true)
     self:SecureHook("FCF_DockFrame")
@@ -218,39 +208,39 @@ end
   end
 
 
-  function mod:OnModuleDisable()
+  function module:OnModuleDisable()
     CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0.2
     self:ConfigureAllChatFrames(false)
   end
 
-  function mod:GetDescription()
+  function module:GetDescription()
     return PL["Chat window frame parameter options"]
   end
 
 
-  function mod:FloatingChatFrame_UpdateBackgroundAnchors(frame)
+  function module:FloatingChatFrame_UpdateBackgroundAnchors(frame)
     if self.db.profile.removeclamp then
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
     Prat.Frames[frame:GetName()] = frame
-    local m = Prat.Addon:GetModule("Font", true)
+    local m = Prat:GetModule("Font", true)
     if m then m:ConfigureAllChatFrames() end
   end
-  function mod:FCF_DockFrame(frame, ...)
+  function module:FCF_DockFrame(frame, ...)
     if self.db.profile.removeclamp then
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
     Prat.Frames[frame:GetName()] = frame
-    local m = Prat.Addon:GetModule("Font", true)
+    local m = Prat:GetModule("Font", true)
     if m then m:ConfigureAllChatFrames() end
   end
 
-  function mod:FCF_UnDockFrame(frame, ...)
+  function module:FCF_UnDockFrame(frame, ...)
     if self.db.profile.removeclamp then
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
     Prat.Frames[frame:GetName()] = frame
-    local m = Prat.Addon:GetModule("Font", true)
+    local m = Prat:GetModule("Font", true)
     if m then m:ConfigureAllChatFrames() end
   end
 
@@ -259,21 +249,21 @@ end
   ------------------------------------------------]] --
 
   -- make ChatFrame1 the selected chat frame
-  function mod:AceEvent_FullyInitialized()
+  function module:AceEvent_FullyInitialized()
     if self.db.profile.mainchatonload then
       FCF_SelectDockFrame(ChatFrame1)
     end
   end
 
   -- set parameters for each chatframe
-  function mod:ConfigureAllChatFrames(enabled)
+  function module:ConfigureAllChatFrames(enabled)
     for _, v in pairs(Prat.Frames) do
       self:SetParameters(v, enabled)
     end
   end
 
 
-  function mod:RecreateBackgroundTextures(frame)
+  function module:RecreateBackgroundTextures(frame)
     if frame.PratTextures then
       return
     end
@@ -297,7 +287,7 @@ end
     end
   end
 
-  function mod:HidePratTextures(frame)
+  function module:HidePratTextures(frame)
     if frame.PratTextures then
       for _, name in ipairs(CHAT_FRAME_TEXTURES) do
         local texture = _G[frame:GetName() .. name]
@@ -309,7 +299,7 @@ end
     end
   end
 
-  function mod:RestorePratTextures(frame)
+  function module:RestorePratTextures(frame)
     if not frame.PratTextures then
       self:RecreateBackgroundTextures(frame)
     end
@@ -327,7 +317,7 @@ end
   end
 
   -- get the defaults for chat frame1 max/min width/height for use when disabling the module
-  function mod:GetDefaults()
+  function module:GetDefaults()
     local cf = _G["ChatFrame1"]
     local prof = self.db.profile
 
@@ -347,7 +337,7 @@ end
     prof.initialized = true
   end
 
-  function mod:FCF_SetWindowColor(frame, r, g, b)
+  function module:FCF_SetWindowColor(frame, r, g, b)
     if frame.PratTextures then
       for _, texture in ipairs(frame.PratTextures) do
         texture:SetVertexColor(r, g, b)
@@ -355,7 +345,7 @@ end
     end
   end
 
-  function mod:FCF_SetWindowAlpha(frame, a)
+  function module:FCF_SetWindowAlpha(frame, a)
     local _, _, r, g, b, a = FCF_GetChatWindowInfo(frame:GetID())
     if frame.PratTextures then
       for _, texture in ipairs(frame.PratTextures) do
@@ -364,7 +354,7 @@ end
     end
   end
   -- set the max/min width/height for a chatframe
-  function mod:SetParameters(cf, enabled)
+  function module:SetParameters(cf, enabled)
     local prof = self.db.profile
 
     local minWidth, minHeight, maxWidth, maxHeight
@@ -413,18 +403,18 @@ end
   end
 
 
-  function mod:OnValueChanged()
+  function module:OnValueChanged()
     self:ConfigureAllChatFrames(true)
   end
 
   -- Frame position saving feature credit to Chatter
 
-  function mod:SetChatWindowSavedPosition(id, point, xOffset, yOffset)
+  function module:SetChatWindowSavedPosition(id, point, xOffset, yOffset)
     local data = self.db.profile.framemetrics[id]
     data.point, data.xOffset, data.yOffset = point, xOffset, yOffset
   end
 
-  function mod:GetChatWindowSavedPosition(id)
+  function module:GetChatWindowSavedPosition(id)
     local data = self.db.profile.framemetrics[id]
     if not data.point then
       data.point, data.xOffset, data.yOffset = self.hooks.GetChatWindowSavedPosition(id)
@@ -432,12 +422,12 @@ end
     return data.point, data.xOffset, data.yOffset
   end
 
-  function mod:SetChatWindowSavedDimensions(id, width, height)
+  function module:SetChatWindowSavedDimensions(id, width, height)
     local data = self.db.profile.framemetrics[id]
     data.width, data.height = width, height
   end
 
-  function mod:GetChatWindowSavedDimensions(id)
+  function module:GetChatWindowSavedDimensions(id)
     local data = self.db.profile.framemetrics[id]
     if not data.width then
       data.width, data.height = self.hooks.GetChatWindowSavedDimensions(id)

@@ -6,20 +6,12 @@ local ChatEdit_ChooseBoxForSend = _G.ChatEdit_ChooseBoxForSend or _G.ChatFrameUt
 local ChatEdit_DeactivateChat = _G.ChatEdit_DeactivateChat or _G.ChatFrameUtil.DeactivateChat
 
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("Editbox")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local mod = Prat:NewModule(PRAT_MODULE, "AceHook-3.0")
-
-  local PL = mod.PL
+  local module = Prat:NewModule("Editbox", "AceHook-3.0")
+  local PL = module.PL
 
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["Editbox"] = true,
     ["Editbox options."] = true,
     ["Top"] = true,
@@ -55,60 +47,63 @@ do
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
 
-PL:AddLocale(PRAT_MODULE, "enUS",L)
+PL:AddLocale("enUS",L)
 
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
 
-PL:AddLocale(PRAT_MODULE, "frFR",L)
+PL:AddLocale("frFR",L)
 
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
 
-PL:AddLocale(PRAT_MODULE, "deDE",L)
+PL:AddLocale("deDE",L)
 
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
 
-PL:AddLocale(PRAT_MODULE, "koKR",L)
+PL:AddLocale("koKR",L)
 
 
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
 
-PL:AddLocale(PRAT_MODULE, "esMX",L)
+PL:AddLocale("esMX",L)
 
 
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
 
-PL:AddLocale(PRAT_MODULE, "ruRU",L)
+PL:AddLocale("ruRU",L)
 
 
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
 
-PL:AddLocale(PRAT_MODULE, "zhCN",L)
+PL:AddLocale("zhCN",L)
 
 
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
 
-PL:AddLocale(PRAT_MODULE, "esES",L)
+PL:AddLocale("esES",L)
 
 
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
 
-PL:AddLocale(PRAT_MODULE, "zhTW",L)
+PL:AddLocale("zhTW",L)
 
 
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
 
 
 
@@ -132,7 +127,7 @@ end
     end
   end
 
-  Prat:SetModuleOptions(mod, {
+  Prat:SetModuleOptions(module, {
     name = PL["Editbox"],
     desc = PL["Editbox options."],
     type = "group",
@@ -142,10 +137,10 @@ end
         name = PL["Background texture"],
         desc = PL["Background texture"],
         values = backgrounds,
-        get = function() return mod.db.profile.background end,
+        get = function() return module.db.profile.background end,
         set = function(_, v)
-          mod.db.profile.background = v
-          mod:SetBackdrop()
+          module.db.profile.background = v
+          module:SetBackdrop()
         end
       },
       border = {
@@ -153,10 +148,10 @@ end
         name = PL["Border texture"],
         desc = PL["Border texture"],
         values = borders,
-        get = function() return mod.db.profile.border end,
+        get = function() return module.db.profile.border end,
         set = function(_, v)
-          mod.db.profile.border = v
-          mod:SetBackdrop()
+          module.db.profile.border = v
+          module:SetBackdrop()
         end
       },
       backgroundColor = {
@@ -165,13 +160,13 @@ end
         desc = PL["Background color"],
         hasAlpha = true,
         get = function()
-          local c = mod.db.profile.backgroundColor
+          local c = module.db.profile.backgroundColor
           return c.r, c.g, c.b, c.a
         end,
         set = function(_, r, g, b, a)
-          local c = mod.db.profile.backgroundColor
+          local c = module.db.profile.backgroundColor
           c.r, c.g, c.b, c.a = r, g, b, a
-          mod:SetBackdrop()
+          module:SetBackdrop()
         end
       },
       borderColor = {
@@ -180,13 +175,13 @@ end
         desc = PL["Border color"],
         hasAlpha = true,
         get = function()
-          local c = mod.db.profile.borderColor
+          local c = module.db.profile.borderColor
           return c.r, c.g, c.b, c.a
         end,
         set = function(_, r, g, b, a)
-          local c = mod.db.profile.borderColor
+          local c = module.db.profile.borderColor
           c.r, c.g, c.b, c.a = r, g, b, a
-          mod:SetBackdrop()
+          module:SetBackdrop()
         end
       },
       inset = {
@@ -197,10 +192,10 @@ end
         max = 64,
         step = 1,
         bigStep = 1,
-        get = function() return mod.db.profile.inset end,
+        get = function() return module.db.profile.inset end,
         set = function(_, v)
-          mod.db.profile.inset = v
-          mod:SetBackdrop()
+          module.db.profile.inset = v
+          module:SetBackdrop()
         end
       },
       tileSize = {
@@ -211,10 +206,10 @@ end
         max = 64,
         step = 1,
         bigStep = 1,
-        get = function() return mod.db.profile.tileSize end,
+        get = function() return module.db.profile.tileSize end,
         set = function(_, v)
-          mod.db.profile.tileSize = v
-          mod:SetBackdrop()
+          module.db.profile.tileSize = v
+          module:SetBackdrop()
         end
       },
       edgeSize = {
@@ -225,21 +220,21 @@ end
         max = 64,
         step = 1,
         bigStep = 1,
-        get = function() return mod.db.profile.edgeSize end,
+        get = function() return module.db.profile.edgeSize end,
         set = function(_, v)
-          mod.db.profile.edgeSize = v
-          mod:SetBackdrop()
+          module.db.profile.edgeSize = v
+          module:SetBackdrop()
         end
       },
       attach = {
         type = "select",
         name = PL["Attach to..."],
         desc = PL["Attach edit box to..."],
-        get = function() return mod.db.profile.attach end,
+        get = function() return module.db.profile.attach end,
         values = VALID_ATTACH_POINTS,
         set = function(_, v)
-          mod.db.profile.attach = v
-          mod:SetAttach()
+          module.db.profile.attach = v
+          module:SetAttach()
         end
       },
       colorByChannel = {
@@ -247,17 +242,17 @@ end
         name = PL["Color border by channel"],
         desc = PL["Sets the frame's border color to the color of your currently active channel"],
         get = function()
-          return mod.db.profile.colorByChannel
+          return module.db.profile.colorByChannel
         end,
         set = function(_, v)
-          mod.db.profile.colorByChannel = v
+          module.db.profile.colorByChannel = v
           if v then
-            mod:SecureHook("ChatEdit_UpdateHeader", "SetBorderByChannel", true)
+            module:SecureHook("ChatEdit_UpdateHeader", "SetBorderByChannel", true)
           else
-            if mod:IsHooked("ChatEdit_UpdateHeader") then
-              mod:Unhook("ChatEdit_UpdateHeader")
-              local c = mod.db.profile.borderColor
-              for _, frame in ipairs(mod.frames) do
+            if module:IsHooked("ChatEdit_UpdateHeader") then
+              module:Unhook("ChatEdit_UpdateHeader")
+              local c = module.db.profile.borderColor
+              for _, frame in ipairs(module.frames) do
                 frame:SetBackdropBorderColor(c.r, c.g, c.b, c.a)
               end
             end
@@ -269,10 +264,10 @@ end
         name = PL["Use Alt key for cursor movement"],
         desc = PL["Requires the Alt key to be held down to move the cursor in chat"],
         get = function()
-          return mod.db.profile.useAltKey
+          return module.db.profile.useAltKey
         end,
         set = function(_, v)
-          mod.db.profile.useAltKey = v
+          module.db.profile.useAltKey = v
           updateEditBox("SetAltArrowKeyMode", v)
         end,
       },
@@ -281,9 +276,9 @@ end
         name = PL["Font"],
         desc = PL["Select the font to use for the edit box"],
         values = fonts,
-        get = function() return mod.db.profile.font end,
+        get = function() return module.db.profile.font end,
         set = function(_, v)
-          mod.db.profile.font = v
+          module.db.profile.font = v
           for i = 1, #CHAT_FRAMES do
             local ff = _G["ChatFrame" .. i .. "EditBox"]
             local header = _G[ff:GetName() .. "Header"]
@@ -297,7 +292,7 @@ end
     },
   })
 
-  Prat:SetModuleDefaults(mod.name, {
+  Prat:SetModuleDefaults(module.name, {
     profile = {
       on = true,
       background = "Blizzard Tooltip",
@@ -324,7 +319,7 @@ end
   })
 
 
-  function mod:LibSharedMedia_Registered()
+  function module:LibSharedMedia_Registered()
     for _, v in pairs(Media:List("background")) do
       backgrounds[v] = v
     end
@@ -361,10 +356,10 @@ end
     end
   end
 
-  Prat:SetModuleInit(mod,
+  Prat:SetModuleInit(module,
     function(self)
 
-      Media.RegisterCallback(mod, "LibSharedMedia_Registered")
+      Media.RegisterCallback(module, "LibSharedMedia_Registered")
       self.frames = {}
 
       self:LibSharedMedia_Registered()
@@ -403,7 +398,7 @@ end
     e:HookScript("OnArrowPressed", OnArrowPressed)
   end
 
-  function mod:Prat_FramesUpdated(_, _, chatFrame)
+  function module:Prat_FramesUpdated(_, _, chatFrame)
     local i = chatFrame:GetID()
     local f = _G["ChatFrame" .. i .. "EditBox"]
     _G["ChatFrame" .. i .. "EditBoxLeft"]:Hide()
@@ -424,8 +419,8 @@ end
     local _, s2, m2 = header:GetFont()
     header:SetFont(Media:Fetch("font", self.db.profile.font), s2, m2)
 
-    f:SetAltArrowKeyMode(mod.db.profile.useAltKey and 1 or nil)
-    if (not mod.db.profile.useAltKey) then
+    f:SetAltArrowKeyMode(module.db.profile.useAltKey and 1 or nil)
+    if (not module.db.profile.useAltKey) then
       enableArrowKeys(f)
     end
     self:SetBackdrop()
@@ -433,7 +428,7 @@ end
     self:SetAttach(nil, self.db.profile.editX, self.db.profile.editY, self.db.profile.editW)
   end
 
-  function mod:OnModuleEnable()
+  function module:OnModuleEnable()
     self:LibSharedMedia_Registered()
 
     for i = 1, #CHAT_FRAMES do
@@ -458,8 +453,8 @@ end
       local _, s2, m2 = header:GetFont()
       header:SetFont(Media:Fetch("font", self.db.profile.font), s2, m2)
 
-      f:SetAltArrowKeyMode(mod.db.profile.useAltKey and 1 or nil)
-      if (not mod.db.profile.useAltKey) then
+      f:SetAltArrowKeyMode(module.db.profile.useAltKey and 1 or nil)
+      if (not module.db.profile.useAltKey) then
         enableArrowKeys(f)
       end
     end
@@ -502,7 +497,7 @@ end
 
 
 
-  function mod:ChatFrame_OpenChat(_, chatFrame)
+  function module:ChatFrame_OpenChat(_, chatFrame)
     if not self.db.profile.useAltKey then
       local frame = ChatEdit_ChooseBoxForSend(chatFrame)
 
@@ -510,14 +505,14 @@ end
     end
   end
 
-  function mod:FCF_Tab_OnClick(frame)
+  function module:FCF_Tab_OnClick(frame)
     if self.db.profile.attach == "TOP" and GetCVar("chatStyle") ~= "classic" then
       local chatFrame = _G["ChatFrame" .. frame:GetID()];
       ChatEdit_DeactivateChat(chatFrame.editBox)
     end
   end
 
-  function mod:OnModuleDisable()
+  function module:OnModuleDisable()
     self:SetAttach("BOTTOM") -- clear move/resize handlers
     for i = 1, #CHAT_FRAMES do
       local f = _G["ChatFrame" .. i .. "EditBox"]
@@ -542,13 +537,13 @@ end
     end
   end
 
-  function mod:GetDescription()
+  function module:GetDescription()
     return PL["Editbox options."]
   end
 
   -- changed the Hide to SetAlpha(0), the new ChatSystem OnHide handlers go though some looping
   -- when in IM style and Classic style, cause heavy delays on the chat edit box.
-  function mod:ChatEdit_SetLastActiveWindow(frame)
+  function module:ChatEdit_SetLastActiveWindow(frame)
     if frame:IsShown() then
       frame:SetAlpha(0)
     else
@@ -557,14 +552,14 @@ end
     frame:EnableMouse(true)
   end
 
-  function mod:ChatEdit_DeactivateChat(frame)
+  function module:ChatEdit_DeactivateChat(frame)
     if frame:IsShown() then
       frame:SetAlpha(0)
       frame:EnableMouse(false)
     end
   end
 
-  function mod:SetBackdrop()
+  function module:SetBackdrop()
     for _, frame in ipairs(self.frames) do
       frame:SetBackdrop({
         bgFile = Media:Fetch("background", self.db.profile.background),
@@ -587,7 +582,7 @@ end
     end
   end
 
-  function mod:SetBorderByChannel()
+  function module:SetBorderByChannel()
     for index, frame in ipairs(self.frames) do
       local f = _G["ChatFrame" .. index .. "EditBox"]
       local attr = f:GetAttribute("chatType")
@@ -614,9 +609,9 @@ end
 
     local function stopMoving(self)
       self:StopMovingOrSizing()
-      mod.db.profile.editX = self:GetLeft()
-      mod.db.profile.editY = self:GetTop()
-      mod.db.profile.editW = self:GetRight() - self:GetLeft()
+      module.db.profile.editX = self:GetLeft()
+      module.db.profile.editY = self:GetTop()
+      module.db.profile.editW = self:GetRight() - self:GetLeft()
     end
 
     local cfHeight
@@ -634,12 +629,12 @@ end
       local parent = self:GetParent()
       parent:StopMovingOrSizing()
       self:SetScript("OnUpdate", nil)
-      mod.db.profile.editX = parent:GetLeft()
-      mod.db.profile.editY = parent:GetTop()
-      mod.db.profile.editW = parent:GetWidth()
+      module.db.profile.editX = parent:GetLeft()
+      module.db.profile.editY = parent:GetTop()
+      module.db.profile.editW = parent:GetWidth()
     end
 
-    function mod:SetAttach(val, x, y, w)
+    function module:SetAttach(val, x, y, w)
       for i = 1, #CHAT_FRAMES do
         local frame = _G["ChatFrame" .. i .. "EditBox"]
         val = val or self.db.profile.attach
@@ -704,10 +699,10 @@ end
     end
   end
 
-  function mod:UpdateHeight()
+  function module:UpdateHeight()
     for i, _ in ipairs(self.frames) do
       local ff = _G["ChatFrame" .. i .. "EditBox"]
-      ff:SetHeight(mod.db.profile.height)
+      ff:SetHeight(module.db.profile.height)
     end
   end
 

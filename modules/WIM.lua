@@ -1,4 +1,4 @@
-tinsert(Prat.EnableTasks, function(self)
+tinsert(Prat.EnableTasks, function()
 	-- Register formatting with WIM.
 	if (_G.WIM and _G.WIM.RegisterMessageFormatting) then
 		_G.WIM.RegisterMessageFormatting("Prat", function(smf, event, ...)

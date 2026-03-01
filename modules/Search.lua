@@ -1,21 +1,9 @@
 Prat:AddModuleToLoad(function()
-  local PRAT_MODULE = Prat:RequestModuleName("Search")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local module = Prat:NewModule(PRAT_MODULE)
-
+  local module = Prat:NewModule("Search")
   local PL = module.PL
 
-  local dbg = function() end
   --@debug@
-  dbg = function(...) Prat:PrintLiteral(...) end
-  --@end-debug@
-
-  --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     module_name = "Search",
     module_desc = "Adds the ability to search the chatframes.",
     module_info = "This module adds search boxes on the chat frames, and the /find commands to search the chat history\n\nUsage:\n\n /find <text>",
@@ -37,52 +25,55 @@ Prat:AddModuleToLoad(function()
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Search")@
 
-   PL:AddLocale(PRAT_MODULE, "enUS",L)
+   PL:AddLocale("enUS",L)
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Search")@
 
-   PL:AddLocale(PRAT_MODULE, "frFR",L)
+   PL:AddLocale("frFR",L)
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Search")@
 
-   PL:AddLocale(PRAT_MODULE, "deDE",L)
+   PL:AddLocale("deDE",L)
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Search")@
 
-   PL:AddLocale(PRAT_MODULE, "koKR",L)
+   PL:AddLocale("koKR",L)
 
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Search")@
 
-   PL:AddLocale(PRAT_MODULE, "esMX",L)
+   PL:AddLocale("esMX",L)
 
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Search")@
 
-   PL:AddLocale(PRAT_MODULE, "ruRU",L)
+   PL:AddLocale("ruRU",L)
 
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Search")@
 
-   PL:AddLocale(PRAT_MODULE, "zhCN",L)
+   PL:AddLocale("zhCN",L)
 
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Search")@
 
-   PL:AddLocale(PRAT_MODULE, "esES",L)
+   PL:AddLocale("esES",L)
 
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Search")@
 
-   PL:AddLocale(PRAT_MODULE, "zhTW",L)
+   PL:AddLocale("zhTW",L)
 
  end
  --@end-non-debug@]===]
 
 
+	if not module:IsEnabled() then
+		return
+	end
 
 
   Prat:SetModuleDefaults(module.name, {
@@ -245,7 +236,7 @@ Prat:AddModuleToLoad(function()
     self:ScrapeFrame(frame, nil, true)
 
     for _, v in ipairs(scrapelines) do
-      if v.message and v.message:find(Prat.CaseInsensitveWordPattern(word)) then
+      if v.message and v.message:find(Prat:CaseInsensitveWordPattern(word)) then
         if all then
           table.insert(foundlines, v)
         else

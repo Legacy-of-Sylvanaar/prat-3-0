@@ -26,21 +26,12 @@
 
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
-
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("History")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local module = Prat:NewModule(PRAT_MODULE, "AceHook-3.0")
-
+  local module = Prat:NewModule("History", "AceHook-3.0")
   local PL = module.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["History"] = true,
     ["Chat history options."] = true,
     ["Set Chat Lines"] = true,
@@ -75,50 +66,53 @@ Prat:AddModuleToLoad(function()
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
 
-   PL:AddLocale(PRAT_MODULE, "enUS",L)
+   PL:AddLocale("enUS",L)
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
 
-   PL:AddLocale(PRAT_MODULE, "frFR",L)
+   PL:AddLocale("frFR",L)
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
 
-   PL:AddLocale(PRAT_MODULE, "deDE",L)
+   PL:AddLocale("deDE",L)
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
 
-   PL:AddLocale(PRAT_MODULE, "koKR",L)
+   PL:AddLocale("koKR",L)
 
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
 
-   PL:AddLocale(PRAT_MODULE, "esMX",L)
+   PL:AddLocale("esMX",L)
 
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
 
-   PL:AddLocale(PRAT_MODULE, "ruRU",L)
+   PL:AddLocale("ruRU",L)
 
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
 
-   PL:AddLocale(PRAT_MODULE, "zhCN",L)
+   PL:AddLocale("zhCN",L)
 
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
 
-   PL:AddLocale(PRAT_MODULE, "esES",L)
+   PL:AddLocale("esES",L)
 
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="History")@
 
-   PL:AddLocale(PRAT_MODULE, "zhTW",L)
+   PL:AddLocale("zhTW",L)
  end
  --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
   Prat:SetModuleDefaults(module.name, {
     profile = {
       on = true,
@@ -217,14 +211,6 @@ Prat:AddModuleToLoad(function()
     Prat3CharDB.history = Prat3CharDB.history or {}
     Prat3CharDB.history.cmdhistory = Prat3CharDB.history.cmdhistory or {}
 
-
-    --                if self.db.profile.cmdhistory then
-    --                    Prat3CharDB.history.cmdhistory = self.db.profile.cmdhistory
-    --                    self.db.profile.cmdhistory = nil
-    --                end
-
-
-
     for i, v in ipairs(Prat3CharDB.history.cmdhistory) do
       if (type(v) == "string" and v:sub(1, 9) ~= "ChatFrame") then
         Prat3CharDB.history.cmdhistory[i] = nil
@@ -236,9 +222,7 @@ Prat:AddModuleToLoad(function()
       Prat3CharDB.history.cmdhistory[name] = Prat3CharDB.history.cmdhistory[name] or {}
     end)
 
-
     self:ConfigureAllChatFrames()
-
 
     for k in pairs(Prat3CharDB.history.cmdhistory) do
       local edit = _G[k]
@@ -256,23 +240,6 @@ Prat:AddModuleToLoad(function()
     if self.db.profile.cmdhistory then
       self.db.profile.cmdhistory = nil
     end
-
-
-
---    if IsInGuild() then
---      self.frame = self.frame or CreateFrame("Frame")
---
---      if self.db.profile.delaygmotd then
---        self:DelayGMOTD(self.frame)
---      end
---
---      if self.db.profile.colorgmotd then
---        local a, b = strsplit(":", GUILD_MOTD_TEMPLATE)
---        if a and b then
---          GUILD_MOTD_TEMPLATE = "|cffffffff" .. a .. "|r:" .. b
---        end
---      end
---    end
   end
 
 
@@ -313,33 +280,6 @@ Prat:AddModuleToLoad(function()
   function module:OnValueChanged()
     self:ConfigureAllChatFrames()
   end
-
-
---  function module:DelayGMOTD(frame)
---    local delay = 2.5
---    local maxtime = 60
---    ChatFrame1:UnregisterEvent("GUILD_MOTD")
---    frame:SetScript("OnUpdate", function(this, expired)
---      delay = delay - expired
---      if delay < 0 then
---        local msg = GetGuildRosterMOTD()
---        if maxtime < 0 or (msg and msg:len() > 0) then
---          ChatFrame1:RegisterEvent("GUILD_MOTD")
---
---          for _, f in pairs(Prat.Frames) do
---            if f:IsEventRegistered("GUILD_MOTD") then
---              ChatFrame_SystemEventHandler(f, "GUILD_MOTD", msg)
---            end
---          end
---          this:Hide()
---        else
---          delay = 2.5
---          maxtime = maxtime - 2.5
---        end
---      end
---    end)
---  end
-
 
   --[[------------------------------------------------
       Core Functions

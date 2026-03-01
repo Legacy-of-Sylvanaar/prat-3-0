@@ -17,8 +17,8 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
@@ -26,20 +26,13 @@
 
 
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("AddonMsgs")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local mod = Prat:NewModule(PRAT_MODULE, "AceEvent-3.0")
+  local module = Prat:NewModule("AddonMsgs", "AceEvent-3.0")
 
   -- define localized strings
-  local PL = mod.PL
+  local PL = module.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["AddonMsgs"] = true,
     ["Addon message options."] = true,
     ["show_name"] = "Show Addon Messages",
@@ -59,83 +52,86 @@ do
 
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
+PL:AddLocale("enUS", L)
 
 
 
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
+PL:AddLocale("itIT", L)
 
 
 
 
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
+PL:AddLocale("ptBR", L)
 
 
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "frFR", L)
+PL:AddLocale("frFR", L)
 
 
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
+PL:AddLocale("deDE", L)
 
 
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "koKR", L)
+PL:AddLocale("koKR", L)
 
 
 
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "esMX", L)
+PL:AddLocale("esMX", L)
 
 
 
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "ruRU", L)
+PL:AddLocale("ruRU", L)
 
 
 
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "zhCN", L)
+PL:AddLocale("zhCN", L)
 
 
 
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "esES", L)
+PL:AddLocale("esES", L)
 
 
 
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AddonMsgs")@
-PL:AddLocale(PRAT_MODULE, "zhTW", L)
+PL:AddLocale("zhTW", L)
 
 
 end
 --@end-non-debug@]===]
+	if not module:IsEnabled() then
+		return
+	end
 
 
 
 
-  Prat:SetModuleDefaults(mod.name, {
+  Prat:SetModuleDefaults(module.name, {
     profile = {
       on = false,
       show = {},
     }
   })
 
-  Prat:SetModuleOptions(mod.name, {
+  Prat:SetModuleOptions(module.name, {
     name = PL["AddonMsgs"],
     desc = PL["Addon message options."],
     type = "group",
@@ -154,11 +150,11 @@ end
   --[[------------------------------------------------
       Module Event Functions
   ------------------------------------------------]] --
-  function mod:OnModuleEnable()
+  function module:OnModuleEnable()
     self:RegisterEvent("CHAT_MSG_ADDON")
   end
 
-  function mod:OnModuleDisable()
+  function module:OnModuleDisable()
     self:UnregisterEvent("CHAT_MSG_ADDON")
   end
 
@@ -166,7 +162,7 @@ end
       Core Functions
   ------------------------------------------------]] --
 
-  function mod:GetDescription()
+  function module:GetDescription()
     return PL["Addon message options."]
   end
 
@@ -182,7 +178,7 @@ end
   local function c4(text) return CLR:Colorize("4040ff", text) end
 
   -- show hidden addon channel messages
-  function mod:CHAT_MSG_ADDON(arg1, arg2, arg3, arg4)
+  function module:CHAT_MSG_ADDON(arg1, arg2, arg3, arg4)
     for k, v in pairs(Prat.HookedFrames) do
       if self.db.profile.show[k] then
         v:AddMessage("[" .. c1(arg1) .. "][" .. c2(arg2) .. "][" .. c3(arg3) .. "][" .. c4(arg4) .. "]")

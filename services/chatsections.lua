@@ -1,4 +1,4 @@
---[[ BEGIN STANDARD HEADER ]] --
+local _, private = ...
 
 local Chat_GetChatCategory = _G.Chat_GetChatCategory or _G.ChatFrameUtil.GetChatCategory
 local ChatFrame_GetMentorChannelStatus = _G.ChatFrame_GetMentorChannelStatus or _G.ChatFrameUtil.GetMentorChannelStatus
@@ -15,7 +15,6 @@ local strsub = string.sub
 local tostring = tostring
 local strlower, strupper = strlower, strupper
 local strlen = strlen
-local type = type
 local next, wipe = next, wipe
 local select = select
 
@@ -234,94 +233,6 @@ local function safestr(s)
 	return s or ""
 end
 
-local function GetDecoratedSenderName(event, ...)
-	local _, senderName, _, _, _, _, _, channelIndex, _, _, _, senderGUID = ...;
-	local chatType = string.sub(event, 10);
-
-	if string.find(chatType, "^WHISPER") then
-		chatType = "WHISPER";
-	end
-
-	if string.find(chatType, "^CHANNEL") then
-		chatType = "CHANNEL" .. channelIndex;
-	end
-
-	local chatTypeInfo = _G.ChatTypeInfo[chatType];
-	local decoratedPlayerName = senderName;
-
-	local localizedClass, englishClass, localizedRace, englishRace, sex, firstName
-	if senderGUID then
-		localizedClass, englishClass, localizedRace, englishRace, sex, firstName = _G.GetPlayerInfoByGUID(senderGUID);
-	end
-
-	-- Ambiguate guild chat names
-	if _G.Ambiguate and (not _G.issecretvalue or not _G.issecretvalue(senderName)) then
-		if chatType == "GUILD" then
-			decoratedPlayerName = _G.Ambiguate(decoratedPlayerName, "guild");
-		else
-			decoratedPlayerName = _G.Ambiguate(decoratedPlayerName, "none");
-		end
-	elseif firstName then
-		decoratedPlayerName = firstName
-	end
-
-	-- Add timerunning icon when necessary based on player guid
-	if senderGUID and (not _G.issecretvalue or not _G.issecretvalue(senderGUID)) and _G.C_ChatInfo.IsTimerunningPlayer(senderGUID) then
-		decoratedPlayerName = _G.TimerunningUtil.AddSmallIcon(decoratedPlayerName);
-	end
-
-	if senderGUID and chatTypeInfo and _G.GetPlayerInfoByGUID ~= nil then
-		if englishClass then
-			local classColor = GetClassGetColorNew(englishClass)
-
-			if classColor then
-				decoratedPlayerName = classColor:WrapTextInColorCode(decoratedPlayerName);
-			end
-		end
-	end
-
-	if _G.ChatFrameUtil.ProcessSenderNameFilters then
-		decoratedPlayerName = _G.ChatFrameUtil.ProcessSenderNameFilters(event, decoratedPlayerName, ...);
-	end
-	if decoratedPlayerName then
-		if (not _G.issecretvalue or not _G.issecretvalue(decoratedPlayerName)) and decoratedPlayerName == "" then
-			return decoratedPlayerName
-		end
-		return "[" .. decoratedPlayerName .. "]";
-	end
-end
-
-local function SanitizeCommunityData(clubId, streamId, epoch, position)
-	if type(clubId) == "number" then
-		clubId = ("%.f"):format(clubId);
-	end
-	if type(streamId) == "number" then
-		streamId = ("%.f"):format(streamId);
-	end
-	epoch = ("%.f"):format(epoch);
-	position = ("%.f"):format(position);
-
-	return clubId, streamId, epoch, position;
-end
-
-local function GetBNPlayerCommunityLink(playerName, linkDisplayText, bnetIDAccount, clubId, streamId, epoch, position)
-	clubId, streamId, epoch, position = SanitizeCommunityData(clubId, streamId, epoch, position);
-	return string.format("|HBNplayerCommunity:%s:%s:%s:%s:%s:%s|h%s|h", playerName, bnetIDAccount, clubId, streamId, epoch, position, linkDisplayText)
-end
-
-local function GetPlayerCommunityLink(playerName, linkDisplayText, clubId, streamId, epoch, position)
-	clubId, streamId, epoch, position = SanitizeCommunityData(clubId, streamId, epoch, position);
-	return string.format("|HBNplayerCommunity:%s:%s:%s:%s:%s|h%s|h", playerName, clubId, streamId, epoch, position, linkDisplayText)
-end
-
-local function GetPlayerLink(characterName, linkDisplayText, lineID, chatType, chatTarget)
-	return string.format("|Hplayer:%s:%s:%s:%s|h%s|h", characterName, lineID or 0, chatType or 0, chatTarget or "", linkDisplayText);
-end
-
-local function GetBNPlayerLink(name, linkDisplayText, bnetIDAccount, lineID, chatType, chatTarget)
-	return string.format("|HBNplayer:%s:%s:%s:%s:%s|h%s|h", name, bnetIDAccount, lineID, chatType, chatTarget, linkDisplayText);
-end
-
 function SplitChatMessage(frame, event, ...)
 	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17 = ...
 	local isSecret = _G.issecretvalue and _G.issecretvalue(arg1)
@@ -336,7 +247,7 @@ function SplitChatMessage(frame, event, ...)
 
 		local info
 
-		local coloredName = GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
+		local coloredName = private.GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
 		local channelLength = arg4 and strlen(arg4) or 0
 		local infoType = type;
 		if ((type == "COMMUNITIES_CHANNEL") or ((strsub(type, 1, 7) == "CHANNEL") and (type ~= "CHANNEL_LIST") and ((not isSecret and arg1 ~= "INVITE") or (type ~= "CHANNEL_NOTICE_USER")))) then
@@ -404,7 +315,7 @@ function SplitChatMessage(frame, event, ...)
 		s.MESSAGE = isSecret and arg1 or safestr(arg1):gsub("^%s*(.-)%s*$", "%1")  -- trim spaces
 
 
-		if (_G.FCFManager_ShouldSuppressMessage(frame, s.CHATGROUP, s.CHATTARGET)) then
+		if not isSecret and _G.FCFManager_ShouldSuppressMessage(frame, s.CHATGROUP, s.CHATTARGET) then
 			s.DONOTPROCESS = true
 		end
 
@@ -454,17 +365,17 @@ function SplitChatMessage(frame, event, ...)
 				local messageInfo, clubId, streamId, _ = _G.C_Club.GetInfoFromLastCommunityChatLine()
 				if messageInfo ~= nil then
 					if isBattleNetCommunity then
-						s.PLAYER = GetBNPlayerCommunityLink(arg2, coloredName, arg13, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
+						s.PLAYER = private.GetBNPlayerCommunityLink(arg2, coloredName, arg13, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
 					else
-						s.PLAYER = GetPlayerCommunityLink(arg2, coloredName, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
+						s.PLAYER = private.GetPlayerCommunityLink(arg2, coloredName, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
 					end
 				else
 					s.PLAYER = coloredName
 				end
 			elseif type == "BN_WHISPER" or type == "BN_WHISPER_INFORM" then
-				s.PLAYER = GetBNPlayerLink(arg2, coloredName, arg13, arg11, chatGroup, chatTarget)
+				s.PLAYER = private.GetBNPlayerLink(arg2, coloredName, arg13, arg11, chatGroup, chatTarget)
 			else
-				s.PLAYER = GetPlayerLink(arg2, coloredName, arg11, chatGroup, chatTarget)
+				s.PLAYER = private.GetPlayerLink(arg2, coloredName, arg11, chatGroup, chatTarget)
 			end
 		elseif not isSecret and strlen(arg2) > 0 then
 			if type == "EMOTE" then

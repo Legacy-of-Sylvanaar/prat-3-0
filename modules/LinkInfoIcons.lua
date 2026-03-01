@@ -26,19 +26,11 @@
 
 
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("LinkInfoIcons")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local module = Prat:NewModule(PRAT_MODULE)
-
+  local module = Prat:NewModule("LinkInfoIcons")
   local PL = module.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["module_name"] = "LinkInfoIcons",
     ["module_desc"] = "Adds icons and item info to hyperlinks",
     ["full_description"] = "Adds icons and item info to links in the chat.",
@@ -65,55 +57,58 @@ do
 
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
+PL:AddLocale("enUS", L)
 
 
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
+PL:AddLocale("itIT", L)
 
 
 
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
+PL:AddLocale("ptBR", L)
 
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "frFR", L)
+PL:AddLocale("frFR", L)
 
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
+PL:AddLocale("deDE", L)
 
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "koKR",  L)
+PL:AddLocale("koKR",  L)
 
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "esMX",  L)
+PL:AddLocale("esMX",  L)
 
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "ruRU",  L)
+PL:AddLocale("ruRU",  L)
 
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "zhCN",  L)
+PL:AddLocale("zhCN",  L)
 
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "esES",  L)
+PL:AddLocale("esES",  L)
 
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="LinkInfoIcons")@
-PL:AddLocale(PRAT_MODULE, "zhTW",  L)
+PL:AddLocale("zhTW",  L)
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
   Prat:SetModuleDefaults(module.name, {
     profile = {
       on = false,
@@ -359,7 +354,7 @@ end
     return res
   end
 
-  Prat.RegisterPattern({
+  Prat:RegisterPattern({
     pattern = GetPattern("item"),
     matchfunc = function(link)
       if module.db.profile.on then
@@ -370,7 +365,7 @@ end
     priority = 43
   }, module.name)
 
-  Prat.RegisterPattern({
+  Prat:RegisterPattern({
     pattern = GetPattern("spell"),
     matchfunc = function(link)
       if module.db.profile.on then
@@ -381,7 +376,7 @@ end
     priority = 43
   }, module.name)
 
-  Prat.RegisterPattern({
+  Prat:RegisterPattern({
     pattern = GetPattern("achievement"),
     matchfunc = function(link)
       if module.db.profile.on then

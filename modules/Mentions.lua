@@ -25,24 +25,8 @@
 -------------------------------------------------------------------------------
 
 Prat:AddModuleToLoad(function()
-  local function dbg(...) end
-
-  --@debug@
-  function dbg(...) Prat:PrintLiteral(...) end
-
-  --@end-debug@
-
-  local PRAT_MODULE = Prat:RequestModuleName("Mentions")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local module = Prat:NewModule(PRAT_MODULE, "AceHook-3.0")
-
-  -- define localized strings
+  local module = Prat:NewModule("Mentions", "AceHook-3.0")
   local PL = module.PL
-
 
   Prat:SetModuleDefaults(module.name, {
     profile = {
@@ -51,7 +35,7 @@ Prat:AddModuleToLoad(function()
   })
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale("enUS", {
     ["module_name"] = "Mentions",
     ["module_desc"] = "Support mentioning other players in chat",
     module_info = "THIS MODULE IS EXPERIMENTAL= It adds the ability to @mention people in chat to alert them>",
@@ -68,55 +52,58 @@ do
 
 
 --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
+PL:AddLocale("enUS", L)
 
 
 
 --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
+PL:AddLocale("itIT", L)
 
 
 
 --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
+PL:AddLocale("ptBR", L)
 
 
 
 --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "frFR", L)
+PL:AddLocale("frFR", L)
 
 
 
 --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
+PL:AddLocale("deDE", L)
 
 
 
 --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "koKR",  L)
+PL:AddLocale("koKR",  L)
 
 
 --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "esMX",  L)
+PL:AddLocale("esMX",  L)
 
 
 --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "ruRU",  L)
+PL:AddLocale("ruRU",  L)
 
 
 --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "zhCN",  L)
+PL:AddLocale("zhCN",  L)
 
 
 --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "esES",  L)
+PL:AddLocale("esES",  L)
 
 
 --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Mentions")@
-PL:AddLocale(PRAT_MODULE, "zhTW",  L)
+PL:AddLocale("zhTW",  L)
 end
 --@end-non-debug@]===]
 
+	if not module:IsEnabled() then
+		return
+	end
   local toggleOption = {
     name = function(info) return info.handler.PL[info[#info] .. "_name"] end,
     desc = function(info) return info.handler.PL[info[#info] .. "_desc"] end,
@@ -157,11 +144,9 @@ end
   local function handleMention(match, m)
     if m == nil then return end
 
---    dbg(match, m)
     local name = match:sub(2)
     local event = "CHAT_MSG_" .. m.CTYPE
     local from = "(in " .. _G[event] .. ") "
---    dbg(from)
     SendChatMessage(from .. m.MESSAGE, "WHISPER", GetDefaultLanguage("player"), name);
   end
 
@@ -184,7 +169,6 @@ end
 
     index = frame:GetCursorPosition()
 
---    dbg("OnChar", frame:GetText())
     local regex = "@(%S+)"
     local text = frame:GetText()
 
@@ -206,11 +190,9 @@ end
     if (target) then --if they typed a command with a autocompletable target
       AutoCompleteEditBox_SetAutoCompleteSource(frame, GetAutoCompleteResults,
         AUTOCOMPLETE_LIST_TEMPLATES.ONLINE_NOT_BNET.include,  AUTOCOMPLETE_LIST_TEMPLATES.ONLINE_NOT_BNET.exclude)
---    dbg(target)
       local utf8Position = frame:GetUTF8CursorPosition();
       local allowFullMatch = false;
       local nameToShow = frame.autoCompleteSource(target, 1, utf8Position, allowFullMatch, unpack(frame.autoCompleteParams))[1];
---    dbg(nameToShow)
       if (nameToShow and nameToShow.name) then
         local name = Ambiguate(nameToShow.name, "all");
         --We're going to be setting the text programatically which will clear the userInput flag on the editBox.
@@ -221,7 +203,6 @@ end
 
           local newTarget = name;
 
---        dbg(newTarget, text, target, frame:GetCursorPosition())
         local newText = text:sub(1, frame:GetCursorPosition() - target:len())..newTarget..text:sub(frame:GetCursorPosition()+1)
           frame:SetText(newText);
 --          frame:HighlightText(strlen(text), strlen(command) + strlen(whitespace) + strlen(newTarget));
@@ -234,14 +215,13 @@ end
     local CLR = Prat.CLR
     local AceTab = LibStub("AceTab-3.0")
     local tabcompleteName = "mentions-tab-complete"
-    local servernames = Prat.Addon:GetModule("ServerNames", true)
-    local playernames = Prat.Addon:GetModule("PlayerNames", true)
+    local servernames = Prat:GetModule("ServerNames", true)
+    local playernames = Prat:GetModule("PlayerNames", true)
 
     if not AceTab:IsTabCompletionRegistered(tabcompleteName) then
       local foundCache = {}
       AceTab:RegisterTabCompletion(tabcompleteName, "@",
         function(t, ...)
-          --          dbg(t, ...)
           for name in pairs(playernames.Classes) do
             table.insert(t, name)
           end

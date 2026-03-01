@@ -17,22 +17,18 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
 -------------------------------------------------------------------------------
 
-
-
-
-
 Prat:AddModuleExtension(function()
-  local module = Prat.Addon:GetModule("PlayerNames", true)
-
-  if not module then return end
-
+  local module = Prat:GetModule("PlayerNames", true)
+	if not module or not module:IsEnabled() then
+		return
+	end
   LibStub("AceTimer-3.0"):Embed(module)
 
   local PL = module.PL
@@ -46,21 +42,21 @@ Prat:AddModuleExtension(function()
     }
   }
 
-  Prat.RegisterPattern({
+  Prat:RegisterPattern({
     pattern = "|c.-|H.-:.-|h.-|h|r",
     matchfunc = function(link) return Prat:RegisterMatch(link) end,
     type = "FRAME",
     priority = 44
   }, module.name)
 
-  Prat.RegisterPattern({
+  Prat:RegisterPattern({
     pattern = "|H.-:.-|h.-|h",
     matchfunc = function(link) return Prat:RegisterMatch(link) end,
     type = "FRAME",
     priority = 45
   }, module.name)
 
-  Prat.RegisterPattern({
+  Prat:RegisterPattern({
     pattern = "|K.-|k",
     matchfunc = function(link) return Prat:RegisterMatch(link) end,
     type = "FRAME",
@@ -92,11 +88,11 @@ Prat:AddModuleExtension(function()
         Name = Name:match("(.-)%-.+") or Name
         Name = Name:lower()
         if not namePatterns[Name] and not Prat.PlayerNameBlackList[Name] and Name:len() > 1 then
-          namePatterns[Name] = Prat.RegisterPattern(newPattern(Name), self.name)
+          namePatterns[Name] = Prat:RegisterPattern(newPattern(Name), self.name)
         end
       else
         for k, v in pairs(namePatterns) do
-          Prat.UnregisterPattern(v)
+          Prat:UnregisterPattern(v)
           namePatterns[k] = nil
         end
       end
