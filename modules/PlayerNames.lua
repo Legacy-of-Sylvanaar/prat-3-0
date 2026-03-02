@@ -165,9 +165,6 @@ L = {}
   end
   --@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
   module.Classes = {}
   module.Levels = {}
   module.Subgroups = {}

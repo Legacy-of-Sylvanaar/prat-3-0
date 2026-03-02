@@ -124,11 +124,6 @@ PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
-
-
   local EVENTS_EMOTES = {
     ["CHAT_MSG_BG_SYSTEM_ALLIANCE"] = true,
     ["CHAT_MSG_BG_SYSTEM_HORDE"] = true,

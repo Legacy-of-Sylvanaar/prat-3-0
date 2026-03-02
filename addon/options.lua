@@ -6,7 +6,7 @@ local GetTime = GetTime
 local acr = LibStub("AceConfigRegistry-3.0")
 local acd = LibStub("AceConfigDialog-3.0")
 
-local PL = private:GetLocalizer()
+local PL = private:GetLocalizer("Options")
 
 --@debug@
 PL:AddLocale("enUS", {
@@ -61,7 +61,6 @@ do
 --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("ruRU",L)
 
-	L = {}
 	L = {}
 --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("zhCN",L)
@@ -163,29 +162,15 @@ do
 		end
 	end
 
-	local lastReloadMessage = 0
-	local function PrintReloadMessage()
-		local tm = GetTime()
-		if tm - lastReloadMessage > 60 then
-			private:Print(PL.reload_required:format("reload"))
-			lastReloadMessage = tm
-		end
-	end
-
 	local function setValue(info, b)
-		local old = private.db.profile.modules[info[#info]]
 		private.db.profile.modules[info[#info]] = b
-
-		if old == 1 or b == 1 then
-			PrintReloadMessage()
-		end
 
 		local m = getModuleFromShortName(info[#info])
 		if not m then
 			return
 		end
 
-		if b == 2 or b == 1 then
+		if b == 2 then
 			m.db.profile.on = false
 			m:Disable()
 		elseif b == 3 then
@@ -202,10 +187,9 @@ do
 		local function getModuleDesc(info)
 			local m = getModuleFromShortName(info[#info])
 			local controlMsg = "\n\n" .. private.CLR:Colorize("a0a0ff", PL.load_desc)
-			if not m or not m:IsEnabled() then
+			if not m then
 				return PL.unloaded_desc .. controlMsg
 			end
-
 			return m:GetDescription() .. controlMsg
 		end
 
@@ -215,21 +199,11 @@ do
 			end,
 			desc = getModuleDesc,
 			type = "select",
-			values = function(info)
-				local v = private.db.profile.modules[info[#info]]
-				if v == 1 or v > 3 then
-					return {
-						[1] = "|cffA0A0A0" .. PL.load_no .. "|r",
-						[4] = "|cffffff80" .. PL.load_disabledonrestart .. "|r",
-						[5] = "|cff80ffff" .. PL.load_enabledonrestart .. "|r"
-					}
-				else
-					return {
-						"|cffA0A0A0" .. PL.load_no .. "|r",
-						"|cffff8080" .. PL.load_disabled .. "|r",
-						"|cff80ff80" .. PL.load_enabled .. "|r"
-					}
-				end
+			values = function()
+				return {
+					[2] = "|cffff8080" .. PL.load_disabled .. "|r",
+					[3] = "|cff80ff80" .. PL.load_enabled .. "|r"
+				}
 			end,
 			get = getValue,
 			set = setValue

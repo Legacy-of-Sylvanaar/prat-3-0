@@ -122,11 +122,6 @@ L = {}
 PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
-
-	if not module:IsEnabled() then
-		return
-	end
-
   --module.moduleName = PL["Buttons"]
   --module.moduleDesc = PL["Chat window button options."]
   --module.consoleName = "buttons"

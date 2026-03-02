@@ -110,12 +110,6 @@ PL:AddLocale("zhTW",L)
 end
 --@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
-
-
-
   local Media = Prat.Media
   local backgrounds, borders, fonts = {}, {}, {}
   local CreateFrame = _G.CreateFrame

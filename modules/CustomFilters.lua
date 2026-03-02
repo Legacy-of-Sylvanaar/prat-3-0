@@ -150,10 +150,6 @@ L = {}
 end
 --@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
-
   local eventMap = {
     CHAT_MSG_CHANNEL_LIST = true,
     CHAT_MSG_SAY = true,

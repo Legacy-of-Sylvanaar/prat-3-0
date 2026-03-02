@@ -26,9 +26,6 @@
 
 Prat:AddModuleExtension(function()
   local module = Prat:GetModule("PlayerNames", true)
-	if not module or not module:IsEnabled() then
-		return
-	end
   LibStub("AceTimer-3.0"):Embed(module)
 
   local PL = module.PL

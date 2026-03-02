@@ -131,16 +131,16 @@ Prat.Addon = addon
 local defaults = {
 	profile = {
 		modules = {
-			["Clear"] = 1,
-			["AddonMsgs"] = 1,
-			["CustomFilters"] = 1,
-			["EventNames"] = 1,
-			["Substitutions"] = 1,
-			["Experimental"] = 1,
-			["Filtering"] = 1,
+			["Clear"] = 2,
+			["AddonMsgs"] = 2,
+			["CustomFilters"] = 2,
+			["EventNames"] = 2,
+			["Substitutions"] = 2,
+			["Experimental"] = 2,
+			["Filtering"] = 2,
 			["KeyBindings"] = 3,
-			["OriginalEditbox"] = 1,
-			["ChatTabs"] = 1,
+			["OriginalEditbox"] = 2,
+			["ChatTabs"] = 2,
 			["*"] = 3
 		}
 	},

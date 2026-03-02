@@ -28,9 +28,6 @@ local ChatFrame_TimeBreakDown = _G.ChatFrame_TimeBreakDown or _G.ChatFrameUtil.T
 
 Prat:AddModuleExtension(function()
 	local module = Prat:GetModule("History", true)
-	if not module or not module:IsEnabled() then
-		return
-	end
 
 	local PL = module.PL
 
@@ -161,7 +158,7 @@ Prat:AddModuleExtension(function()
 		return message.extraData and message.extraData.n == #message.extraData
 	end
 
-	function getBattlettagLookupTable()
+	local function getBattlettagLookupTable()
 		local lookup = {}
 		local numBNet = BNGetNumFriends();
 		for i = 1, numBNet do

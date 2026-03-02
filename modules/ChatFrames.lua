@@ -107,11 +107,6 @@ PL:AddLocale("zhTW", L)
 end
 --@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
-
-
   -- We have to set the insets here before blizzard has a chance to move them
   for i = 1, NUM_CHAT_WINDOWS do
     local f = _G["ChatFrame" .. i]

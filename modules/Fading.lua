@@ -110,11 +110,6 @@ L = {}
   end
   --@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
-
-
   -- define the default db values
   Prat:SetModuleDefaults(module.name, {
     profile = {

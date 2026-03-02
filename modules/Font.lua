@@ -112,9 +112,6 @@ Prat:AddModuleToLoad(function()
 	end
 	--@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
 	Prat:SetModuleDefaults(module, {
 		profile = {
 			on = true,

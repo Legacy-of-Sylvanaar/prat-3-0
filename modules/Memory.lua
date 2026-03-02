@@ -141,9 +141,6 @@ PL:AddLocale("zhTW",  L)
 end
 --@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
   local toggleOption = {
     name = function(info) return info.handler.PL[info[#info] .. "_name"] end,
     desc = function(info) return info.handler.PL[info[#info] .. "_desc"] end,

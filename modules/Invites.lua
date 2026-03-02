@@ -88,9 +88,6 @@ Prat:AddModuleToLoad(function()
 	end
 	--@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
 	Prat:SetModuleOptions(module, {
 		name = PL.module_name,
 		desc = PL.module_desc,

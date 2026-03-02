@@ -109,10 +109,6 @@ L = {}
  end
  --@end-non-debug@]===]
 
-	if not module:IsEnabled() then
-		return
-	end
-
 
   Prat:SetModuleDefaults(module.name, {
     profile = {

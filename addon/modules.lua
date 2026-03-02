@@ -18,12 +18,12 @@ do
 		end
 	end
 
-	function private:GetLocalizer()
+	function private:GetLocalizer(name)
 		return setmetatable({
 			AddLocale = AddLocale,
 		}, {
 			__index = function(_, k)
-				error("Locale key " .. tostring(k) .. " is not provided.")
+				error("Locale key " .. tostring(k) .. " is not provided - " .. name)
 			end
 		})
 	end
@@ -89,10 +89,6 @@ do
 		module_defaults[self.name] = module_defaults[self.name] or {}
 		self.db = private.db:RegisterNamespace(self.name, module_defaults[self.name])
 
-		if private.db.profile.modules[self.moduleName] == 1 then
-			return
-		end
-
 		local init = GetModuleInit(self)
 		if init then
 			init(self)
@@ -102,27 +98,18 @@ do
 		local opts = private:GetModuleOptions(self.name)
 		if opts then
 			opts.handler = self
-			opts.disabled = "IsDisabled"
+			opts.hidden = "IsDisabled"
 			private.Options.args[sectionlist[self.name]].args[self.name] = opts
 			private:SetModuleOptions(self, self.name, nil)
 		end
 
-		local v = private.db.profile.modules[self.moduleName]
-		if v == 4 or v == 5 then
-			self.db.profile.on = (v == 5) and true or false
-			private.db.profile.modules[self.moduleName] = v - 2
-		else
-			private.db.profile.modules[self.moduleName] = self.db.profile.on and 3 or 2
-		end
+		private.db.profile.modules[self.moduleName] = self.db.profile.on and 3 or 2
 		self:SetEnabledState(self.db.profile.on)
 	end
 
 	local function onEnable(self)
-		if private.db.profile.modules[self.moduleName] == 1 then
+		if self:IsDisabled() then
 			return
-		end
-		if private.Options.args[sectionlist[self.name]].args[self.name] then
-			private.Options.args[sectionlist[self.name]].args[self.name].hidden = false
 		end
 
 		local pats = private:GetModulePatterns(self)
@@ -138,10 +125,6 @@ do
 	end
 
 	local function onDisable(self)
-		if private.Options.args[sectionlist[self.name]].args[self.name] then
-			private.Options.args[sectionlist[self.name]].args[self.name].hidden = true
-		end
-
 		private:UnregisterAllPatterns(self.name)
 		self:OnModuleDisable()
 		private.UnregisterAllChatEvents(self)
@@ -232,10 +215,10 @@ do
 
 	function private:NewModule(name, ...)
 		local module = private.Addon:NewModule(name, prototype, ...)
-		module.PL = private:GetLocalizer()
+		module.PL = private:GetLocalizer(name)
 
 		private:CreateModuleControlOption(name)
-		if private.db.profile.modules[module.moduleName] == 1 then
+		if private.db.profile.modules[module.moduleName] == 2 then
 			module:Disable()
 		end
 
@@ -244,9 +227,6 @@ do
 
 	function private:GetModule(name, ...)
 		local module = private.Addon:GetModule(name, ...)
-		if not module or private.db.profile.modules[module.moduleName] == 1 then
-			return
-		end
 		return module
 	end
 end
