@@ -1,30 +1,7 @@
----------------------------------------------------------------------------------
---
--- Prat - A framework for World of Warcraft chat mods
---
--- Copyright (C) 2006-2018  Prat Development Team
---
--- This program is free software; you can redistribute it and/or
--- modify it under the terms of the GNU General Public License
--- as published by the Free Software Foundation; either version 2
--- of the License, or (at your option) any later version.
---
--- This program is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with this program; if not, write to:
---
--- Free Software Foundation, Inc.,
--- 51 Franklin Street, Fifth Floor,
--- Boston, MA  02110-1301, USA.
---
---
--------------------------------------------------------------------------------
-
 local _, private = ...
+
+local error, ipairs, pairs, pcall, setmetatable, tostring, type =
+	error, ipairs, pairs, pcall, setmetatable, tostring, type
 
 local function NOP() end
 
@@ -32,11 +9,9 @@ do
 	local function AddLocale(self, locale, L)
 		if locale == "enUS" or GetLocale() == locale then
 			for k, v in pairs(L) do
-				if type(v) == "table" then
-					-- Do nothing
-				elseif v == true then
+				if v == true then
 					self[k] = k
-				else
+				elseif type(v) ~= "table" then
 					self[k] = v
 				end
 			end
@@ -65,7 +40,6 @@ do
 	end
 
 	local module_init = {}
-
 	function private:SetModuleInit(module, init)
 		module_init[type(module) == "table" and module.name or module or "null"] = init
 	end
@@ -116,20 +90,19 @@ do
 			return
 		end
 
-		local defaults, opts, init
-		defaults, module_defaults[self.name] = module_defaults[self.name] or {}
-		self.db = private.db:RegisterNamespace(self.name, defaults)
+		module_defaults[self.name] = module_defaults[self.name] or {}
+		self.db = private.db:RegisterNamespace(self.name, module_defaults[self.name])
 
-		init = GetModuleInit(self)
+		local init = GetModuleInit(self)
 		if init then
 			init(self)
 			private:SetModuleInit(self, nil)
 		end
-		opts = private:GetModuleOptions(self.name)
+		local opts = private:GetModuleOptions(self.name)
 		if opts then
 			opts.handler = self
 			opts.disabled = "IsDisabled"
-			private.Options.args[sectionlist[self.name]].args[self.name], opts = opts
+			private.Options.args[sectionlist[self.name]].args[self.name] = opts
 			private:SetModuleOptions(self, self.name, nil)
 		end
 
@@ -209,14 +182,14 @@ do
 		local frame, message, r, g, b = ...
 
 		if type(frame) ~= "table" or type(frame.AddMessage) ~= "function" then
-			frame, message, r, g, b = _G.DEFAULT_CHAT_FRAME, ...
+			frame, message, r, g, b = DEFAULT_CHAT_FRAME, ...
 		end
 
 		if not message then
 			return
 		end
 
-		local header = "|cffffff78" .. tostring(Prat) .. "|r (|cff80ff80" .. self.moduleName .. "|r) : %s"
+		local header = "|cffffff78" .. tostring(private) .. "|r (|cff80ff80" .. self.moduleName .. "|r) : %s"
 
 		frame:AddMessage(header:format(message), r, g, b)
 	end
@@ -313,7 +286,7 @@ do
 	local function loadNow(_, mod)
 		local success, ret = pcall(mod)
 		if not success then
-			_G.geterrorhandler()(ret)
+			geterrorhandler()(ret)
 		end
 	end
 
@@ -325,7 +298,7 @@ do
 		for _, module in ipairs(modules_toload) do
 			local success, ret = pcall(module)
 			if not success then
-				_G.geterrorhandler()(ret)
+				geterrorhandler()(ret)
 			end
 		end
 		modules_toload = nil
@@ -333,7 +306,7 @@ do
 		for _, extension in ipairs(extensions_toload) do
 			local success, ret = pcall(extension)
 			if not success then
-				_G.geterrorhandler()(ret)
+				geterrorhandler()(ret)
 			end
 		end
 		extensions_toload = nil

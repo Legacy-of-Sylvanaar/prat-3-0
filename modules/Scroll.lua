@@ -203,7 +203,7 @@ end
 
   -- things to do when the module is disabled
   function module:OnModuleDisable()
-    for k, v in pairs(Prat.Frames) do
+    for _, v in pairs(Prat.Frames) do
       self:MouseWheel(v, false)
       if not IsCombatLog(v) then
         self:LowDown(v, false)
@@ -241,11 +241,11 @@ end
         if up then cf:ScrollToTop() else cf:ScrollToBottom() end
       else
         if IsShiftKeyDown() then
-          for i = 1, module.db.profile.ctrlscrollspeed do
+          for _ = 1, module.db.profile.ctrlscrollspeed do
             if up then cf:ScrollUp() else cf:ScrollDown() end
           end
         else
-          for i = 1, module.db.profile.normscrollspeed do
+          for _ = 1, module.db.profile.normscrollspeed do
             if up then cf:ScrollUp() else cf:ScrollDown() end
           end
         end
@@ -254,7 +254,9 @@ end
 
     function module:MouseWheel(cf, enabled)
       if enabled then
-        cf:SetScript("OnMouseWheel", function(cf, arg1) scrollFrame(cf, arg1 > 0) end)
+        cf:SetScript("OnMouseWheel", function(cf2, arg1)
+			scrollFrame(cf2, arg1 > 0)
+		end)
         cf:EnableMouseWheel(true)
       else
         cf:SetScript("OnMouseWheel", nil)

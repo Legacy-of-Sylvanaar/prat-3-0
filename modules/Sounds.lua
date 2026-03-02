@@ -167,7 +167,7 @@ Prat:AddModuleToLoad(function()
     self:RefreshOptions()
 
     -- Remove older options
-    for cname, value in pairs(self.db.profile.customlist) do
+    for cname, _ in pairs(self.db.profile.customlist) do
       if type(cname) == "number" then -- bad data
         self.db.profile.customlist[cname] = nil
       end
@@ -200,16 +200,16 @@ Prat:AddModuleToLoad(function()
   function module:BuildSoundList()
     if not media then return end
 
-    for i, v in ipairs(soundslist) do
+    for i, _ in ipairs(soundslist) do
       soundslist[i] = nil
     end
 
-    for k, v in pairs(media.MediaTable[SOUND]) do
+    for k, _ in pairs(media.MediaTable[SOUND]) do
       soundslist[k] = k
     end
   end
 
-  function module:SharedMedia_Registered(mediatype, name)
+  function module:SharedMedia_Registered(mediatype)
     if mediatype == SOUND then
       self:BuildSoundList()
     end
@@ -217,14 +217,14 @@ Prat:AddModuleToLoad(function()
 
   do
     local optionGroup_mt = {
-      type = "select",
-      get = "GetChanOptValue",
-      set = "SetChanOptValue",
-      dialogControl = 'LSM30_Sound',
-      values = AceGUIWidgetLSMlists.sound,
-    }
-
-    local optionGroup_mt = { __index = optionGroup_mt }
+		__index = {
+			type = "select",
+			get = "GetChanOptValue",
+			set = "SetChanOptValue",
+			dialogControl = 'LSM30_Sound',
+			values = AceGUIWidgetLSMlists.sound,
+		}
+	}
 
     local function newOptionGroup(text, incoming)
       local t = setmetatable({}, optionGroup_mt)
@@ -294,20 +294,20 @@ Prat:AddModuleToLoad(function()
     })
   end
 
-  function module:GetChanOptValue(info, ...)
+  function module:GetChanOptValue(info)
     return self.db.profile[info[#info - 1]][info[#info]:upper()]
   end
 
-  function module:SetChanOptValue(info, val, ...)
+  function module:SetChanOptValue(info, val)
     Prat:PlaySound(val)
     self.db.profile[info[#info - 1]][info[#info]:upper()] = val
   end
 
-  function module:GetCChanOptValue(info, ...)
+  function module:GetCChanOptValue(info)
     return self.db.profile.customlist[info[#info]]
   end
 
-  function module:SetCChanOptValue(info, val, ...)
+  function module:SetCChanOptValue(info, val)
     self.db.profile.customlist[info[#info]] = val
   end
 
@@ -317,11 +317,11 @@ Prat:AddModuleToLoad(function()
   --[[------------------------------------------------
       Core Functions
   ------------------------------------------------]] --
-  function module:Prat_PostAddMessage(info, message, frame, event, text, r, g, b, id)
+  function module:Prat_PostAddMessage(_, message, _, event)
     if message.LINE_ID and message.LINE_ID == self.lastevent and self.lasteventtype == event then return end
 
     local msgtype = string.sub(event, 10)
-    local plr, svr = message.PLAYERLINK:match("([^%-]+)%-?(.*)")
+    local plr = message.PLAYERLINK:match("([^%-]+)%-?.*")
     local outgoing = (plr == UnitName("player")) and true or false
     local sndprof = outgoing and self.db.profile.outgoing or self.db.profile.incoming
 

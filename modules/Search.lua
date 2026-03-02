@@ -155,7 +155,7 @@ Prat:AddModuleToLoad(function()
     f.anim.fade1:SetDuration(3)
     f.anim.fade1:SetToAlpha(self.db.profile.searchinactivealpha)
     f.anim.fade1:SetSmoothing("IN")
-    f.anim:SetScript("OnFinished", function(...)
+    f.anim:SetScript("OnFinished", function()
       if f:HasFocus() then
         self:UnstashSearch(f)
       else
@@ -172,7 +172,7 @@ Prat:AddModuleToLoad(function()
     self.searchBoxes = {}
   end)
 
-  function module:Prat_FramesUpdated(info, name, chatFrame, ...)
+  function module:Prat_FramesUpdated(_, name, chatFrame)
     if not self.searchBoxes[name] then
       self.searchBoxes[name] = self:CreateSearchBox(chatFrame)
     end

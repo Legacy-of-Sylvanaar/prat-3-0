@@ -1,62 +1,38 @@
----------------------------------------------------------------------------------
---
--- Prat - A framework for World of Warcraft chat mods
---
--- Copyright (C) 2006-2023  Prat Development Team
---
--- This program is free software; you can redistribute it and/or
--- modify it under the terms of the GNU General Public License
--- as published by the Free Software Foundation; either version 2
--- of the License, or (at your option) any later version.
---
--- This program is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with this program; if not, write to:
---
--- Free Software Foundation, Inc.,
--- 51 Franklin Street, Fifth Floor,
--- Boston, MA  02110-1301, USA.
---
---
--------------------------------------------------------------------------------
+local _, private = ...
 
-Prat.EventProcessingType = {
+private.EventProcessingType = {
 	Full = 1,
 	PatternsOnly = 2,
 }
 
 local eventMap = {
-	CHAT_MSG_CHANNEL = Prat.EventProcessingType.Full,
-	CHAT_MSG_SAY = Prat.EventProcessingType.Full,
-	CHAT_MSG_GUILD = Prat.EventProcessingType.Full,
-	CHAT_MSG_WHISPER = Prat.EventProcessingType.Full,
-	CHAT_MSG_WHISPER_INFORM = Prat.EventProcessingType.Full,
-	CHAT_MSG_YELL = Prat.EventProcessingType.Full,
-	CHAT_MSG_PARTY = Prat.EventProcessingType.Full,
-	CHAT_MSG_PARTY_LEADER = Prat.EventProcessingType.Full,
-	CHAT_MSG_OFFICER = Prat.EventProcessingType.Full,
-	CHAT_MSG_RAID = Prat.EventProcessingType.Full,
-	CHAT_MSG_RAID_LEADER = Prat.EventProcessingType.Full,
-	CHAT_MSG_RAID_WARNING = Prat.EventProcessingType.Full,
-	CHAT_MSG_INSTANCE_CHAT = Prat.EventProcessingType.Full,
-	CHAT_MSG_INSTANCE_CHAT_LEADER = Prat.EventProcessingType.Full,
-	CHAT_MSG_SYSTEM = Prat.EventProcessingType.Full,
-	CHAT_MSG_DND = Prat.EventProcessingType.Full,
-	CHAT_MSG_AFK = Prat.EventProcessingType.Full,
-	CHAT_MSG_BN_WHISPER = Prat.EventProcessingType.Full,
-	CHAT_MSG_BN_WHISPER_INFORM = Prat.EventProcessingType.Full,
-	CHAT_MSG_BN_CONVERSATION = Prat.EventProcessingType.Full,
-	CHAT_MSG_COMMUNITIES_CHANNEL = Prat.EventProcessingType.Full,
-	CHAT_MSG_LOOT = Prat.EventProcessingType.PatternsOnly,
+	CHAT_MSG_CHANNEL = private.EventProcessingType.Full,
+	CHAT_MSG_SAY = private.EventProcessingType.Full,
+	CHAT_MSG_GUILD = private.EventProcessingType.Full,
+	CHAT_MSG_WHISPER = private.EventProcessingType.Full,
+	CHAT_MSG_WHISPER_INFORM = private.EventProcessingType.Full,
+	CHAT_MSG_YELL = private.EventProcessingType.Full,
+	CHAT_MSG_PARTY = private.EventProcessingType.Full,
+	CHAT_MSG_PARTY_LEADER = private.EventProcessingType.Full,
+	CHAT_MSG_OFFICER = private.EventProcessingType.Full,
+	CHAT_MSG_RAID = private.EventProcessingType.Full,
+	CHAT_MSG_RAID_LEADER = private.EventProcessingType.Full,
+	CHAT_MSG_RAID_WARNING = private.EventProcessingType.Full,
+	CHAT_MSG_INSTANCE_CHAT = private.EventProcessingType.Full,
+	CHAT_MSG_INSTANCE_CHAT_LEADER = private.EventProcessingType.Full,
+	CHAT_MSG_SYSTEM = private.EventProcessingType.Full,
+	CHAT_MSG_DND = private.EventProcessingType.Full,
+	CHAT_MSG_AFK = private.EventProcessingType.Full,
+	CHAT_MSG_BN_WHISPER = private.EventProcessingType.Full,
+	CHAT_MSG_BN_WHISPER_INFORM = private.EventProcessingType.Full,
+	CHAT_MSG_BN_CONVERSATION = private.EventProcessingType.Full,
+	CHAT_MSG_COMMUNITIES_CHANNEL = private.EventProcessingType.Full,
+	CHAT_MSG_LOOT = private.EventProcessingType.PatternsOnly,
 }
 
-function Prat.EnableProcessingForEvent(event, flag)
+function private.EnableProcessingForEvent(event, flag)
 	if flag == nil or flag == true then
-		eventMap[event] = Prat.EventProcessingType.Full
+		eventMap[event] = private.EventProcessingType.Full
 	elseif flag ~= false then
 		eventMap[event] = flag
 	else
@@ -64,7 +40,7 @@ function Prat.EnableProcessingForEvent(event, flag)
 	end
 end
 
-function Prat.EventIsProcessed(event)
+function private.EventIsProcessed(event)
 	return eventMap[event]
 end
 

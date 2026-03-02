@@ -1,8 +1,8 @@
 local _, private = ...
 
-private.GetClassGetColorNew = function(class)
+function private.GetClassGetColorNew(class)
 	if C_ClassColor then
-		return C_ClassColor.GetClassColor(class);
+		return C_ClassColor.GetClassColor(class)
 	else
 		if CUSTOM_CLASS_COLORS then
 			local color = CUSTOM_CLASS_COLORS[class]
@@ -13,7 +13,7 @@ private.GetClassGetColorNew = function(class)
 	end
 end
 
-private.GetClassGetColor = function(class)
+function private.GetClassGetColor(class)
 	if class then
 		class = class:upper()
 

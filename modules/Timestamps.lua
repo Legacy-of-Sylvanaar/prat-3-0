@@ -303,13 +303,13 @@ Prat:AddModuleToLoad(function()
     return PL["Chat window timestamp options."]
   end
 
-  function module:Prat_FramesUpdated(info, name, chatFrame, ...)
+  function module:Prat_FramesUpdated(_, _, chatFrame)
     if not self:IsHooked(chatFrame, "AddMessage") then
       self:SecureHook(chatFrame, "AddMessage")
     end
   end
 
-  function module:Prat_FramesRemoved(info, name, chatFrame)
+  function module:Prat_FramesRemoved(_, _, chatFrame)
     if self:IsHooked(chatFrame, "AddMessage") then
       self:Unhook(chatFrame, "AddMessage")
     end
@@ -319,7 +319,7 @@ Prat:AddModuleToLoad(function()
       Core Functions
   ------------------------------------------------]] --
 	local lastParsed
-  function module:AddMessage(frame, text, ...)
+  function module:AddMessage(frame)
     if self.db.profile.on and self.db.profile.show and self.db.profile.show[frame:GetName()] and not Prat.loading then
 		local entry = frame.historyBuffer:GetEntryAtIndex(1)
 		if lastParsed == entry then

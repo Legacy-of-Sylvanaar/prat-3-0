@@ -27,8 +27,10 @@
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
 local Chat_GetChatFrame = _G.Chat_GetChatFrame or _G.ChatFrameUtil.GetChatFrame
-local ChatFrame_AddNewCommunitiesChannel = _G.ChatFrame_AddNewCommunitiesChannel or _G.ChatFrameUtil.AddNewCommunitiesChannel
 
+local ChatEdit_DeactivateChat = _G.ChatEdit_DeactivateChat or _G.ChatFrameUtil.DeactivateChat
+
+local ChatFrame_AddNewCommunitiesChannel = _G.ChatFrame_AddNewCommunitiesChannel or _G.ChatFrameUtil.AddNewCommunitiesChannel
 local ChatFrame_RemoveAllMessageGroups = _G.ChatFrame_RemoveAllMessageGroups or _G.ChatFrameMixin.RemoveAllMessageGroups
 local ChatFrame_AddMessageGroup = _G.ChatFrame_AddMessageGroup or _G.ChatFrameMixin.AddMessageGroup
 local ChatFrame_RemoveAllChannels = _G.ChatFrame_RemoveAllChannels or _G.ChatFrameMixin.RemoveAllChannels

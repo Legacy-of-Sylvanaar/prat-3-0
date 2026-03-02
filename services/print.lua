@@ -36,9 +36,9 @@ end
 
 if not private.PrintLiteral then
 	function private.PrintLiteral(_, ...)
-		UIParentLoadAddOn("Blizzard_DebugTools");
-		DevTools_Dump((...));
-		DevTools_Dump(select(2, ...));
+		UIParentLoadAddOn("Blizzard_DebugTools")
+		DevTools_Dump((...))
+		DevTools_Dump(select(2, ...))
 	end
 end
 

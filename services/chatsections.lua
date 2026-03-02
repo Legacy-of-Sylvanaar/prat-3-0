@@ -242,29 +242,29 @@ function SplitChatMessage(frame, event, ...)
 
 		if (arg16) then
 			-- hiding sender in letterbox: do NOT even show in chat window (only shows in cinematic frame)
-			return true;
+			return true
 		end
 
 		local info
 
-		local coloredName = private.GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
+		local coloredName = private.GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
 		local channelLength = arg4 and strlen(arg4) or 0
-		local infoType = type;
+		local infoType = type
 		if ((type == "COMMUNITIES_CHANNEL") or ((strsub(type, 1, 7) == "CHANNEL") and (type ~= "CHANNEL_LIST") and ((not isSecret and arg1 ~= "INVITE") or (type ~= "CHANNEL_NOTICE_USER")))) then
-			local found = 0;
+			local found = 0
 			for index, value in pairs(frame.channelList) do
 				if (channelLength > strlen(value)) then
 					-- arg9 is the channel name without the number in front...
 					if (((arg7 > 0) and (frame.zoneChannelList[index] == arg7)) or (strupper(value) == strupper(arg9))) then
-						found = 1;
-						infoType = "CHANNEL" .. arg8;
-						info = _G.ChatTypeInfo[infoType];
-						break ;
+						found = 1
+						infoType = "CHANNEL" .. arg8
+						info = _G.ChatTypeInfo[infoType]
+						break
 					end
 				end
 			end
 			if ((found == 0) or not info) then
-				return true;
+				return true
 			end
 		end
 
@@ -406,7 +406,7 @@ function SplitChatMessage(frame, event, ...)
 				s.Ll = "|h"
 				s.Pp = "]"
 
-				local isCommunityType = type == "COMMUNITIES_CHANNEL";
+				local isCommunityType = type == "COMMUNITIES_CHANNEL"
 				if (isCommunityType) then
 				else
 					if (type ~= "BN_WHISPER" and type ~= "BN_WHISPER_INFORM" and type ~= "BN_CONVERSATION") or arg2 == _G.UnitName("player") --[[or presenceID]] then
@@ -429,12 +429,12 @@ function SplitChatMessage(frame, event, ...)
 		-- If we are handling notices, format them like bliz
 		if (type == "CHANNEL_NOTICE_USER") then
 			s.NOTICE = arg1
-			local globalstring = _G["CHAT_" .. arg1 .. "_NOTICE_BN"];
+			local globalstring = _G["CHAT_" .. arg1 .. "_NOTICE_BN"]
 			local chatnotice
 			if globalstring then
-				chatnotice = globalstring:gsub("|Hchannel:CHANNEL[^|]-|h[^|]-|h", ""):trim();
+				chatnotice = globalstring:gsub("|Hchannel:CHANNEL[^|]-|h[^|]-|h", ""):trim()
 			else
-				globalstring = _G["CHAT_" .. arg1 .. "_NOTICE"];
+				globalstring = _G["CHAT_" .. arg1 .. "_NOTICE"]
 				chatnotice = globalstring:gsub("|Hchannel:[^|]-|h[^|]-|h", ""):trim()
 			end
 
@@ -451,17 +451,17 @@ function SplitChatMessage(frame, event, ...)
 				s.MESSAGE = chatnotice:format(arg2)
 			end
 		elseif type == "CHANNEL_NOTICE" then
-			local globalstring;
+			local globalstring
 			s.NOTICE = arg1
 			if (arg1 == "TRIAL_RESTRICTED") then
-				globalstring = _G.CHAT_TRIAL_RESTRICTED_NOTICE_TRIAL;
+				globalstring = _G.CHAT_TRIAL_RESTRICTED_NOTICE_TRIAL
 			else
-				globalstring = _G["CHAT_" .. arg1 .. "_NOTICE_BN"];
+				globalstring = _G["CHAT_" .. arg1 .. "_NOTICE_BN"]
 				if (not globalstring) then
-					globalstring = _G["CHAT_" .. arg1 .. "_NOTICE"];
+					globalstring = _G["CHAT_" .. arg1 .. "_NOTICE"]
 					if not globalstring then
-						_G.GMError(("Missing global string for %q"):format("CHAT_" .. arg1 .. "_NOTICE"));
-						return ;
+						_G.GMError(("Missing global string for %q"):format("CHAT_" .. arg1 .. "_NOTICE"))
+						return
 					end
 				end
 			end
@@ -561,26 +561,26 @@ function SplitChatMessage(frame, event, ...)
 
 		-- 2.4
 		-- Search for icon links and replace them with texture links.
-		local term;
+		local term
 
 		if not isSecret then
 			for tag in string.gmatch(arg1, "%b{}") do
-				term = strlower(string.gsub(tag, "[{}]", ""));
+				term = strlower(string.gsub(tag, "[{}]", ""))
 				if (not arg17 and _G.ICON_TAG_LIST[term] and _G.ICON_LIST[_G.ICON_TAG_LIST[term]]) then
-					s.MESSAGE = string.gsub(s.MESSAGE, tag, _G.ICON_LIST[_G.ICON_TAG_LIST[term]] .. "0|t");
+					s.MESSAGE = string.gsub(s.MESSAGE, tag, _G.ICON_LIST[_G.ICON_TAG_LIST[term]] .. "0|t")
 				elseif (_G.GROUP_TAG_LIST[term]) then
-					local groupIndex = _G.GROUP_TAG_LIST[term];
-					local groupList = "[";
+					local groupIndex = _G.GROUP_TAG_LIST[term]
+					local groupList = "["
 					for i = 1, _G.GetNumGroupMembers() do
-						local name, _, subgroup, _, _, classFileName = _G.GetRaidRosterInfo(i);
+						local name, _, subgroup, _, _, classFileName = _G.GetRaidRosterInfo(i)
 						if (name and subgroup == groupIndex) then
-							local t = _G.RAID_CLASS_COLORS[classFileName];
-							name = string.format("\124cff%.2x%.2x%.2x%s\124r", t.r * 255, t.g * 255, t.b * 255, name);
-							groupList = groupList .. (groupList == "[" and "" or _G.PLAYER_LIST_DELIMITER) .. name;
+							local t = _G.RAID_CLASS_COLORS[classFileName]
+							name = string.format("\124cff%.2x%.2x%.2x%s\124r", t.r * 255, t.g * 255, t.b * 255, name)
+							groupList = groupList .. (groupList == "[" and "" or _G.PLAYER_LIST_DELIMITER) .. name
 						end
 					end
-					groupList = groupList .. "]";
-					s.MESSAGE = string.gsub(s.MESSAGE, tag, groupList);
+					groupList = groupList .. "]"
+					s.MESSAGE = string.gsub(s.MESSAGE, tag, groupList)
 				end
 			end
 		end
@@ -613,8 +613,8 @@ function SplitChatMessage(frame, event, ...)
 			end
 		end
 
-		s.ACCESSID = not isSecret and _G.ChatHistory_GetAccessID(chatGroup, chatTarget);
-		s.TYPEID = not isSecret and _G.ChatHistory_GetAccessID(type, chatTarget, arg12 or arg13);
+		s.ACCESSID = not isSecret and _G.ChatHistory_GetAccessID(chatGroup, chatTarget)
+		s.TYPEID = not isSecret and _G.ChatHistory_GetAccessID(type, chatTarget, arg12 or arg13)
 
 		SplitMessage.ORG = SplitMessageOrg
 

@@ -7,7 +7,7 @@ exclude_files = {
 ignore = {
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
 	"11./BINDING_.*", -- Setting an undefined (Keybinding header) global variable
-	"21.", -- Unused argument
+	"212/self", -- Unused argument 'self'
 }
 globals = {
 	-- Saved Variables
@@ -19,46 +19,122 @@ globals = {
 	"Prat",
 	"Prat_PopupFrame",
 	"Prat_PopupFrameText",
+	"Prat_ToggleOptionsWindow",
 
 	-- Libraries
+	"AceGUIWidgetLSMlists",
 	"LibStub",
 
-	-- Lua
-	"date",
-	"table.wipe",
-	"time",
-
 	-- Utility functions
+	"date",
+	"difftime",
 	"geterrorhandler",
 	"strsplit",
-	"tinsert",
-	"tremove",
+	"time",
+	"table.wipe",
+	-- DEPRECATIONS
+	"floor", -- math.floor
+	--
+	"format", -- string.format
+	"strlen", -- string.len
+	"strmatch", -- string.match
+	"strsub", -- string.sub
+	--
+	"tinsert", -- table.insert
+	"tremove", -- table.remove
+	"wipe", -- table.wipe
 
-	-- WoW
+	-- Global constants
+	"CHAT_FRAMES",
 	"CUSTOM_CLASS_COLORS",
 	"DEFAULT_CHAT_FRAME",
 	"LE_REALM_RELATION_SAME",
 	"NUM_CHAT_WINDOWS",
 	"RAID_CLASS_COLORS",
 	"SELECTED_CHAT_FRAME",
+	"WOW_PROJECT_CLASSIC",
+	"WOW_PROJECT_ID",
+	"WOW_PROJECT_MAINLINE",
+	"WOW_PROJECT_MISTS_CLASSIC",
 
+	-- Global Strings
 	"ACCEPT",
 	"TIME_DAYHOURMINUTESECOND",
 	"UNKNOWN",
 
+	-- Misc
+	"BackdropTemplateMixin",
+	"BattlePetTooltip",
+	"BattlePetToolTip_ShowLink",
+	"ChatFrame1EditBox",
+	"ChatFrame1",
+	"ChatFrame2",
+	"ChatFrame3",
+	"ChatFrame4",
+	"ChatFrame5",
+	"ChatFrame6",
+	"ChatFrame7",
+	"ChatFrame8",
+	"ChatFrame9",
+	"ChatFrame10",
+	"ChatTypeInfo",
+	"DevTools_Dump",
+	"FCF_Close",
+	"FCF_DockUpdate",
+	"FCF_GetCurrentChatFrame",
+	"FCF_MaximizeFrame",
+	"FCF_SetChatWindowFontSize",
+	"FCF_SetWindowName",
+	"GameFontNormal",
+	"GameTooltip",
+	"SlashCmdList",
+	"StaticPopupDialogs",
+	"StaticPopup_Show",
+	"UIParent",
+	"UIParentLoadAddOn",
+
+	-- Enums
 	"Constants.ChatFrameConstants.MaxChatWindows",
 	"ChatFrameConstants.TruncatedCommunityNameLength",
 	"ChatFrameConstants.TruncatedCommunityNameWithoutChannelLength",
 	"ChatFrameConstants.WhisperSoundAlertCooldown",
+	"Enum.ClubStreamType.General",
+	"Enum.ClubStreamType.Guild",
+	"Enum.ClubStreamType.Officer",
 
-	"ChatFrame1",
-	"DevTools_Dump",
-	"GameFontNormal",
-	"StaticPopupDialogs",
-	"StaticPopup_Show",
-	"UIParentLoadAddOn",
+	-- Utils
+	"Chat_GetChatFrame",
+	"ChatEdit_DeactivateChat",
+	"ChatEdit_OnEscapePressed",
+	"ChatFrame_AddMessageGroup",
+	"ChatFrame_ReceiveAllPrivateMessages",
+	"ChatFrame_RemoveAllChannels",
+	"ChatFrame_RemoveAllMessageGroups",
+	"ChatFrame_AddCommunitiesChannel",
+	--
+	"ChatFrameMixin.AddMessageGroup",
+	"ChatFrameMixin.ReceiveAllPrivateMessages",
+	"ChatFrameMixin.RemoveAllChannels",
+	"ChatFrameMixin.RemoveAllMessageGroups",
+	--
+	"ChatFrameUtil.AddCommunitiesChannel",
+	"ChatFrameUtil.DeactivateChat",
+	"ChatFrameUtil.GetChatFrame",
+	"ChatFrameUtil.ProcessSenderNameFilters",
+	"ChatFrameUtil.TruncateToMaxLength",
+	--
+	"TimerunningUtil.AddSmallIcon",
 
+	-- Lua API
+	"C_ChatInfo.IsTimerunningPlayer",
 	"C_ClassColor.GetClassColor",
+	"C_Club.GetClubInfo",
+	"C_Club.GetStreamInfo",
+	"C_EncodingUtil.DecodeBase64",
+	"C_EncodingUtil.DeserializeCBOR",
+	"C_EncodingUtil.EncodeBase64",
+	"C_EncodingUtil.SerializeCBOR",
+	"hooksecurefunc",
 	"issecretvalue",
 	"issecurevariable",
 	"Ambiguate",
@@ -67,6 +143,8 @@ globals = {
 	"GetAverageItemLevel",
 	"GetBattlefieldScore",
 	"GetChannelList",
+	"GetChannelName",
+	"GetChatWindowInfo",
 	"GetDifficultyColor",
 	"GetGuildInfo",
 	"GetGuildRosterInfo",
@@ -75,21 +153,36 @@ globals = {
 	"GetNumBattlefieldScores",
 	"GetNumGroupMembers",
 	"GetNumSubgroupMembers",
+	"GetPlayerInfoByGUID",
 	"GetQuestDifficultyColor",
 	"GetRaidRosterInfo",
 	"GetRaidTargetIndex",
+	"GetRealmName",
 	"GetRealZoneText",
 	"GetServerTime",
 	"GetTime",
 	"IsActivePlayerGuide",
+	"IsAltKeyDown",
 	"IsCombatLog",
 	"IsControlKeyDown",
 	"IsInGuild",
 	"IsInRaid",
+	"IsSecureCmd",
 	"IsShiftKeyDown",
 	"JoinChannelByName",
 	"JoinTemporaryChannel",
 	"PlaySound",
+	"ReloadUI",
+	"SetChatWindowAlpha",
+	"SetChatWindowColor",
+	"SetChatWindowDocked",
+	"SetChatWindowLocked",
+	"SetChatWindowName",
+	"SetChatWindowSavedDimensions",
+	"SetChatWindowSavedPosition",
+	"SetChatWindowShown",
+	"SetChatWindowSize",
+	"SetChatWindowUninteractable",
 	"UnitClass",
 	"UnitCreatureFamily",
 	"UnitCreatureType",

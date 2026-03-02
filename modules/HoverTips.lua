@@ -118,8 +118,8 @@ end
   function module:OnEnable()
     for i = 1, NUM_CHAT_WINDOWS do
       local frame = _G["ChatFrame" .. i]
-      self:HookScript(frame, "OnHyperlinkEnter", OnHyperlinkEnter)
-      self:HookScript(frame, "OnHyperlinkLeave", OnHyperlinkLeave)
+      self:HookScript(frame, "OnHyperlinkEnter", "OnHyperlinkEnter")
+      self:HookScript(frame, "OnHyperlinkLeave", "OnHyperlinkLeave")
     end
   end
 
@@ -149,7 +149,7 @@ end
     end
   end
 
-  function module:OnHyperlinkLeave(f, link)
+  function module:OnHyperlinkLeave()
     if showingTooltip then
       showingTooltip:Hide()
       showingTooltip = false

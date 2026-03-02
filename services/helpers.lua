@@ -18,7 +18,7 @@ function private.GetCommunityAndStreamName(clubId, streamId)
 
 	local streamName = streamInfo and streamInfo.name or ""
 
-	local clubInfo = C_Club.GetClubInfo(clubId);
+	local clubInfo = C_Club.GetClubInfo(clubId)
 	if streamInfo and streamInfo.streamType == Enum.ClubStreamType.General then
 		if not clubInfo then
 			return ""
@@ -36,7 +36,7 @@ function private.GetCommunityAndStreamName(clubId, streamId)
 		if not issecretvalue(_name) then
 			_name = ChatFrameUtil.TruncateToMaxLength(_name, ChatFrameConstants.TruncatedCommunityNameLength)
 		end
-		return _name.." - "..streamName;
+		return _name.." - "..streamName
 	end
 end
 
@@ -50,36 +50,36 @@ function private.ResolveChannelName(communityChannel)
 end
 
 function private.ResolvePrefixedChannelName(communityChannelArg)
-	local prefix, communityChannel = communityChannelArg:match("(%d+. )(.*)");
-	return prefix .. private.ResolveChannelName(communityChannel);
+	local prefix, communityChannel = communityChannelArg:match("(%d+. )(.*)")
+	return prefix .. private.ResolveChannelName(communityChannel)
 end
 
 function private.GetDecoratedSenderName(event, ...)
-	local _, senderName, _, _, _, _, _, channelIndex, _, _, _, senderGUID = ...;
-	local chatType = string.sub(event, 10);
+	local _, senderName, _, _, _, _, _, channelIndex, _, _, _, senderGUID = ...
+	local chatType = string.sub(event, 10)
 
 	if string.find(chatType, "^WHISPER") then
-		chatType = "WHISPER";
+		chatType = "WHISPER"
 	end
 
 	if string.find(chatType, "^CHANNEL") then
-		chatType = "CHANNEL" .. channelIndex;
+		chatType = "CHANNEL" .. channelIndex
 	end
 
-	local chatTypeInfo = ChatTypeInfo[chatType];
-	local decoratedPlayerName = senderName;
+	local chatTypeInfo = ChatTypeInfo[chatType]
+	local decoratedPlayerName = senderName
 
-	local localizedClass, englishClass, localizedRace, englishRace, sex, firstName
+	local _, englishClass, firstName
 	if senderGUID then
-		localizedClass, englishClass, localizedRace, englishRace, sex, firstName = GetPlayerInfoByGUID(senderGUID);
+		_, englishClass, _, _, _, firstName = GetPlayerInfoByGUID(senderGUID)
 	end
 
 	-- Ambiguate guild chat names
 	if Ambiguate and not issecretvalue(senderName) then
 		if chatType == "GUILD" then
-			decoratedPlayerName = Ambiguate(decoratedPlayerName, "guild");
+			decoratedPlayerName = Ambiguate(decoratedPlayerName, "guild")
 		else
-			decoratedPlayerName = Ambiguate(decoratedPlayerName, "none");
+			decoratedPlayerName = Ambiguate(decoratedPlayerName, "none")
 		end
 	elseif firstName then
 		decoratedPlayerName = firstName
@@ -87,7 +87,7 @@ function private.GetDecoratedSenderName(event, ...)
 
 	-- Add timerunning icon when necessary based on player guid
 	if senderGUID and not issecretvalue(senderGUID) and C_ChatInfo.IsTimerunningPlayer(senderGUID) then
-		decoratedPlayerName = TimerunningUtil.AddSmallIcon(decoratedPlayerName);
+		decoratedPlayerName = TimerunningUtil.AddSmallIcon(decoratedPlayerName)
 	end
 
 	if senderGUID and chatTypeInfo and GetPlayerInfoByGUID ~= nil then
@@ -95,49 +95,49 @@ function private.GetDecoratedSenderName(event, ...)
 			local classColor = private.GetClassGetColorNew(englishClass)
 
 			if classColor then
-				decoratedPlayerName = classColor:WrapTextInColorCode(decoratedPlayerName);
+				decoratedPlayerName = classColor:WrapTextInColorCode(decoratedPlayerName)
 			end
 		end
 	end
 
 	if ChatFrameUtil.ProcessSenderNameFilters then
-		decoratedPlayerName = ChatFrameUtil.ProcessSenderNameFilters(event, decoratedPlayerName, ...);
+		decoratedPlayerName = ChatFrameUtil.ProcessSenderNameFilters(event, decoratedPlayerName, ...)
 	end
 	if decoratedPlayerName then
 		if not issecretvalue(decoratedPlayerName) and decoratedPlayerName == "" then
 			return decoratedPlayerName
 		end
-		return "[" .. decoratedPlayerName .. "]";
+		return "[" .. decoratedPlayerName .. "]"
 	end
 end
 
 local function SanitizeCommunityData(clubId, streamId, epoch, position)
 	if type(clubId) == "number" then
-		clubId = ("%.f"):format(clubId);
+		clubId = ("%.f"):format(clubId)
 	end
 	if type(streamId) == "number" then
-		streamId = ("%.f"):format(streamId);
+		streamId = ("%.f"):format(streamId)
 	end
-	epoch = ("%.f"):format(epoch);
-	position = ("%.f"):format(position);
+	epoch = ("%.f"):format(epoch)
+	position = ("%.f"):format(position)
 
-	return clubId, streamId, epoch, position;
+	return clubId, streamId, epoch, position
 end
 
 function private.GetBNPlayerCommunityLink(playerName, linkDisplayText, bnetIDAccount, clubId, streamId, epoch, position)
-	clubId, streamId, epoch, position = SanitizeCommunityData(clubId, streamId, epoch, position);
+	clubId, streamId, epoch, position = SanitizeCommunityData(clubId, streamId, epoch, position)
 	return string.format("|HBNplayerCommunity:%s:%s:%s:%s:%s:%s|h%s|h", playerName, bnetIDAccount, clubId, streamId, epoch, position, linkDisplayText)
 end
 
 function private.GetPlayerCommunityLink(playerName, linkDisplayText, clubId, streamId, epoch, position)
-	clubId, streamId, epoch, position = SanitizeCommunityData(clubId, streamId, epoch, position);
+	clubId, streamId, epoch, position = SanitizeCommunityData(clubId, streamId, epoch, position)
 	return string.format("|HBNplayerCommunity:%s:%s:%s:%s:%s|h%s|h", playerName, clubId, streamId, epoch, position, linkDisplayText)
 end
 
 function private.GetPlayerLink(characterName, linkDisplayText, lineID, chatType, chatTarget)
-	return string.format("|Hplayer:%s:%s:%s:%s|h%s|h", characterName, lineID or 0, chatType or 0, chatTarget or "", linkDisplayText);
+	return string.format("|Hplayer:%s:%s:%s:%s|h%s|h", characterName, lineID or 0, chatType or 0, chatTarget or "", linkDisplayText)
 end
 
 function private.GetBNPlayerLink(name, linkDisplayText, bnetIDAccount, lineID, chatType, chatTarget)
-	return string.format("|HBNplayer:%s:%s:%s:%s:%s|h%s|h", name, bnetIDAccount, lineID, chatType, chatTarget, linkDisplayText);
+	return string.format("|HBNplayer:%s:%s:%s:%s:%s|h%s|h", name, bnetIDAccount, lineID, chatType, chatTarget, linkDisplayText)
 end
