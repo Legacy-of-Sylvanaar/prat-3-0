@@ -38,37 +38,37 @@ PL:AddLocale("enUS", {
 do
 	local L
 
-	--@localization(locale="enUS", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("enUS",L)
 
-	--@localization(locale="frFR", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("frFR",L)
 
-	--@localization(locale="deDE", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("deDE",L)
 
-	--@localization(locale="koKR", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("koKR",L)
 
-	--@localization(locale="esMX", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("esMX",L)
 
-	--@localization(locale="ruRU", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("ruRU",L)
 
-	--@localization(locale="zhCN", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("zhCN",L)
 
-	--@localization(locale="esES", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("esES",L)
 
-	--@localization(locale="zhTW", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("zhTW",L)
 
-	--@localization(locale="itIT", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("itIT",L)
 
-	--@localization(locale="ptBR", format="lua_table", handle-subnamespaces="concat", same-key-is-true=true)@
+	--@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="concat", same-key-is-true=true)@
 	PL:AddLocale("ptBR",L)
 end
 --@end-non-debug@]===]
