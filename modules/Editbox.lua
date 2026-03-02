@@ -508,7 +508,8 @@ end
   function module:FCF_Tab_OnClick(frame)
     if self.db.profile.attach == "TOP" and GetCVar("chatStyle") ~= "classic" then
       local chatFrame = _G["ChatFrame" .. frame:GetID()];
-      ChatEdit_DeactivateChat(chatFrame.editBox)
+		ChatEdit_DeactivateChat(chatFrame.editBox)
+		chatFrame.editBox:Hide()
     end
   end
 
