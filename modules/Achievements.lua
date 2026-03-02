@@ -74,54 +74,58 @@ Prat:AddModuleToLoad(function()
 
   --[===[@non-debug@
 do
-    local L
-
-
+local L
+L = {}
 --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("enUS", L)
 
 
-
+L = {}
 --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("itIT", L)
 
 
-
+L = {}
 --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("ptBR", L)
 
 
 
+L = {}
 --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("frFR", L)
 
 
-
+L = {}
 --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("deDE", L)
 
 
-
+L = {}
 --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("koKR",  L)
 
 
+L = {}
 --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("esMX",  L)
 
-
+L = {}
 --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("ruRU",  L)
 
 
+L = {}
 --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("zhCN",  L)
 
 
+L = {}
 --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("esES",  L)
 
 
+L = {}
 --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Achievements")@
 PL:AddLocale("zhTW",  L)
 end

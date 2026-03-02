@@ -53,45 +53,56 @@ do
     local L
 
 
+L = {}
 --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("enUS", L)
 
 
 
+L = {}
 --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("itIT", L)
 
 
 
+L = {}
 --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("ptBR", L)
 
 
+L = {}
 --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("frFR",L)
 
 
 
 
+L = {}
 --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("deDE", L)
 
 
+L = {}
 --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("koKR",L)
 
+L = {}
 --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("esMX",L)
 
+L = {}
 --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("ruRU",L)
 
+L = {}
 --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("zhCN",L)
 
+L = {}
 --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("esES",L)
 
+L = {}
 --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Paragraph")@
 PL:AddLocale("zhTW",L)
 end

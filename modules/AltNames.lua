@@ -139,38 +139,47 @@ do
       local L
 
 
+L = {}
 --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AltNames")@
     PL:AddLocale("enUS",L)
 
 
+L = {}
 --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AltNames")@
     PL:AddLocale("frFR",L)
 
 
+L = {}
 --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AltNames")@
     PL:AddLocale("deDE",L)
 
 
+L = {}
 --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AltNames")@
     PL:AddLocale("koKR",L)
 
 
+L = {}
 --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AltNames")@
     PL:AddLocale("esMX",L)
 
 
+L = {}
 --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AltNames")@
     PL:AddLocale("ruRU",L)
 
 
+L = {}
 --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AltNames")@
     PL:AddLocale("zhCN",L)
 
 
+L = {}
 --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AltNames")@
     PL:AddLocale("esES",L)
 
 
+L = {}
 --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="AltNames")@
     PL:AddLocale("zhTW",L)
   end

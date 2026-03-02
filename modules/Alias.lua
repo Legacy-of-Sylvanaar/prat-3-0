@@ -80,38 +80,48 @@ Prat:AddModuleToLoad(function()
 	--[===[@non-debug@
 	do
 		local L
-
-		--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("enUS", L)
 
-		--@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("itIT", L)
 
-		--@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("ptBR", L)
 
-		--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("frFR", L)
 
-		--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("deDE", L)
 
-		--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("koKR", L)
 
-		--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("esMX", L)
 
-		--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("ruRU", L)
 
-		--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("zhCN", L)
 
-		--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("esES", L)
 
-		--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
+		L = {}
+--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Alias")@
 		PL:AddLocale("zhTW", L)
 	end
 	--@end-non-debug@]===]
