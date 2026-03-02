@@ -86,12 +86,12 @@ do
 	})
 
 	local function onInit(self)
+		module_defaults[self.name] = module_defaults[self.name] or {}
+		self.db = private.db:RegisterNamespace(self.name, module_defaults[self.name])
+
 		if private.db.profile.modules[self.moduleName] == 1 then
 			return
 		end
-
-		module_defaults[self.name] = module_defaults[self.name] or {}
-		self.db = private.db:RegisterNamespace(self.name, module_defaults[self.name])
 
 		local init = GetModuleInit(self)
 		if init then
