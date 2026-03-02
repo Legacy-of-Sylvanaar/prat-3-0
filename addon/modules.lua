@@ -98,6 +98,7 @@ do
 			init(self)
 			private:SetModuleInit(self, nil)
 		end
+
 		local opts = private:GetModuleOptions(self.name)
 		if opts then
 			opts.handler = self
@@ -120,6 +121,9 @@ do
 		if private.db.profile.modules[self.moduleName] == 1 then
 			return
 		end
+		if private.Options.args[sectionlist[self.name]].args[self.name] then
+			private.Options.args[sectionlist[self.name]].args[self.name].hidden = false
+		end
 
 		local pats = private:GetModulePatterns(self)
 		if pats then
@@ -134,8 +138,8 @@ do
 	end
 
 	local function onDisable(self)
-		if private.db.profile.modules[self.moduleName] == 1 then
-			return
+		if private.Options.args[sectionlist[self.name]].args[self.name] then
+			private.Options.args[sectionlist[self.name]].args[self.name].hidden = true
 		end
 
 		private:UnregisterAllPatterns(self.name)
