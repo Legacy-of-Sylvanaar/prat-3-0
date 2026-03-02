@@ -1,22 +1,17 @@
 local _, private = ...
 
-local Chat_GetChatCategory = _G.Chat_GetChatCategory or _G.ChatFrameUtil.GetChatCategory
-local ChatFrame_GetMentorChannelStatus = _G.ChatFrame_GetMentorChannelStatus or _G.ChatFrameUtil.GetMentorChannelStatus
-local ChatFrame_GetMobileEmbeddedTexture = _G.ChatFrame_GetMobileEmbeddedTexture or _G.ChatFrameUtil.GetMobileEmbeddedTexture
+local Chat_GetChatCategory = Chat_GetChatCategory or ChatFrameUtil.GetChatCategory
+local ChatFrame_GetMentorChannelStatus = ChatFrame_GetMentorChannelStatus or ChatFrameUtil.GetMentorChannelStatus
+local ChatFrame_GetMobileEmbeddedTexture = ChatFrame_GetMobileEmbeddedTexture or ChatFrameUtil.GetMobileEmbeddedTexture
+local MAX_WOW_CHAT_CHANNELS = MAX_WOW_CHAT_CHANNELS or Constants.ChatFrameConstants.MaxChatChannels
 
--- Imports
-local _G = _G
-
+local string = string
 local setmetatable = setmetatable
 local pairs, ipairs = pairs, ipairs
-local tinsert, tremove = table.insert, table.remove
-local string = string
-local strsub = string.sub
+local tinsert, tremove, wipe = table.insert, table.remove, table.wipe
 local tostring = tostring
-local strlower, strupper = strlower, strupper
-local strlen = strlen
-local next, wipe = next, wipe
-local select = select
+local strsub, strlower, strupper, strlen = string.sub, string.lower, string.upper, string.len
+local next = next
 
 local RunMessageEventFilters
 if ChatFrameUtil.ProcessMessageEventFilters then
@@ -24,7 +19,7 @@ if ChatFrameUtil.ProcessMessageEventFilters then
 else
 	RunMessageEventFilters = function(frame, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17)
 		local filter = false
-		local chatFilters = _G.ChatFrame_GetMessageEventFilters(event)
+		local chatFilters = ChatFrame_GetMessageEventFilters(event)
 		if chatFilters then
 			local newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10, newarg11, newarg12, newarg13, newarg14
 			for _, filterFunc in next, chatFilters do
@@ -41,16 +36,9 @@ else
 	end
 end
 
--- Isolate the environment
-setfenv(1, select(2, ...))
-
---[[ END STANDARD HEADER ]] --
-
-
 -- This is the structure of the chat message once it is split
 -- section delimiters are uppercase inside and lower case outside
--- ie.   cC CHANNEL Cc =  [ channame ]
-SplitMessageSrc = {
+local SplitMessageSrc = {
 	-- todo, incidicate which module uses which field, and remove unused fields
 	PRE = "",
 	nN = "",
@@ -89,7 +77,7 @@ SplitMessageSrc = {
 	POST = "",
 }
 
-SplitMessageIdx = {
+local SplitMessageIdx = {
 	"PRE",
 	"nN",
 	"CHANLINK",
@@ -128,10 +116,10 @@ SplitMessageIdx = {
 	"POST",
 }
 
-SplitMessage = {}
-SplitMessageOrg = {}
+private.SplitMessage = {}
+local SplitMessageOrg = {}
 
-SplitMessageOut = {
+private.SplitMessageOut = {
 	MESSAGE = "",
 	TYPE = "",
 	TARGET = "",
@@ -143,11 +131,29 @@ setmetatable(SplitMessageOrg, {
 	__index = SplitMessageSrc
 })
 
-setmetatable(SplitMessage, {
+setmetatable(private.SplitMessage, {
 	__index = SplitMessageOrg
 })
 
-function BuildChatText(message)
+local function GetMessageItemIdx(itemname)
+	for i, v in ipairs(SplitMessageIdx) do
+		if v == itemname then
+			return i
+		end
+	end
+
+	return 0
+end
+
+local function ClearChatSections(message)
+	wipe(message)
+end
+
+local function safestr(s)
+	return s or ""
+end
+
+function private.BuildChatText(message)
 	local out = ''
 	for _, v in ipairs(SplitMessageIdx) do
 		if message[v] then
@@ -157,7 +163,7 @@ function BuildChatText(message)
 	return out
 end
 
-function RegisterMessageItem(itemname, anchorvar, relativepos)
+function private.RegisterMessageItem(itemname, anchorvar, relativepos)
 	--[[ RegisterMessageItem:
 
 	API to allow other modules to inject new items into the components
@@ -198,10 +204,7 @@ function RegisterMessageItem(itemname, anchorvar, relativepos)
 	local pos = 1
 
 	if SplitMessageSrc[itemname] then
-		--		ResetSeparators(itemname)
-
 		local oldpos = GetMessageItemIdx(itemname)
-
 		if oldpos ~= 0 then
 			tremove(SplitMessageIdx, oldpos)
 		end
@@ -215,27 +218,9 @@ function RegisterMessageItem(itemname, anchorvar, relativepos)
 	SplitMessageSrc[itemname] = ""
 end
 
-function GetMessageItemIdx(itemname)
-	for i, v in ipairs(SplitMessageIdx) do
-		if v == itemname then
-			return i
-		end
-	end
-
-	return 0
-end
-
-function ClearChatSections(message)
-	wipe(message)
-end
-
-local function safestr(s)
-	return s or ""
-end
-
-function SplitChatMessage(frame, event, ...)
-	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17 = ...
-	local isSecret = _G.issecretvalue and _G.issecretvalue(arg1)
+function private.SplitChatMessage(frame, event, ...)
+	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17 = ...
+	local isSecret = issecretvalue and issecretvalue(arg1)
 
 	if (strsub((event or ""), 1, 8) == "CHAT_MSG") then
 		local type = strsub(event, 10)
@@ -258,7 +243,7 @@ function SplitChatMessage(frame, event, ...)
 					if (((arg7 > 0) and (frame.zoneChannelList[index] == arg7)) or (strupper(value) == strupper(arg9))) then
 						found = 1
 						infoType = "CHANNEL" .. arg8
-						info = _G.ChatTypeInfo[infoType]
+						info = ChatTypeInfo[infoType]
 						break
 					end
 				end
@@ -269,13 +254,13 @@ function SplitChatMessage(frame, event, ...)
 		end
 
 		ClearChatSections(SplitMessageOrg)
-		ClearChatSections(SplitMessage)
+		ClearChatSections(private.SplitMessage)
 
 		local s = SplitMessageOrg
 
 		s.LINE_ID = arg11
 		s.INFOTYPE = infoType
-		info = _G.ChatTypeInfo[infoType]
+		info = ChatTypeInfo[infoType]
 		-- blizzard bug, arg2 (player name) can have an extra space
 		if not isSecret and arg2 then
 			arg2 = arg2:trim()
@@ -287,12 +272,12 @@ function SplitChatMessage(frame, event, ...)
 			...
 		}
 
-		local kill, newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10, newarg11, newarg12, newarg13, newarg14 = RunMessageEventFilters(frame, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
+		local kill, newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, _, newarg11, newarg12, newarg13, newarg14 = RunMessageEventFilters(frame, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
 		if kill then
 			return true
 		end
 		if newarg1 ~= nil then
-			arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14 = newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, newarg10, newarg11, newarg12, newarg13, newarg14
+			arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, _, arg11, arg12, arg13, arg14 = newarg1, newarg2, newarg3, newarg4, newarg5, newarg6, newarg7, newarg8, newarg9, _, newarg11, newarg12, newarg13, newarg14
 		end
 
 		s.CHATTYPE = type
@@ -304,7 +289,7 @@ function SplitChatMessage(frame, event, ...)
 		if (chatGroup == "CHANNEL" or chatGroup == "BN_CONVERSATION") then
 			chatTarget = tostring(arg8)
 		elseif (chatGroup == "WHISPER" or chatGroup == "BN_WHISPER") then
-			if (not _G.issecretvalue or not _G.issecretvalue(arg2)) and (not (strsub(arg2, 1, 2) == "|K")) then
+			if (not issecretvalue or not issecretvalue(arg2)) and (not (strsub(arg2, 1, 2) == "|K")) then
 				chatTarget = strupper(arg2)
 			else
 				chatTarget = arg2
@@ -315,7 +300,7 @@ function SplitChatMessage(frame, event, ...)
 		s.MESSAGE = isSecret and arg1 or safestr(arg1):gsub("^%s*(.-)%s*$", "%1")  -- trim spaces
 
 
-		if not isSecret and _G.FCFManager_ShouldSuppressMessage(frame, s.CHATGROUP, s.CHATTARGET) then
+		if not isSecret and FCFManager_ShouldSuppressMessage(frame, s.CHATGROUP, s.CHATTARGET) then
 			s.DONOTPROCESS = true
 		end
 
@@ -334,7 +319,6 @@ function SplitChatMessage(frame, event, ...)
 		end
 
 		local chatget = _G["CHAT_" .. type .. "_GET"]
-
 		if chatget then
 			local chatlink = chatget:match("|H(channel:[^|]-)|h[^|]-|h")
 
@@ -361,8 +345,8 @@ function SplitChatMessage(frame, event, ...)
 			if strsub(type, 1, 11) == 'ACHIEVEMENT' or strsub(type, 1, 18) == 'GUILD_ACHIEVEMENT' then
 				s.PLAYER = string.format("|Hplayer:%s|h%s|h", arg2, coloredName)
 			elseif isCommunityType then
-				local isBattleNetCommunity = arg13 ~= nil and (_G.issecretvalue and _G.issecretvalue(arg13) or arg13 ~= 0)
-				local messageInfo, clubId, streamId, _ = _G.C_Club.GetInfoFromLastCommunityChatLine()
+				local isBattleNetCommunity = arg13 ~= nil and (issecretvalue and issecretvalue(arg13) or arg13 ~= 0)
+				local messageInfo, clubId, streamId, _ = C_Club.GetInfoFromLastCommunityChatLine()
 				if messageInfo ~= nil then
 					if isBattleNetCommunity then
 						s.PLAYER = private.GetBNPlayerCommunityLink(arg2, coloredName, arg13, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
@@ -379,16 +363,16 @@ function SplitChatMessage(frame, event, ...)
 			end
 		elseif not isSecret and strlen(arg2) > 0 then
 			if type == "EMOTE" then
-				s.PLAYER = _G.Ambiguate(arg2, "none"):match("([^%-]+)%-?(.*)")
-			elseif type == "TEXT_EMOTE" then
+				s.PLAYER = Ambiguate(arg2, "none"):match("([^%-]+)%-?(.*)")
+			elseif type == "TEXT_EMOTE" then -- luacheck: ignore 542
 			else
 				s.PLAYERLINK = arg2
 
 				--ambiguate guild chat names
 				if (type == "GUILD") then
-					arg2 = _G.Ambiguate(arg2, "guild")
+					arg2 = Ambiguate(arg2, "guild")
 				else
-					arg2 = _G.Ambiguate(arg2, "none")
+					arg2 = Ambiguate(arg2, "none")
 				end
 
 				local plr, svr = arg2:match("([^%-]+)%-?(.*)")
@@ -407,17 +391,16 @@ function SplitChatMessage(frame, event, ...)
 				s.Pp = "]"
 
 				local isCommunityType = type == "COMMUNITIES_CHANNEL"
-				if (isCommunityType) then
-				else
-					if (type ~= "BN_WHISPER" and type ~= "BN_WHISPER_INFORM" and type ~= "BN_CONVERSATION") or arg2 == _G.UnitName("player") --[[or presenceID]] then
+				if not isCommunityType then
+					if (type ~= "BN_WHISPER" and type ~= "BN_WHISPER_INFORM" and type ~= "BN_CONVERSATION") or arg2 == UnitName("player") --[[or presenceID]] then
 						s.PLAYERLINKDATA = ":" .. safestr(arg11) .. ":" .. chatGroup .. (chatTarget and (":" .. chatTarget) or "")
 					else
 						s.lL = "|HBNplayer:"
 						local battleTag, _
-						if _G.C_BattleNet and _G.C_BattleNet.GetAccountInfoByID then
-							battleTag = _G.C_BattleNet.GetAccountInfoByID(arg13).battleTag
+						if C_BattleNet and C_BattleNet.GetAccountInfoByID then
+							battleTag = C_BattleNet.GetAccountInfoByID(arg13).battleTag
 						else
-							_, _, battleTag = _G.BNGetFriendInfoByID(arg13)
+							_, _, battleTag = BNGetFriendInfoByID(arg13)
 						end
 						s.PLAYERLINKDATA = ":" .. safestr(arg13) .. ":" .. safestr(arg11) .. ":" .. chatGroup .. ":" .. chatTarget .. (battleTag and (":" .. battleTag) or "")
 						s.PRESENCE_ID = arg13
@@ -440,7 +423,7 @@ function SplitChatMessage(frame, event, ...)
 
 			if strlen(arg5) > 0 then
 				-- TWO users in this notice (E.G. x kicked y)
-				if _G.GetLocale() == "koKR" then
+				if GetLocale() == "koKR" then
 					s.MESSAGE = chatnotice:format("", "", arg2, arg5)
 				else
 					s.MESSAGE = chatnotice:format(arg2, arg5)
@@ -454,18 +437,18 @@ function SplitChatMessage(frame, event, ...)
 			local globalstring
 			s.NOTICE = arg1
 			if (arg1 == "TRIAL_RESTRICTED") then
-				globalstring = _G.CHAT_TRIAL_RESTRICTED_NOTICE_TRIAL
+				globalstring = CHAT_TRIAL_RESTRICTED_NOTICE_TRIAL
 			else
 				globalstring = _G["CHAT_" .. arg1 .. "_NOTICE_BN"]
 				if (not globalstring) then
 					globalstring = _G["CHAT_" .. arg1 .. "_NOTICE"]
 					if not globalstring then
-						_G.GMError(("Missing global string for %q"):format("CHAT_" .. arg1 .. "_NOTICE"))
+						error(("Missing global string for %q"):format("CHAT_" .. arg1 .. "_NOTICE"))
 						return
 					end
 				end
 			end
-			s.MESSAGE = _G.format(globalstring, arg8, ResolvePrefixedChannelName(arg4))
+			s.MESSAGE = format(globalstring, arg8, private.ResolvePrefixedChannelName(arg4))
 		end
 
 		arg6 = safestr(arg6)
@@ -475,13 +458,13 @@ function SplitChatMessage(frame, event, ...)
 			if arg6 == "GM" or arg6 == "DEV" then
 				-- Add Blizzard Icon if this was sent by a GM/DEV
 				s.FLAG = "|TInterface\\ChatFrame\\UI-ChatIcon-Blizz:12:20:0:0:32:16:4:28:0:16|t "
-			elseif arg6 == "GUIDE" and ChatFrame_GetMentorChannelStatus(_G.Enum.PlayerMentorshipStatus.Mentor, _G.C_ChatInfo.GetChannelRulesetForChannelID(arg7)) == _G.Enum.PlayerMentorshipStatus.Mentor then
+			elseif arg6 == "GUIDE" and ChatFrame_GetMentorChannelStatus(Enum.PlayerMentorshipStatus.Mentor, C_ChatInfo.GetChannelRulesetForChannelID(arg7)) == Enum.PlayerMentorshipStatus.Mentor then
 				-- Add guide text if the sender is a guide in the newcomer chat
-				s.FLAG = _G.NPEV2_CHAT_USER_TAG_GUIDE .. " "
+				s.FLAG = NPEV2_CHAT_USER_TAG_GUIDE .. " "
 			elseif arg6 == "NEWCOMER" then
-				if ChatFrame_GetMentorChannelStatus(_G.Enum.PlayerMentorshipStatus.Newcomer, _G.C_ChatInfo.GetChannelRulesetForChannelID(arg7)) == _G.Enum.PlayerMentorshipStatus.Newcomer then
+				if ChatFrame_GetMentorChannelStatus(Enum.PlayerMentorshipStatus.Newcomer, C_ChatInfo.GetChannelRulesetForChannelID(arg7)) == Enum.PlayerMentorshipStatus.Newcomer then
 					-- Add murloc icon for messages from new players in the newcomer chat
-					s.FLAG = _G.NPEV2_CHAT_USER_TAG_NEWCOMER
+					s.FLAG = NPEV2_CHAT_USER_TAG_NEWCOMER
 				end
 			else
 				s.FLAG = _G["CHAT_FLAG_" .. arg6]
@@ -490,13 +473,13 @@ function SplitChatMessage(frame, event, ...)
 			s.Ff = ""
 		end
 
-		if not isSecret and arg12 and _G.C_ChatInfo.IsTimerunningPlayer and _G.C_ChatInfo.IsTimerunningPlayer(arg12) then
-			s.TIMERUNNER = _G.CreateAtlasMarkup("timerunning-glues-icon", 12, 12)
+		if not isSecret and arg12 and C_ChatInfo.IsTimerunningPlayer and C_ChatInfo.IsTimerunningPlayer(arg12) then
+			s.TIMERUNNER = CreateAtlasMarkup("timerunning-glues-icon", 12, 12)
 		else
 			s.TIMERUNNER = ""
 		end
 
-		if arg15 then
+		if arg14 then
 			s.MOBILE = ChatFrame_GetMobileEmbeddedTexture(info.r, info.g, info.b)
 		end
 
@@ -529,8 +512,8 @@ function SplitChatMessage(frame, event, ...)
 			if chatGroup == "BN_CONVERSATION" then
 				s.cC = "["
 				s.Cc = "] "
-				s.CHANNELNUM = tostring(_G.MAX_WOW_CHAT_CHANNELS + arg8)
-				s.CHANNEL = _G.CHAT_BN_CONVERSATION_SEND:match("%[%%d%. (.*)%]")
+				s.CHANNELNUM = tostring(MAX_WOW_CHAT_CHANNELS + arg8)
+				s.CHANNEL = CHAT_BN_CONVERSATION_SEND:match("%[%%d%. (.*)%]")
 			elseif arg7 > 0 then
 				s.cC = "["
 				s.Cc = "] "
@@ -544,11 +527,11 @@ function SplitChatMessage(frame, event, ...)
 			elseif chatGroup == "COMMUNITIES_CHANNEL" then
 				s.cC = "["
 				s.Cc = "] "
-				local _chanName = ResolveChannelName(arg4)
-				if _G.issecretvalue and _G.issecretvalue(_chanName) then
+				local _chanName = private.ResolveChannelName(arg4)
+				if issecretvalue and issecretvalue(_chanName) then
 					s.CHANNEL = _chanName
 				else
-					s.CHANNEL = ResolvePrefixedChannelName(arg4):match("%d%.%s+(.+)")
+					s.CHANNEL = private.ResolvePrefixedChannelName(arg4):match("%d%.%s+(.+)")
 				end
 			else
 				if strlen(arg9) > 0 then
@@ -566,17 +549,17 @@ function SplitChatMessage(frame, event, ...)
 		if not isSecret then
 			for tag in string.gmatch(arg1, "%b{}") do
 				term = strlower(string.gsub(tag, "[{}]", ""))
-				if (not arg17 and _G.ICON_TAG_LIST[term] and _G.ICON_LIST[_G.ICON_TAG_LIST[term]]) then
-					s.MESSAGE = string.gsub(s.MESSAGE, tag, _G.ICON_LIST[_G.ICON_TAG_LIST[term]] .. "0|t")
-				elseif (_G.GROUP_TAG_LIST[term]) then
-					local groupIndex = _G.GROUP_TAG_LIST[term]
+				if (not arg17 and ICON_TAG_LIST[term] and ICON_LIST[ICON_TAG_LIST[term]]) then
+					s.MESSAGE = string.gsub(s.MESSAGE, tag, ICON_LIST[ICON_TAG_LIST[term]] .. "0|t")
+				elseif (GROUP_TAG_LIST[term]) then
+					local groupIndex = GROUP_TAG_LIST[term]
 					local groupList = "["
-					for i = 1, _G.GetNumGroupMembers() do
-						local name, _, subgroup, _, _, classFileName = _G.GetRaidRosterInfo(i)
+					for i = 1, GetNumGroupMembers() do
+						local name, _, subgroup, _, _, classFileName = GetRaidRosterInfo(i)
 						if (name and subgroup == groupIndex) then
-							local t = _G.RAID_CLASS_COLORS[classFileName]
+							local t = RAID_CLASS_COLORS[classFileName]
 							name = string.format("\124cff%.2x%.2x%.2x%s\124r", t.r * 255, t.g * 255, t.b * 255, name)
-							groupList = groupList .. (groupList == "[" and "" or _G.PLAYER_LIST_DELIMITER) .. name
+							groupList = groupList .. (groupList == "[" and "" or PLAYER_LIST_DELIMITER) .. name
 						end
 					end
 					groupList = groupList .. "]"
@@ -613,14 +596,14 @@ function SplitChatMessage(frame, event, ...)
 			end
 		end
 
-		s.ACCESSID = not isSecret and _G.ChatHistory_GetAccessID(chatGroup, chatTarget)
-		s.TYPEID = not isSecret and _G.ChatHistory_GetAccessID(type, chatTarget, arg12 or arg13)
+		s.ACCESSID = not isSecret and ChatHistory_GetAccessID(chatGroup, chatTarget)
+		s.TYPEID = not isSecret and ChatHistory_GetAccessID(type, chatTarget, arg12 or arg13)
 
-		SplitMessage.ORG = SplitMessageOrg
+		private.SplitMessage.ORG = SplitMessageOrg
 
 		s.INFO = info
 
-		return SplitMessage, info
+		return private.SplitMessage, info
 	end
 end
 

@@ -39,6 +39,8 @@ globals = {
 	"strlen", -- string.len
 	"strmatch", -- string.match
 	"strsub", -- string.sub
+	"strlower", -- string.lower
+	"strupper", -- string.upper
 	--
 	"tinsert", -- table.insert
 	"tremove", -- table.remove
@@ -48,7 +50,11 @@ globals = {
 	"CHAT_FRAMES",
 	"CUSTOM_CLASS_COLORS",
 	"DEFAULT_CHAT_FRAME",
+	"GROUP_TAG_LIST",
+	"ICON_LIST",
+	"ICON_TAG_LIST",
 	"LE_REALM_RELATION_SAME",
+	"MAX_WOW_CHAT_CHANNELS",
 	"NUM_CHAT_WINDOWS",
 	"RAID_CLASS_COLORS",
 	"SELECTED_CHAT_FRAME",
@@ -59,6 +65,11 @@ globals = {
 
 	-- Global Strings
 	"ACCEPT",
+	"CHAT_BN_CONVERSATION_SEND",
+	"CHAT_TRIAL_RESTRICTED_NOTICE_TRIAL",
+	"NPEV2_CHAT_USER_TAG_GUIDE",
+	"NPEV2_CHAT_USER_TAG_NEWCOMER",
+	"PLAYER_LIST_DELIMITER",
 	"TIME_DAYHOURMINUTESECOND",
 	"UNKNOWN",
 
@@ -85,6 +96,7 @@ globals = {
 	"FCF_MaximizeFrame",
 	"FCF_SetChatWindowFontSize",
 	"FCF_SetWindowName",
+	"FCFManager_ShouldSuppressMessage",
 	"GameFontNormal",
 	"GameTooltip",
 	"SlashCmdList",
@@ -94,6 +106,7 @@ globals = {
 	"UIParentLoadAddOn",
 
 	-- Enums
+	"Constants.ChatFrameConstants.MaxChatChannels",
 	"Constants.ChatFrameConstants.MaxChatWindows",
 	"ChatFrameConstants.TruncatedCommunityNameLength",
 	"ChatFrameConstants.TruncatedCommunityNameWithoutChannelLength",
@@ -101,16 +114,23 @@ globals = {
 	"Enum.ClubStreamType.General",
 	"Enum.ClubStreamType.Guild",
 	"Enum.ClubStreamType.Officer",
+	"Enum.PlayerMentorshipStatus.Mentor",
+	"Enum.PlayerMentorshipStatus.Newcomer",
 
 	-- Utils
+	"Chat_GetChatCategory",
 	"Chat_GetChatFrame",
 	"ChatEdit_DeactivateChat",
 	"ChatEdit_OnEscapePressed",
 	"ChatFrame_AddMessageGroup",
+	"ChatFrame_GetMentorChannelStatus",
+	"ChatFrame_GetMessageEventFilters",
+	"ChatFrame_GetMobileEmbeddedTexture",
 	"ChatFrame_ReceiveAllPrivateMessages",
 	"ChatFrame_RemoveAllChannels",
 	"ChatFrame_RemoveAllMessageGroups",
 	"ChatFrame_AddCommunitiesChannel",
+	"ChatHistory_GetAccessID",
 	--
 	"ChatFrameMixin.AddMessageGroup",
 	"ChatFrameMixin.ReceiveAllPrivateMessages",
@@ -119,16 +139,23 @@ globals = {
 	--
 	"ChatFrameUtil.AddCommunitiesChannel",
 	"ChatFrameUtil.DeactivateChat",
+	"ChatFrameUtil.GetChatCategory",
 	"ChatFrameUtil.GetChatFrame",
+	"ChatFrameUtil.GetMentorChannelStatus",
+	"ChatFrameUtil.GetMobileEmbeddedTexture",
+	"ChatFrameUtil.ProcessMessageEventFilters",
 	"ChatFrameUtil.ProcessSenderNameFilters",
 	"ChatFrameUtil.TruncateToMaxLength",
 	--
 	"TimerunningUtil.AddSmallIcon",
 
 	-- Lua API
+	"C_BattleNet.GetAccountInfoByID",
+	"C_ChatInfo.GetChannelRulesetForChannelID",
 	"C_ChatInfo.IsTimerunningPlayer",
 	"C_ClassColor.GetClassColor",
 	"C_Club.GetClubInfo",
+	"C_Club.GetInfoFromLastCommunityChatLine",
 	"C_Club.GetStreamInfo",
 	"C_EncodingUtil.DecodeBase64",
 	"C_EncodingUtil.DeserializeCBOR",
@@ -138,6 +165,8 @@ globals = {
 	"issecretvalue",
 	"issecurevariable",
 	"Ambiguate",
+	"BNGetFriendInfoByID",
+	"CreateAtlasMarkup",
 	"CreateColor",
 	"CreateFrame",
 	"GetAverageItemLevel",
