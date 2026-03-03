@@ -230,7 +230,7 @@ end
     local type = Prat.CurrentMessage.CHATTYPE
     if type == "WHISPER_INFORM" then return end
 
-    if theirPlayerGuid == "0000000000000000" or not (tostring(theirPlayerGuid):len() > 3) then return end
+    if theirPlayerGuid == "0000000000000000" or tostring(theirPlayerGuid):len() <= 3 then return end
 
     local _, _, _, completed, month, day, year = GetAchievementInfo(theirId)
 
