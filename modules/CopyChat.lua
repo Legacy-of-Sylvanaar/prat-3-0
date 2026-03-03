@@ -483,5 +483,15 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
+	function module:OnValueChanged()
+		for k, v in pairs(Prat.Frames) do
+			local cf = _G["ChatFrame" .. v:GetID()]
+			local btn = self.buttons[k]
+			btn:ClearAllPoints()
+			btn:SetPoint(self.db.profile.buttonpos, cf, self.db.profile.buttonpos, 0, 0)
+			btn:SetAlpha(module.db.profile.inactivealpha)
+		end
+	end
+
 	return
 end)
