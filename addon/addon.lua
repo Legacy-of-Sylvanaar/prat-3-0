@@ -270,7 +270,7 @@ function addon:OnEnable()
 
 	Prat.RegisterLinkType({
 		linkid = "rldui",
-		linkfunc = function(...)
+		linkfunc = function()
 			ReloadUI()
 			return false
 		end
@@ -327,14 +327,14 @@ function addon:FCF_SetTemporaryWindowType(chatFrame, chatType, chatTarget)
 	Prat.Frames[name] = chatFrame
 	Prat.HookedFrames[name] = chatFrame
 	if _G["ChatFrameMixin"] and _G["ChatFrameMixin"].MessageEventHandler then
-		chatFrame.MessageEventHandler = function(self, event, ...)
-			return addon:ChatFrame_MessageEventHandler(self, event, ...)
+		chatFrame.MessageEventHandler = function(frame, event, ...)
+			return addon:ChatFrame_MessageEventHandler(frame, event, ...)
 		end
 	end
 
 	if ChatFrameMixin and ChatFrameMixin.MessageEventHandler then
-		chatFrame.MessageEventHandler = function(self, event, ...)
-			return addon:ChatFrame_MessageEventHandler(self, event, ...)
+		chatFrame.MessageEventHandler = function(frame, event, ...)
+			return addon:ChatFrame_MessageEventHandler(frame, event, ...)
 		end
 	end
 
@@ -375,8 +375,8 @@ function addon:PostEnable()
 		self:RawHook("ChatFrame_MessageEventHandler", true)
 	elseif ChatFrameMixin and ChatFrameMixin.MessageEventHandler then
 		for _, v in pairs(Prat.HookedFrames) do
-			v.MessageEventHandler = function(self, event, ...)
-				return addon:ChatFrame_MessageEventHandler(self, event, ...)
+			v.MessageEventHandler = function(frame, event, ...)
+				return addon:ChatFrame_MessageEventHandler(frame, event, ...)
 			end
 		end
 	end
@@ -554,7 +554,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 	end
 
 	if strsub(event, 1, 8) == "CHAT_MSG" and ChatFrameUtil and ChatFrameUtil.ProcessMessageEventFilters then
-		local shouldDiscardMessage = false
+		local shouldDiscardMessage
 		shouldDiscardMessage, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14 =
 			ChatFrameUtil.ProcessMessageEventFilters(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
 		if shouldDiscardMessage then
@@ -674,7 +674,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
 			if (not this:IsShown()) then
 				if ((this == DEFAULT_CHAT_FRAME and m.INFO.flashTabOnGeneral) or (this ~= DEFAULT_CHAT_FRAME and m.INFO.flashTab)) then
-					if ((CHAT_OPTIONS and not CHAT_OPTIONS.HIDE_FRAME_ALERTS) or m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then
+					if (m.CHATTYPE == "WHISPER" or m.CHATTYPE == "BN_WHISPER") then
 						if (not FCFManager_ShouldSuppressMessageFlash(this, m.CHATGROUP, m.CHATTARGET)) then
 							FCF_StartAlertFlash(this);
 						end

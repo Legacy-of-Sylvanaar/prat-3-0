@@ -1,7 +1,6 @@
 local _, private = ...
 
 local pairs = pairs
-local GetTime = GetTime
 
 local acr = LibStub("AceConfigRegistry-3.0")
 local acd = LibStub("AceConfigDialog-3.0")
