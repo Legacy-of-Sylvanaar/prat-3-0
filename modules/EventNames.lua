@@ -160,7 +160,7 @@ L = {}
   --[[------------------------------------------------
     Core Functions
   ------------------------------------------------]] --
-  function module:OnValueChanged(...)
+  function module:OnValueChanged()
     self:SetAllEvents(self.db.profile.allevents)
   end
 
@@ -184,7 +184,7 @@ L = {}
 
     local desat = 192 * 0.7 + 63
     local c
-    function module:Prat_PreAddMessage(arg, message, frame, event, t, r, g, b)
+    function module:Prat_PreAddMessage(_, message, frame, event, _, r, g, b)
       if self.db.profile.show[frame:GetName()] then
         c = ("%02x%02x%02x"):format((r or 1.0) * desat, (g or 1.0) * desat, (b or 1.0) * desat)
         message.POST = "  " .. EventBrackets("(") .. EventName(tostring(event), c) .. EventBrackets(")")

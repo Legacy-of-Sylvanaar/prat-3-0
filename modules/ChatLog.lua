@@ -166,7 +166,7 @@ end
   end
 
   -- enable or disable the chat log
-  function module:SetChatLog(info, val)
+  function module:SetChatLog(_, val)
     self.db.profile.chat = val
     if self.db.profile.chat then
       self:Print(PL["Chat Log: Enabled"])
@@ -179,7 +179,7 @@ end
   end
 
   -- enable or disable the combat log
-  function module:SetCombatLog(info, val)
+  function module:SetCombatLog(_, val)
     self.db.profile.combat = val
     if self.db.profile.combat then
       self:Print(PL["Combat Log: Enabled"])

@@ -277,14 +277,14 @@ end
     self:RemoveHooks()
   end
 
-  function module:Prat_FramesUpdated(info, name, chatFrame, ...)
+  function module:Prat_FramesUpdated()
     self:UpdateHighlightTabsConfig()
-    for k, v in pairs(Prat.Frames) do
+    for _, v in pairs(Prat.Frames) do
       self:ShowHideTabTextures(v)
     end
   end
 
-  function module:Prat_FramesRemoved(info, name, chatFrame)
+  function module:Prat_FramesRemoved()
     self:UpdateHighlightTabsConfig()
   end
   --[[------------------------------------------------
@@ -393,7 +393,7 @@ end
   end
 
   function module:RemoveHooks()
-    for k, v in pairs(Prat.Frames) do
+    for k, _ in pairs(Prat.Frames) do
       local cftab = _G[k .. "Tab"]
       cftab:SetScript("OnShow", function() return end)
       cftab:SetScript("OnHide", function() return end)
@@ -402,16 +402,11 @@ end
     self:UnhookAll()
   end
 
-  function module:OnValueChanged(info, b)
-    --	if info[#info]:find("alpha") then
-    --
-    --		return
-    --	end
-
+  function module:OnValueChanged()
     self:UpdateAllTabs()
   end
 
-  function module:OnSubValueChanged(info, b)
+  function module:OnSubValueChanged()
     self:UpdateAllTabs()
   end
 
@@ -478,9 +473,6 @@ end
   end
 
   function module:OnTabHide(tab, ...)
-    local p = self.db.profile
-    local i = tab:GetID()
-
     if self.db.profile.displaymode["ChatFrame" .. tab:GetID()] == true then
       tab:Show()
     end
@@ -581,11 +573,10 @@ end
       else
         local tabButton = _G[chatFrame:GetName() .. "Tab"]
         if not self:IsHooked(tabButton, "OnClick") then
-          self:HookScript(tabButton, "OnClick", function(tabButton)
-            local frameName = "ChatFrame" .. tabButton:GetID()
+          self:HookScript(tabButton, "OnClick", function(tabButtonSelf)
+            local frameName = "ChatFrame" .. tabButtonSelf:GetID()
             if self.chatAlertCleanupActions[frameName] then
-              local actions = self.chatAlertCleanupActions[frameName]
-              for _, a in ipairs(actions) do
+              for _, a in ipairs(self.chatAlertCleanupActions[frameName]) do
                 a()
               end
               self.chatAlertCleanupActions[frameName] = nil

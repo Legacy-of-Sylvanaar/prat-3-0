@@ -140,7 +140,7 @@ end
   end
 
   local showingTooltip = false
-  function module:OnHyperlinkEnter(f, link, text)
+  function module:OnHyperlinkEnter(_, link, text)
     local linkType = link:match("^([^:]+):")
     -- Prevent NPC tooltips leaving health bars behind or remaining behind
     -- battle pet tooltips

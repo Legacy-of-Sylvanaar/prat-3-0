@@ -157,7 +157,7 @@ L = {}
 
   -- things to do when the module is disabled
   function module:OnModuleDisable()
-    for k, v in pairs(Prat.HookedFrames) do
+    for _, v in pairs(Prat.HookedFrames) do
       self:Fade(v, true)
     end
   end
@@ -167,7 +167,7 @@ L = {}
     self:Fade(chatFrame, self.db.profile.textfade[name])
   end
 
-  function module:OnValueChanged(...)
+  function module:OnValueChanged()
     for k, v in pairs(Prat.HookedFrames) do
       self:Fade(v, self.db.profile.textfade[k])
     end

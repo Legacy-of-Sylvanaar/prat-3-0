@@ -151,7 +151,7 @@ Prat:AddModuleToLoad(function()
 		["CHAT_MSG_CHANNEL"] = true,
 	}
 
-	local function Invite(text, ...)
+	local function Invite(text)
 		if module.db.profile.linkinvite then
 			return module:ScanForLinks(text, Prat.SplitMessage.PLAYERLINK)
 		end

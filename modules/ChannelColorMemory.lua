@@ -153,7 +153,7 @@ L = {}
   end
 
   function module:IndexServerChannels()
-    for k, v in pairs(Prat.HookedFrames) do
+    for _, v in pairs(Prat.HookedFrames) do
       local t = { GetChatWindowChannels(v:GetID()) }
       for i = 1, #t, 2 do
         local chan, num = t[i], t[i + 1]
@@ -165,7 +165,7 @@ L = {}
   end
 
   function module:RestoreAllChatColors()
-    for k, v in pairs(Prat.HookedFrames) do
+    for _, v in pairs(Prat.HookedFrames) do
       local t = { GetChatWindowChannels(v:GetID()) }
       for i = 1, #t, 2 do
         local chan, num = t[i], t[i + 1]
@@ -200,16 +200,15 @@ L = {}
   end
 
 
-  function module:UPDATE_CHAT_COLOR(evt, ChatType, cr, cg, cb)
+  function module:UPDATE_CHAT_COLOR(_, ChatType, cr, cg, cb)
     if (ChatType) then
       local number = ChatType:match("CHANNEL(%d+)")
       if (number) then
         local _, name = Prat.GetChannelName(number);
         if (name) then
-          local name, zoneSuffix = name:match(PL["(%w+)%s?(.*)"]);
+			local zoneSuffix
+          name, zoneSuffix = name:match(PL["(%w+)%s?(.*)"]);
           if zoneSuffix and zoneSuffix:len() > 0 then
-            local cname = name
-
             name = getServerChan(name)
           end
 
@@ -228,8 +227,7 @@ L = {}
     end
   end
 
-  function module:CHAT_MSG_CHANNEL_NOTICE(evt, NoticeType, Sender, Language, LongName, Target, Flags, ServChanID,
-  number, cname, unknown, counter)
+  function module:CHAT_MSG_CHANNEL_NOTICE(_, NoticeType, _, _, _, _, _, ServChanID, number, cname)
     if tonumber(ServChanID) > 0 then
       cname = self.zoneChanIdx[tostring(ServChanID)]
 

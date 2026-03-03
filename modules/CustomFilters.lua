@@ -168,7 +168,7 @@ end
 
   local eventTypes = {}
   local function getTypes()
-    for k, v in pairs(ChatTypeGroup) do
+    for k, _ in pairs(ChatTypeGroup) do
       eventTypes[k] = _G["CHAT_MSG_" .. k]
     end
     for _, v in ipairs(Prat.GetChannelTable()) do
@@ -205,7 +205,7 @@ end
   end
 
   local newmap = {}
-  for i, v in ipairs(eventMap) do
+  for _, v in ipairs(eventMap) do
     newmap[v] = v
   end
 
@@ -325,7 +325,6 @@ end
 
 
   function module:BuildModeOptions(mode, opts)
-    local mode = mode
     local po = opts[mode].args
 
 
@@ -361,14 +360,14 @@ end
       name = PL["Remove Pattern"],
       desc = PL["Remove an existing pattern."],
       type = "select",
-      get = function(info) return "" end,
+      get = function() return "" end,
       set = "RemovePattern",
       values = self[mode].validate,
       disabled = function(info)
-        local mode = info[#info - 1]
-        for k, v in pairs(info.handler.db.profile[mode]) do
+        for _, _ in pairs(info.handler.db.profile[info[#info - 1]]) do
           return false
-        end return true
+        end
+		return true
       end,
     }
   end
@@ -382,8 +381,6 @@ end
     o[key] = o[key] or {}
     local po = o[key]
     local settings = self.db.profile[mode][key]
-    local mode = mode
-    local pattern = pattern
     po.type = "group"
     po.name = pattern
     po.desc = pattern
@@ -601,8 +598,6 @@ end
 
 
   function module:RegisterPattern(matchopts, mode)
-    local mode = mode
-    local matchopts = matchopts
     local matchtype
     if mode == "inbound" then
       matchtype = "FRAME"
@@ -613,9 +608,7 @@ end
       pattern = matchopts.searchfor,
       matchopts = matchopts,
       matchfunc =
-      function(text, ...)
-        local mode = mode
-        local matchopts = matchopts
+      function(text)
         return match(text, matchopts, mode)
       end,
       type = matchtype,
@@ -663,7 +656,6 @@ end
     if patterninfo == nil then return end
 
     local mode
-    local matchopts = matchopts
     if patterninfo.type == "FRAME" then
       mode = "inbound"
     else
@@ -702,7 +694,7 @@ end
 
 
       local modeOpts = modeOptions.mode
-      for k, v in pairs(modeOpts) do
+      for k, _ in pairs(modeOpts) do
         self:BuildModeOptions(k, modeOpts)
       end
 
@@ -715,10 +707,8 @@ end
   function module:OnModuleEnable()
     self.modulePatterns = {}
     local modeOpts = modeOptions.mode
-    local mode
     for mode, _ in pairs(modeOpts) do
       if type(self.db.profile[mode]) == "table" then
-        local patopts
         for _, patopts in pairs(self.db.profile[mode]) do
           if patopts.enabled then
             self:RegisterPattern(patopts, mode)
@@ -737,7 +727,7 @@ end
     Prat.UnregisterAllChatEvents(self)
   end
 
-  function module:Prat_PostAddMessage(info, message, frame, event, text, r, g, b, id)
+  function module:Prat_PostAddMessage(_, message, _, event, text, r, g, b)
     local uid = message.LINE_ID
     if uid and
       uid == self.lastevent and
@@ -803,7 +793,6 @@ end
     self.db.profile[info[#info - 2]][info[#info - 1]][info[#info]] = v
   end
 
-  local defclr = { r = 1, b = 1, g = 1, a = 1 }
   function module:GetPatternColorValue(info)
     local c = self.db.profile[info[#info - 2]][info[#info - 1]][info[#info]]
     if c == nil then
@@ -897,7 +886,7 @@ end
     local mode = info[#info - 1]
     local p = self.db.profile[mode]
 
-    for k, v in pairs(p) do
+    for _, v in pairs(p) do
       if v.name == pattern then
         return
       end
@@ -933,12 +922,10 @@ end
   function module:RemovePattern(info, pattern)
     local mode = info[#info - 1]
     local p = self.db.profile[mode]
-
-    local v = self[mode].validate
     local key, name
 
     if type(pattern) == "number" then
-      name = v[pattern]
+      name = self[mode].validate[pattern]
     else
       name = pattern
     end

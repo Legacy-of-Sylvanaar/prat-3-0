@@ -543,30 +543,7 @@ L = {}
 
     self:HookTooltip()
 
-    -- hack 'n' slash
-    local slashcmds = {
-      '/altnames',
-      '/alts',
-      '/alt',
-    }
-
-    --Prat:RegisterChatCommand(slashcmds, self.moduleOptions, string.upper("AltNames"))
-
-    --self:SecureHook("UnitPopup_OnClick")
-    --self:SecureHook("UnitPopup_ShowMenu")
-
-    --Prat:RegisterDropdownButton("LINK_ALT")
-
-    -- add the bits to the context menus
-    --    UnitPopupButtons['LINK_ALT'] = { text = "Set Main", func = function() module:UnitPopup_LinkAltOnClick() end, arg1 = "", arg2 = "" }
-
     if not self.menusAdded then
-      --      tinsert(UnitPopupMenus['PARTY'], #UnitPopupMenus['PARTY'] - 1, 'LINK_ALT')
-      --      tinsert(UnitPopupMenus['FRIEND'], #UnitPopupMenus['FRIEND'] - 1, 'LINK_ALT')
-      --      tinsert(UnitPopupMenus['SELF'], #UnitPopupMenus['SELF'] - 1, 'LINK_ALT')
-      --      tinsert(UnitPopupMenus['PLAYER'], #UnitPopupMenus['PLAYER'] - 1, 'LINK_ALT')
-      -- tinsert(UnitPopupMenus['TARGET'], getn(UnitPopupMenus['TARGET'])-1, 'LINK_ALT')
-
       self.menusAdded = true
     end
 
@@ -574,8 +551,8 @@ L = {}
       self:AutoImportGuildAlts(true)
     end
 
-    altregistry.RegisterCallback(self, "LibAlts_SetAlt", function(event, main, alt, source) self:addAlt(alt .. " " .. main, true) end)
-    altregistry.RegisterCallback(self, "LibAlts_RemoveAlt", function(event, main, alt, sources) self:delAlt(alt, true) end)
+    altregistry.RegisterCallback(self, "LibAlts_SetAlt", function(_, main, alt) self:addAlt(alt .. " " .. main, true) end)
+    altregistry.RegisterCallback(self, "LibAlts_RemoveAlt", function(_, _, alt) self:delAlt(alt, true) end)
   end
 
   function module:AutoImportGuildAlts(b)
@@ -711,16 +688,6 @@ L = {}
     return clrname(altname, altcolour)
   end
 
-  local clralts = function(alts, altcolour)
-    if not alts or (type(alts) ~= 'table') or (#alts == 0) then return false end
-
-    for mainname, altname in pairs(alts) do
-      alts[mainname] = clralt(module:formatCharName(altname))
-    end
-
-    return alts
-  end
-
   function module:formatCharName(name)
     -- format character names as having uppercase first letter followed by all lowercase
 
@@ -744,7 +711,6 @@ L = {}
     local mainname
 
     local altname = ""
-    local args = {}
 
     -- check we've been passed somethin
     if (argstr == nil) or (argstr == "") then
@@ -846,9 +812,6 @@ L = {}
   end
 
   function module:findChars(q)
-    local numfound
-
-    local matchhighlight
 
     if not self.Alts then
       self:print(PL["You have not yet linked any alts with their mains."], true)
@@ -942,7 +905,7 @@ L = {}
   end
 
   local playernames
-  function module:Prat_PreAddMessage(e, message, frame, event)
+  function module:Prat_PreAddMessage(_, message)
     local hexcolour = CLR.NONE
 
     local mainname = message.PLAYERLINK
@@ -950,9 +913,6 @@ L = {}
     local altname = isAlt(mainname) or isAlt(Ambiguate(mainname, "all"))
 
     if self.db.profile.on and altname then
-      local pres = message.PRESENCE_ID or 0
-
-
       local padfmt = self.padfmt or ' (%s)'
 
 
@@ -972,7 +932,7 @@ L = {}
 
           playernames = playernames or Prat:GetModule("PlayerNames")
           if charname then
-            local class, level, subgroup = playernames:GetData(charname)
+            local class = playernames:GetData(charname)
             if class then
               hexcolour = playernames:GetClassColor(class)
             end
@@ -990,7 +950,7 @@ L = {}
     end
   end
 
-  function module:getColour(r, g, b, a)
+  function module:getColour()
     local col = self.db.profile.colour
     -- We check every component as old profiles from before 10.0 with a default
     -- colour had them all nil. In 10.0 SetVertexColor requires non-nil colour
@@ -1037,8 +997,6 @@ L = {}
 
     for k, v in pairs(GLDG_Data) do
       if string.match(k, servername .. ' - %S+') then
-        local name, player
-
         for name, player in pairs(v) do
           -- not sure whether this would be useful:
           -- if player['alt'] and player['alt'] ~= "" and not player['own'] then
@@ -1071,12 +1029,12 @@ L = {}
     local guildMembers = {}
 
     for x = 1, totalmembers do
-      local name, rank, rankIndex, level, class, zone, publicnote, officernote, online, status = GetGuildRosterInfo(x)
+      local name = GetGuildRosterInfo(x)
       if name then
         --since GetGuildRosterInfo returns Playername-Realm we need to trim Realmname
         --later we can compare Playername with officernote/publicnote
         --nobody is typing Playername with realm into the notes
-        local shortname, realm = strsplit("-", name, 2)
+        local shortname, _ = strsplit("-", name, 2)
         guildMembers[string.lower(shortname)] = shortname
       end
     end
@@ -1091,7 +1049,7 @@ L = {}
       altname = nil
       mainname = nil
 
-      local name, rank, rankIndex, level, class, zone, publicnote, officernote, online, status = GetGuildRosterInfo(x)
+      local name, rank, _, _, _, _, publicnote, officernote = GetGuildRosterInfo(x)
 
       -- yeah I know the vars should be pre-lc'ed and it's not as efficient as it could be below
       -- ... feel free to clean it up
@@ -1232,7 +1190,7 @@ L = {}
     local index = 1
 
     -- create a copy of the table with a numerical and no nested tables
-    for i, v in pairs(t) do
+    for _, v in pairs(t) do
       local vtype = type(v)
       local item = self:formatCharName(v)
 
@@ -1297,14 +1255,13 @@ L = {}
     -- check to see if it's a character
     if UnitIsPlayer(unitid) then
       -- create lines table for extra information that might be added
-      local lines = {}
-      local charname, realm = UnitName(unitid)
+      local charname = UnitName(unitid)
 
-      local mainname, alts, tooltipaltered
+      local tooltipaltered
 
       -- check if the user wants the mainame name shown on alts' tooltips
       if self.db.profile.tooltip_showmain then
-        local mainame = self:getMain(charname)
+        local mainname = self:getMain(charname)
 
         if mainname then
           -- add the character's main name to the tooltip

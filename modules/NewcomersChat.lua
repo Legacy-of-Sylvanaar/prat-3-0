@@ -257,7 +257,7 @@ L = {}
     end
   end
 
-  function module:Prat_FrameMessage(info, message, frame, event)
+  function module:Prat_FrameMessage(_, message)
     local arg6 = message.ARGS[6] or ""
 
     if arg6 ~= "GUIDE" and arg6 ~= "NEWCOMER" then

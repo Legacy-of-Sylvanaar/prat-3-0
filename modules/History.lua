@@ -259,9 +259,9 @@ L = {}
   end
 
   function module:ConfigureAllChatFrames(lines)
-    local lines = lines or self.db.profile.chatlines
+    lines = lines or self.db.profile.chatlines
 
-    for k, v in pairs(self.db.profile.chatlinesframes) do
+    for k, _ in pairs(self.db.profile.chatlinesframes) do
       self:SetHistory(_G[k], lines)
     end
 
@@ -297,7 +297,7 @@ L = {}
   end
 
   function module:addSavedHistory(editBox)
-    local editBox = editBox or ChatFrame1EditBox
+    editBox = editBox or ChatFrame1EditBox
     local cmdhistory = Prat3CharDB.history.cmdhistory[editBox:GetName()] or {}
     local cmdindex = #cmdhistory
 

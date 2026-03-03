@@ -277,7 +277,8 @@ end
   end
 
   local function string_split(text, sep, pattern)
-    local sep, fields = sep or " ", {}
+	  sep = sep or ""
+    local fields = {}
     local patt = pattern or ("([^%s]+)"):format(sep)
     text:gsub(patt, function(c) fields[#fields + 1] = c:lower() end)
     return fields
@@ -293,7 +294,7 @@ end
     id = tonumber(id)
     local text = self.lineTable[id]
     local prob = self.classifier.getprob(tokenize(text))
-    for i,v in ipairs(frame.visibleLines) do
+    for _,v in ipairs(frame.visibleLines) do
       local mi = v.messageInfo
       local m = mi.message
       if m:match(("pratfilter:%d"):format(id)) then
@@ -366,11 +367,10 @@ end
     CHAT_MSG_CHANNEL = true
   }
 
-  function module:Prat_FrameMessage(arg, message, frame, event)
+  function module:Prat_FrameMessage(_, message, _, event)
     if self.db.profile.useai and  eventsToHandle[event] and message.GUID ~= UnitGUID("player") then
       local msg = tokenize(message.ORG.MESSAGE)
       local prob = self.classifier.getprob(msg)
-      local isHam = prob <= HAM_CUTOFF
       local isSpam = prob >= SPAM_CUTOFF
       if self.db.profile.training then
         self.lineTable[message.LINE_ID] = message.ORG.MESSAGE

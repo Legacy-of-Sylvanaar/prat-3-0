@@ -443,7 +443,7 @@ end
     self.db.profile.nickname[info[#info - 1]] = name
   end
 
-  function module:RemoveNickname(info, name)
+  function module:RemoveNickname(info)
     if self.db.profile.nickname[info[#info - 1]] then
       self.db.profile.nickname[info[#info - 1]] = nil
     end
@@ -458,7 +458,7 @@ end
   end
 
   -- replace text using prat event implementation
-  function module:Prat_FrameMessage(arg, message, frame, event)
+  function module:Prat_FrameMessage(_, message, _, event)
     --    if message.TYPEPREFIX:len()>0 and message.TYPEPOSTFIX:len()>0 then
 
     if event == "CHAT_MSG_CHANNEL_JOIN" or event == "CHAT_MSG_CHANNEL_LEAVE" then
@@ -519,7 +519,7 @@ end
     end
 
     local t = Prat.GetChannelTable()
-    for k, v in pairs(t) do
+    for _, v in pairs(t) do
       if type(v) == "string" then
         self:CreateChanNickOption(nickPlugins["nicks"], v)
       end
@@ -640,7 +640,7 @@ end
       end
     end
 
-    function module:CreateChannelOption(args, keyname, keynum)
+    function module:CreateChannelOption(args, keyname)
       if not args[keyname] then
         args[keyname] = optionGroupChan
       end

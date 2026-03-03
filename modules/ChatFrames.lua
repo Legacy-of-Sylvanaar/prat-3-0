@@ -187,7 +187,7 @@ end
       Module Event Functions
   ------------------------------------------------]] --
 
-  Prat:SetModuleInit(module, function(self) module:GetDefaults() end)
+  Prat:SetModuleInit(module, function() module:GetDefaults() end)
 
   function module:OnModuleEnable()
     CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0
@@ -351,8 +351,8 @@ end
     end
   end
 
-  function module:FCF_SetWindowAlpha(frame, a)
-    local _, _, r, g, b, a = FCF_GetChatWindowInfo(frame:GetID())
+  function module:FCF_SetWindowAlpha(frame)
+    local _, _, _, _, _, a = FCF_GetChatWindowInfo(frame:GetID())
     if frame.PratTextures then
       for _, texture in ipairs(frame.PratTextures) do
         texture:SetAlpha(a)

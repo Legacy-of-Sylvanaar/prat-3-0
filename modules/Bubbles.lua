@@ -206,7 +206,7 @@ end
     end
   end
 
-  function module:OnValueChanged(info, b)
+  function module:OnValueChanged()
     self:RestoreDefaults()
 
     self:APLyOptions()
@@ -225,9 +225,6 @@ end
 
     self:IterateChatBubbles("RestoreDefaultsCallback")
   end
-
-  local MAX_CHATBUBBLE_WIDTH = 300
-
 
   local textureUVs = {
     "TopLeftCorner", "TopRightCorner",
@@ -262,7 +259,7 @@ end
     end
 
     if self.font then
-      local a, b, c = fontstring:GetFont()
+      local _, _, c = fontstring:GetFont()
 
       fontstring:SetFont(ChatFrame1:GetFont(), self.fontsize, c)
     end

@@ -265,7 +265,7 @@ end
     Prat.UnregisterAllChatEvents(self)
   end
 
-  function module:addGrats(name, group, channel, achievementId, m)
+  function module:addGrats(name, group, channel, achievementId)
     if self.db.profile.showGratsLink then
       return " " .. buildGratsLink(name, group, channel, achievementId)
     end
@@ -282,7 +282,7 @@ end
   end
 
   function module:OnGratsLink(link)
-    local theirName, group, channel, id = strsub(link, gratsLinkType:len() + 2):match("([^:]*):([^:]*):([^:]*):([^:]*)")
+    local theirName, group, _, id = strsub(link, gratsLinkType:len() + 2):match("([^:]*):([^:]*):([^:]*):([^:]*)")
 
     local grats
 
@@ -291,7 +291,7 @@ end
     else
       id = tonumber(id)
 
-      local id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuildAch, wasEarnedByMe, earnedBy = GetAchievementInfo(id)
+      local _, _, _, _, _, _, _, _, _, _, _, _, wasEarnedByMe = GetAchievementInfo(id)
 
       local gratsVariants = wasEarnedByMe and gratsVariantsHave or gratsVariantsDontHave
 
@@ -315,7 +315,7 @@ end
     return false
   end
 
-  function module:Prat_FrameMessage(info, message, frame, event)
+  function module:Prat_FrameMessage(_, message, _, event)
     if self.db.profile.dontShowAchievements and event == "CHAT_MSG_GUILD_ACHIEVEMENT" then
       message.DONOTPROCESS = true
     end

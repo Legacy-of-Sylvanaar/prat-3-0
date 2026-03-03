@@ -200,7 +200,6 @@ end
   --[[------------------------------------------------
     Module Event Functions
   ------------------------------------------------]] --
-  local fmt = _G.string.format
 
   function module:GetDescription()
     return PL["Chat window button options."]
@@ -251,7 +250,7 @@ end
   end
 
   function module:MarkButtonFramesDirty()
-    for name, frame in pairs(Prat.Frames) do
+    for _, frame in pairs(Prat.Frames) do
       if frame.buttonFrame and frame.buttonFrame.IsLayoutFrame and frame.buttonFrame:IsLayoutFrame() then
         frame.buttonFrame:MarkDirty()
       end
@@ -274,7 +273,7 @@ end
     end
   end
 
-  function module:OnValueChanged(info, b)
+  function module:OnValueChanged()
     self:APLyAllSettings()
   end
 
@@ -331,7 +330,7 @@ end
   function module:HideButtons()
     self:UpdateMenuButtons()
 
-    local upButton, downButton, bottomButton, min
+    local upButton, downButton, bottomButton
 
     for name, frame in pairs(Prat.Frames) do
       if not Prat.IsRetail then
@@ -400,7 +399,7 @@ end
             end)
 
           min:SetScript("OnClick",
-            function(self)
+            function()
               FCF_MinimizeFrame(frame, strupper(frame.buttonSide))
             end)
 
@@ -441,7 +440,7 @@ end
   --[[ - - ------------------------------------------------
     Core Functions
   --------------------------------------------- - ]] --
-  function module:FCF_SetButtonSide(chatFrame, buttonSide)
+  function module:FCF_SetButtonSide(chatFrame)
     local f = _G[chatFrame:GetName() .. "ButtonFrameBottomButton"]
     local bf = _G[chatFrame:GetName() .. "ButtonFrame"]
 
@@ -527,7 +526,7 @@ end
   end
 
   --function module:AddMessage(frame, text, ...)
-  function module:Prat_PostAddMessage(info, message, frame, event, text, r, g, b, id)
+  function module:Prat_PostAddMessage(_, _, frame)
     local button = _G[frame:GetName() .. "ButtonFrameBottomButton"]
 
     if not button then return end
