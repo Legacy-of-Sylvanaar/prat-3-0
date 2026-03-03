@@ -141,12 +141,6 @@ PL:AddLocale("zhTW",  L)
 end
 --@end-non-debug@]===]
 
-  local toggleOption = {
-    name = function(info) return info.handler.PL[info[#info] .. "_name"] end,
-    desc = function(info) return info.handler.PL[info[#info] .. "_desc"] end,
-    type = "toggle",
-  }
-
   Prat:SetModuleOptions(module.name, {
     name = PL.module_name,
     desc = PL.module_desc,
@@ -193,7 +187,6 @@ end
     whisperMode = "CVar",
     chatStyle = "CVar",
     wholeChatWindowClickable = "CVarBool",
-    whisperMode = "CVar",
     blockChannelInvites = "CVarBool"
   }
 
@@ -303,7 +296,7 @@ end
     if db.minimized then
       FCF_MinimizeFrame(f, "LEFT")
       f.minFrame:ClearAllPoints()
-      for i,v in ipairs(db.minframe) do
+      for _,v in ipairs(db.minframe) do
         local point, relativeTo, relativePoint, xoff, yoff = unpack(v)
         f.minFrame:SetPoint(point, relativeTo and _G[relativeTo], relativePoint, xoff, yoff)
       end
@@ -482,7 +475,7 @@ end
 
     -- restore CVars
     if not self.working.cvars then
-      for k, v in pairs(cvars) do
+      for k, _ in pairs(cvars) do
         local val = db.cvars[k]
         if val ~= nil then
           SetCVar(k, val)
@@ -495,7 +488,7 @@ end
     if Prat.IsClassic then
       -- restore frame appearance and layout
       if not self.working.frames then
-        for k, v in pairs(db.frames) do
+        for k, _ in pairs(db.frames) do
           if not self:LoadFrameSettingsForFrame(k) then
             success = false
           end
@@ -515,7 +508,7 @@ end
 
     -- restore channels and messages to chatframes
     if not self.working.chatframes then
-      for k, v in pairs(db.frames) do
+      for k, _ in pairs(db.frames) do
         if not self:LoadChatSettingsForFrame(k) then
           success = false
         end
@@ -549,7 +542,7 @@ end
     end
   end
 
-  function module:Prat_PreAddMessage(arg, message, frame, event, t, r, g, b)
+  function module:Prat_PreAddMessage(_, message)
     if self.working and ("YOU_CHANGED" == message.NOTICE or "YOU_LEFT" == message.NOTICE) then
       message.DONOTPROCESS = true
     end

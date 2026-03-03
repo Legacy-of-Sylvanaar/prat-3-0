@@ -24,6 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
+local ChatEdit_ChooseBoxForSend = _G.ChatEdit_ChooseBoxForSend or _G.ChatFrameUtil.ChooseBoxForSend
+local ChatEdit_GetActiveWindow = _G.ChatEdit_GetActiveWindow or _G.ChatFrameUtil.GetActiveWindow
 local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 
 Prat:AddModuleToLoad(function()
@@ -536,7 +538,7 @@ end
     return PL["URL formating options."]
   end
 
-  function module:Url_Link(link, frame, ...)
+  function module:Url_Link(link, frame)
     self:ShowUrl(link, frame)
     return false
   end
@@ -552,7 +554,7 @@ end
         hasWideEditBox = 1,
         editBoxWidth = 350,
         preferredIndex = 3,
-        OnShow = function(this, ...)
+        OnShow = function(this)
           this:SetWidth(420)
 
           local editBox = _G[this:GetName() .. "WideEditBox"] or _G[this:GetName() .. "EditBox"]
@@ -569,7 +571,7 @@ end
         OnHide = NOP,
         OnAccept = NOP,
         OnCancel = NOP,
-        EditBoxOnEscapePressed = function(this, ...) this:GetParent():Hide() end,
+        EditBoxOnEscapePressed = function(this) this:GetParent():Hide() end,
         timeout = 0,
         whileDead = 1,
         hideOnEscape = 1
@@ -626,7 +628,7 @@ end
     return returnedLink
   end
 
-  function module:Link(link, ...)
+  function module:Link(link)
     if link == nil then
       return ""
     end
@@ -634,7 +636,7 @@ end
     return self:AddLink(self:RawLink(link))
   end
 
-  function module:LinkwTLD(link, tld, ...)
+  function module:LinkwTLD(link, tld)
     if link == nil or tld == nil then
       return ""
     end

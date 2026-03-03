@@ -108,7 +108,6 @@ Prat:AddModuleToLoad(function()
     ["Fix alts"] = true,
     ["Fix corrupted entries in your list of alt names."] = true,
     ["Class colour"] = true,
-    ["Use class colour (from the PlayerNames module)"] = true,
     ['Show main in tooltip'] = true,
     ["Display a player's main name in the tooltip"] = true,
     ['Show alts in tooltip'] = true,
@@ -478,30 +477,6 @@ L = {}
     }
   })
 
-  --	if Prat:IsModuleActive("PlayerNames") then
-  --		self.moduleOptions['args']['pncol'] = {
-  --			name	= PL["Class colour"],
-  --			desc	= PL["Use class colour (from the PlayerNames module)"],
-  --			type	= "text",
-  --			get     =  function() return self.db.profile.pncol end,
-  --			set	= function(v) self.db.profile.pncol = v end,
-  --			order	= 150,
-  --			validate = {
-  --				['main']	= PL["use class colour of main"],
-  --				['alt']		= PL["use class colour of alt"],
-  --				['no']		= PL["don't use"],
-  --				},
-  --			validateDesc = {
-  --				['main']	= PL["Display main names in the same colour as that of the main's class (taking the data from
-  -- -- the PlayerNames module if it is enabled)"],
-  --				['alt']		= PL["Display main names in the same colour as that of the alt's class (taking the data from
-  -- -- the PlayerNames module if it is enabled)"],
-  --				['no']		= PL["Don't use data from the PlayerNames module at all"],
-  --				},
-  --			}
-  --	end
-  --)
-
 
   --[[------------------------------------------------
       Module Event Functions
@@ -519,7 +494,6 @@ L = {}
     local pncol = self.db.profile.pncol
 
     if pncol == 'no' then
-      pncol = false
       self.db.profile.pncol = false
     end
 
@@ -559,7 +533,7 @@ L = {}
     if b then
       self:RegisterEvent("GUILD_ROSTER_UPDATE", function() module:importGuildAlts(nil, true) end)
       -- Different functions for retail versus classic
-	  if Prat.IsRetail then
+	  if C_GuildInfo and C_GuildInfo.GuildRoster then
         C_GuildInfo.GuildRoster()
       else
         GuildRoster()
@@ -608,32 +582,6 @@ L = {}
       module.HookTooltip = NOP
     end
   end
-
-  --function module:UnitPopup_ShowMenu(dropdownMenu, which, unit, name, userData, ...)
-  --	for i=1, UIDROPDOWNMENU_MAXBUTTONS do
-  --		button = _G["DropDownList"..UIDROPDOWNMENU_MENU_LEVEPL.."Button"..i];
-  --
-  --		-- Patch our handler function back in
-  --		if  button.value == "LINK_ALT" then
-  --		    button.func = UnitPopupButtons["LINK_ALT"].func
-  --		end
-  --	end
-  --end
-
-  --  function module:UnitPopup_LinkAltOnClick()
-  --    local dropdownFrame = UIDROPDOWNMENU_INIT_MENU
-  --
-  --    --if (button == 'LINK_ALT') then
-  --    local altname = dropdownFrame.name
-  --    local dialog = StaticPopup_Show('MENUITEM_LINKALT', altname)
-  --
-  --    if dialog then
-  --      local altname = dropdownFrame.name
-  --      dialog.data = altname
-  --    end
-  --    --end
-  --  end
-
 
 
   -- things to do when the module is disabled
@@ -734,19 +682,15 @@ L = {}
     mainname = self:formatCharName(mainname)
     altname = self:formatCharName(altname)
 
-    -- check if alt has already been linked to a main
-    local oldmain = ""
-    local noclobber = self.db.profile.noclobber
-
     if self.Alts[altname] then
-      oldmain = self.Alts[altname]
+      local oldmain = self.Alts[altname]
 
       if oldmain == mainname then
         self:print(string.format(PL['warning: alt %s already linked to %s'], clralt(altname), clrmain(mainname)))
         return false
       end
 
-      if noclobber then
+      if self.db.profile.noclobber then
         self:print(string.format(PL['alt name exists: %s -> %s; not overwriting as set in preferences'],
           clralt(altname), clrmain(oldmain)))
         return false
@@ -1041,13 +985,10 @@ L = {}
 
 
     -- loop through members and check stuff for later
-    local mainname
-    local altname
     local numfound = 0
 
     for x = 1, totalmembers do
-      altname = nil
-      mainname = nil
+      local mainname
 
       local name, rank, _, _, _, _, publicnote, officernote = GetGuildRosterInfo(x)
 
@@ -1096,8 +1037,7 @@ L = {}
 
         if mainname:lower() ~= name:lower() then
           numfound = numfound + 1
-          altname = name
-          self:addAlt(string.format('%s %s', altname, mainname))
+          self:addAlt(string.format('%s %s', name, mainname))
         end
       end
     end
@@ -1260,8 +1200,9 @@ L = {}
       local tooltipaltered
 
       -- check if the user wants the mainame name shown on alts' tooltips
+		local mainname
       if self.db.profile.tooltip_showmain then
-        local mainname = self:getMain(charname)
+        mainname = self:getMain(charname)
 
         if mainname then
           -- add the character's main name to the tooltip
@@ -1273,7 +1214,10 @@ L = {}
       local width = GameTooltip:GetWidth()
       -- check if the user wants a list of alts shown on mains' tooltips
       if self.db.profile.tooltip_showalts then
-        local alts = self:getAlts(charname) or self:getAlts(mainame)
+        local alts = self:getAlts(charname)
+		  if not alts and mainname then
+			  alts = self:getAlts(mainname)
+		  end
 
         if alts then
           -- build the string listing alts

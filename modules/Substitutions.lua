@@ -23,6 +23,9 @@
 --
 --
 -------------------------------------------------------------------------------
+
+local ChatEdit_GetActiveWindow = _G.ChatEdit_GetActiveWindow or _G.ChatFrameUtil.GetActiveWindow
+
 Prat:AddModuleToLoad(function()
   local module = Prat:NewModule("Substitutions")
   local PL = module.PL
@@ -256,7 +259,7 @@ end
 
   do
     local function prat_match(text)
-      local text = text or ""
+      text = text or ""
 
       if module.buildingMenu then
         return text
@@ -265,11 +268,11 @@ end
       return Prat:RegisterMatch(text, "OUTBOUND")
     end
 
-    local function Zone(...)
+    local function Zone()
       return prat_match(GetRealZoneText())
     end
 
-    local function Loc(...)
+    local function Loc()
       return prat_match(GetMinimapZoneText())
     end
 
@@ -284,22 +287,22 @@ end
     end
 
     local function Ypos()
-      local x, y = GetPlayerMapPosition("player")
-      local y = tostring(math.floor((y * 100) + 0.5))
+      local _, y = GetPlayerMapPosition("player")
+      y = tostring(math.floor((y * 100) + 0.5))
       return prat_match(y)
     end
 
     local function Xpos()
-      local x, y = GetPlayerMapPosition("player")
-      local x = tostring(math.floor((x * 100) + 0.5))
+      local x = GetPlayerMapPosition("player")
+      x = tostring(math.floor((x * 100) + 0.5))
       return prat_match(x)
     end
 
-    local function PlayerHP(...)
+    local function PlayerHP()
       return prat_match(UnitHealth("player"))
     end
 
-    local function PlayerMaxHP(...)
+    local function PlayerMaxHP()
       return prat_match(UnitHealthMax("player"))
     end
 

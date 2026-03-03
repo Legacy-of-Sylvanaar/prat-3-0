@@ -235,7 +235,7 @@ end
       chanSave = {},
       shortnames =
       -- zhCN
-      PratCNlocal == "zhCN" and {
+      GetLocale() == "zhCN" and {
         say = "[说]",
         whisper = "[密]",
         whisperincome = "[收]",
@@ -260,7 +260,7 @@ end
         channel10 = "[10]",
       }
         --zhTW
-        or PratCNlocal == "zhTW" and {
+        or GetLocale() == "zhTW" and {
         say = "[說]",
         whisper = "[密]",
         whisperincome = "[聽]",
@@ -285,7 +285,7 @@ end
         channel10 = "[10]",
       }
         --koKR
-        or PratCNlocal == "koKR" and {
+        or GetLocale() == "koKR" and {
         say = "[대화]",
         whisper = "[귓말]",
         whisperincome = "[받은귓말]",
@@ -556,11 +556,11 @@ end
     }
   end
 
-  function module:GetChanOptValue(info, ...)
+  function module:GetChanOptValue(info)
     return self.db.profile[info[#info]][info[#info - 1]]
   end
 
-  function module:SetChanOptValue(info, val, ...)
+  function module:SetChanOptValue(info, val)
     self.db.profile[info[#info]][info[#info - 1]] = val
   end
 

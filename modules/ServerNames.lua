@@ -229,7 +229,6 @@ L = {}
       Module Event Functions
   ------------------------------------------------]] --
   function module:OnModuleEnable()
-    self:BuildServerOptions()
     Prat.RegisterChatEvent(self, "Prat_PreAddMessage")
   end
 
@@ -245,7 +244,7 @@ L = {}
   end
 
   -- replace text using prat event implementation
-  function module:Prat_PreAddMessage(e, m, frame, event)
+  function module:Prat_PreAddMessage(_, m)
     local serverKey = self:GetServerKey(m.SERVER)
     local opts = serverKey and self:GetServerSettings(serverKey)
 
@@ -312,41 +311,5 @@ L = {}
 
     return CLR.COLOR_NONE
   end
-
-  --[[------------------------------------------------
-      Menu Builder Functions
-  ------------------------------------------------]] --
-  function module:BuildServerOptions()
-  end
-
-  --
-  --
-  -- "-Name(type)" is how we have it
-  --
-  --  so provide
-  --
-  --   %S = Full Server Name
-  --   %s = Abbreviated Server Name
-  --   %T = Full Realm Type eg PvP
-  --   %t = Abbreviated Realm Type e.g P
-  --
-  --  So the default format is:
-  --
-  --      -%S(%t)
-  --
-  --   We can support a coloring syntax
-  --   which can say use the color of
-  --   (some other field) Here, we can
-  --   Set the color of the server to use
-  --   the color value of the realm type
-  --
-  --
-  local t_sort = {}
-  function module:UpdateServerMenu()
-  end
-
-  function module:CreateServerOption(args, servername, serverkey, servertype)
-  end
-
   return
 end) -- Prat:AddModuleToLoad

@@ -201,7 +201,7 @@ end
 
     if not Prat.IsClassic then
       local prevClamp = ChatFrame1.SetClampRectInsets
-      self:SecureHook(ChatFrame1, "SetClampRectInsets", function(frame, ...)
+      self:SecureHook(ChatFrame1, "SetClampRectInsets", function(frame)
 		  -- If in combat, SetClampRectInsets is protected... This should likely never happen, but to be safe.
 		  if _G.InCombatLockdown() then
 			  return
@@ -232,7 +232,7 @@ end
     local m = Prat:GetModule("Font", true)
     if m then m:ConfigureAllChatFrames() end
   end
-  function module:FCF_DockFrame(frame, ...)
+  function module:FCF_DockFrame(frame)
     if self.db.profile.removeclamp then
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
@@ -241,7 +241,7 @@ end
     if m then m:ConfigureAllChatFrames() end
   end
 
-  function module:FCF_UnDockFrame(frame, ...)
+  function module:FCF_UnDockFrame(frame)
     if self.db.profile.removeclamp then
       frame:SetClampRectInsets(0, 0, 0, 0)
     end

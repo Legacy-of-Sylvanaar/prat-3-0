@@ -192,7 +192,7 @@ end
         desc = PL["Removes an alternate name to show in popups."],
         type = "select",
         order = 150,
-        get = function(info) return "" end,
+        get = function() return "" end,
         values = function(info) return info.handler.db.profile.nickname end,
         disabled = function(info) return #info.handler.db.profile.nickname == 0 end,
         set = function(info, value) info.handler:RemoveNickname(value) end
@@ -247,7 +247,7 @@ end
   -- /script module.moduleOptions.args.output.set("PopupMessage")
   -- /dump module.db.profile
   -- /script module.db.profile.sink10OutputSink = nil
-  function module:Popup(source, text, r, g, b, ...)
+  function module:Popup(_, text, r, g, b)
     if Prat_PopupFrame.anim then
       Prat_PopupFrame.anim:Stop()
     else
@@ -292,7 +292,7 @@ end
   DEBUG = true
   --@end-debug@
 
-  function module:Prat_PostAddMessage(info, message, frame, event, text, r, g, b, id)
+  function module:Prat_PostAddMessage(_, message, frame, event, _, r, g, b)
     if self.pouring then return end
     if message.LINE_ID and
       message.LINE_ID == self.lastevent and
@@ -334,18 +334,13 @@ end
     end
   end
 
-  local tmp_color = {}
-  local function safestr(s) return s or "" end
-
   function module:CheckText(text, display_text, event, r, g, b, eventId)
-    --	local textL = safestr(text):lower()
-
     local show = false
 
     if text:match(self.playerName) then
       show = true;
     else
-      for i, v in pairs(self.nickpat) do
+      for _, v in pairs(self.nickpat) do
         if v:len() > 0 and text:match(v) then
           show = true
         end

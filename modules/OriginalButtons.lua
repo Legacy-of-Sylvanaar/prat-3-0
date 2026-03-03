@@ -171,50 +171,50 @@ end
         order = 110,
         name = PL["chatmenu_name"],
         desc = PL["chatmenu_desc"],
-        get = function(info) return module.db.profile.chatmenu end,
-        set = function(info, v) module.db.profile.chatmenu = v module:ChatMenu(v) end,
+        get = function() return module.db.profile.chatmenu end,
+        set = function(_, v) module.db.profile.chatmenu = v module:ChatMenu(v) end,
       },
       buttonframe = {
         type = "toggle",
         order = 110,
         name = PL["buttonframe_name"],
         desc = PL["buttonframe_desc"],
-        get = function(info) return module.db.profile.buttonframe end,
-        set = function(info, v) module.db.profile.buttonframe = v module:ConfigureAllFrames() end,
+        get = function() return module.db.profile.buttonframe end,
+        set = function(_, v) module.db.profile.buttonframe = v module:ConfigureAllFrames() end,
       },
       reminder = {
         type = "toggle",
         name = PL["reminder_name"],
         desc = PL["reminder_desc"],
-        get = function(info) return module.db.profile.reminder end,
-        set = function(info, v) module.db.profile.reminder = v end,
+        get = function() return module.db.profile.reminder end,
+        set = function(_, v) module.db.profile.reminder = v end,
       },
       reflow = {
         type = "toggle",
         name = PL["reflow_name"],
         desc = PL["reflow_desc"],
-        get = function(info) return module.db.profile.reflow end,
-        set = function(info, v) module.db.profile.reflow = v if v then Prat:GetModule("SMFHax", true):Enable() end end,
-        hidden = function(info) return Prat:GetModule("SMFHax", true) == nil end,
+        get = function() return module.db.profile.reflow end,
+        set = function(_, v) module.db.profile.reflow = v if v then Prat:GetModule("SMFHax", true):Enable() end end,
+        hidden = function() return Prat:GetModule("SMFHax", true) == nil end,
       },
       alpha = {
         name = PL["alpha_name"],
         desc = PL["alpha_desc"],
         type = "range",
-        set = function(info, v) module.db.profile.alpha = v; module:ConfigureAllFrames() end,
+        set = function(_, v) module.db.profile.alpha = v; module:ConfigureAllFrames() end,
         min = 0.1,
         max = 1,
         step = 0.1,
         order = 150,
-        get = function(info) return module.db.profile.alpha end,
+        get = function() return module.db.profile.alpha end,
       },
       position = {
         name = PL["Set Position"],
         desc = PL["Sets position of chat menu and arrows for all chat windows."],
         type = "select",
         order = 140,
-        get = function(info) return module.db.profile.position end,
-        set = function(info, v) module.db.profile.position = v; module:ConfigureAllFrames() end,
+        get = function() return module.db.profile.position end,
+        set = function(_, v) module.db.profile.position = v; module:ConfigureAllFrames() end,
         values = { ["DEFAULT"] = PL["Default"], ["RIGHTINSIDE"] = PL["Right, Inside Frame"], ["RIGHTOUTSIDE"] = PL["Right, Outside Frame"] }
       }
     }
@@ -224,7 +224,7 @@ end
     self:Hide()
   end
 
-  function module:OnSubValueChanged(info, val, b)
+  function module:OnSubValueChanged(_, val, b)
     self:chatbutton(_G[val]:GetID(), b)
   end
 
@@ -301,7 +301,7 @@ end
     return PL["Original Buttons"]
   end
 
-  function module:FCF_SetTemporaryWindowType(chatFrame, ...)
+  function module:FCF_SetTemporaryWindowType(chatFrame)
     local i = chatFrame:GetID()
 
     self:chatbutton(i, self.db.profile.chatarrows[chatFrame:GetName()])
@@ -331,8 +331,8 @@ end
 
 
   do
-    local anims = nil
-    function module:ChatFrame_OnUpdate(this, elapsed)
+    local anims
+    function module:ChatFrame_OnUpdate(this)
       if (not this:IsShown()) then
         return;
       end
@@ -393,19 +393,16 @@ end
 
   function module:ButtonFrame(id, visible)
     local f = _G["ChatFrame" .. id .. "ButtonFrame"]
-    local cf = _G["ChatFrame" .. id]
 
     if visible then
       f:SetScript("OnShow", nil)
       f:Show()
       f:SetWidth(29)
-      --        cf:AddMessage("Show Button Frame")
     else
       f:SetScript("OnShow", hide)
       f:Hide()
 
       f:SetWidth(0.1)
-      --        cf:AddMessage("Hide Button Frame")
     end
   end
 
@@ -469,14 +466,14 @@ end
         f.cfScrl.min:SetParent(_G[f.cf:GetName() .. "Tab"])
 
         f.cfScrl.min:SetScript("OnShow",
-          function(self)
+          function(minSelf)
             if f.cf.isDocked then
-              self:Hide()
+				minSelf:Hide()
             end
           end)
 
         f.cfScrl.min:SetScript("OnClick",
-          function(self)
+          function()
             FCF_MinimizeFrame(f.cf, strupper(f.cf.buttonSide))
           end)
 
@@ -516,11 +513,11 @@ end
     -- show buttons based on visible value passed to function
     if f.cf then
       if visible and (f.cf:GetHeight() > f.cfScrlheight) then
-        for k, v in pairs(f.cfScrl) do
+        for k, _ in pairs(f.cfScrl) do
           f.cfScrl[k]:Show()
         end
       else
-        for k, v in pairs(f.cfScrl) do
+        for k, _ in pairs(f.cfScrl) do
           f.cfScrl[k]:Hide()
         end
         -- reminder visibility:

@@ -392,9 +392,9 @@ end
           min:SetParent(_G[frame:GetName() .. "Tab"])
 
           min:SetScript("OnShow",
-            function(self)
+            function(mself)
               if frame.isDocked then
-                self:Hide()
+				  mself:Hide()
               end
             end)
 

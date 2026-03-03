@@ -124,7 +124,7 @@ L = {}
  --@end-non-debug@]===]
 
   Prat:SetModuleInit(module,
-    function(self)
+    function()
       BINDING_HEADER_Prat = PL["Prat Keybindings"]
       BINDING_NAME_officer = PL["Officer Channel"]
       BINDING_NAME_guild = PL["Guild Channel"]

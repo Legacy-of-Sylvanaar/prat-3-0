@@ -112,12 +112,6 @@ PL:AddLocale("zhTW",  L)
 end
 --@end-non-debug@]===]
 
-  local toggleOption = {
-    name = function(info) return info.handler.PL[info[#info] .. "_name"] end,
-    desc = function(info) return info.handler.PL[info[#info] .. "_desc"] end,
-    type = "toggle",
-  }
-
   Prat:SetModuleOptions(module.name, {
     name = PL.module_name,
     desc = PL.module_desc,
@@ -129,25 +123,6 @@ end
       }
     }
   })
-
-  local CLR = Prat.CLR
-
-  local function GetChatCLR(name)
-    if name == nil then return CLR.COLOR_NONE end
-
-    local type = strsub(name, 10);
-    local info = ChatTypeInfo[type];
-    if not info then
-      return CLR.COLOR_NONE
-    end
-    return CLR:GetHexColor(info)
-  end
-
-  local function ChatType(text, type) return CLR:Colorize(GetChatCLR(type), text) end
-
-  local function channelLink(name, type, channel)
-    return "|Hchannel:" .. type .. ":" .. (channel or "0") .. "|h[" .. ChatType(name, "CHAT_MSG_" .. type) .. "]|h"
-  end
 
   local function handleMention(match, m)
     if m == nil then return end
@@ -164,59 +139,6 @@ end
 
   function module:OnModuleEnable()
     self:RegisterTabComplete()
-    Prat.RegisterChatEvent(self, "Prat_FrameMessage")
---    self:SecureHook("ChatEdit_OnChar")
-  end
-
-  function module:Prat_FrameMessage(arg, message, frame, event)
---    message.MESSAGE:gsub("%(in ([^)]+)%)", function(type) end)
-  end
-
-  function module:ChatEdit_OnChar(frame)
-    local start, index
-
-    index = frame:GetCursorPosition()
-
-    local regex = "@(%S+)"
-    local text = frame:GetText()
-
-    while text:byte(index) ~= 32 do
-      if text:byte(index) == 64 then
-        start = index + 1
-        break;
-      end
-      index = index - 1
-
-      if index <= 0 then
-        break
-      end
-    end
-    local target
-    if start then
-      target = text:sub(start, frame:GetCursorPosition())
-    end
-    if (target) then --if they typed a command with a autocompletable target
-      AutoCompleteEditBox_SetAutoCompleteSource(frame, GetAutoCompleteResults,
-        AUTOCOMPLETE_LIST_TEMPLATES.ONLINE_NOT_BNET.include,  AUTOCOMPLETE_LIST_TEMPLATES.ONLINE_NOT_BNET.exclude)
-      local utf8Position = frame:GetUTF8CursorPosition();
-      local allowFullMatch = false;
-      local nameToShow = frame.autoCompleteSource(target, 1, utf8Position, allowFullMatch, unpack(frame.autoCompleteParams))[1];
-      if (nameToShow and nameToShow.name) then
-        local name = Ambiguate(nameToShow.name, "all");
-        --We're going to be setting the text programatically which will clear the userInput flag on the editBox.
-        --So we want to manually update the dropdown before we change the text.
-        AutoComplete_Update(frame, target, utf8Position);
-        if strsub(name, 1, 1) ~= "|" then
-          target = escapePatternSymbols(target);
-
-          local newTarget = name;
-
-        local newText = text:sub(1, frame:GetCursorPosition() - target:len())..newTarget..text:sub(frame:GetCursorPosition()+1)
-          frame:SetText(newText);
---          frame:HighlightText(strlen(text), strlen(command) + strlen(whitespace) + strlen(newTarget));
-        end
-      end
-    end
   end
 
   function module:RegisterTabComplete()
@@ -227,14 +149,13 @@ end
     local playernames = Prat:GetModule("PlayerNames", true)
 
     if not AceTab:IsTabCompletionRegistered(tabcompleteName) then
-      local foundCache = {}
       AceTab:RegisterTabCompletion(tabcompleteName, "@",
-        function(t, ...)
+        function(t)
           for name in pairs(playernames.Classes) do
             table.insert(t, name)
           end
         end,
-        function(u, cands, ...)
+        function(_, cands)
           local candcount = #cands
           if candcount <= playernames.db.profile.tabcompletelimit then
             local text

@@ -219,23 +219,20 @@ end
   local gratsLinkType = "gratsl"
 
   local function buildGratsLink(name, group, channel, achievementId)
-    if type(name) == "nil" or type(group) == "nil" then
-    else
+    if type(name) ~= "nil" and type(group) ~= "nil" then
       return Prat.BuildLink(gratsLinkType, ("%s:%s:%s:%s"):format(name, group, channel or "", tostring(achievementId)), PL.grats_link, "2080a0")
     end
 
     return ""
   end
 
-  local function ShowOurCompletion(...)
+  local function ShowOurCompletion(text, theirId, theirPlayerGuid, theirDone)
     local type = Prat.CurrentMessage.CHATTYPE
     if type == "WHISPER_INFORM" then return end
 
-    local text, theirId, theirPlayerGuid, theirDone, theirMonth, theirDay, theirYear, _, _, _, _, theirAchievmentName, frame = ...
-
     if theirPlayerGuid == "0000000000000000" or not (tostring(theirPlayerGuid):len() > 3) then return end
 
-    local id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuildAch, wasEarnedByMe, earnedBy = GetAchievementInfo(theirId)
+    local _, _, _, completed, month, day, year = GetAchievementInfo(theirId)
 
     local _, _, _, _, _, theirName, _ = GetPlayerInfoByGUID(theirPlayerGuid)
     local group = Prat.CurrentMessage.CHATGROUP

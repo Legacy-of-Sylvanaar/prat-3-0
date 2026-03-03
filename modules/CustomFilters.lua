@@ -208,11 +208,7 @@ end
   for _, v in ipairs(eventMap) do
     newmap[v] = v
   end
-
-  eventMap, newmap = newmap
-
-
-
+  eventMap = newmap
 
   local patterndefaults = {
     ["*"] = {
@@ -364,10 +360,7 @@ end
       set = "RemovePattern",
       values = self[mode].validate,
       disabled = function(info)
-        for _, _ in pairs(info.handler.db.profile[info[#info - 1]]) do
-          return false
-        end
-		return true
+		  return next(info.handler.db.profile[info[#info - 1]]) == nil
       end,
     }
   end
@@ -665,7 +658,7 @@ end
     patterninfo.pattern = matchopts.searchfor
     patterninfo.deformat = matchopts.deformat
     patterninfo.matchfunc =
-    function(text, ...)
+    function(text)
       return match(text, matchopts, mode)
     end
   end
@@ -988,7 +981,7 @@ end
   --    end
   --  end
 
-  function module:ChatframeSink(source, text, r, g, b, ...)
+  function module:ChatframeSink(source, text, r, g, b)
     local sink = LibStub("LibSink-2.0")
     local s = sink.storageForAddon[source]
     local name = s and s.sink20ScrollArea or ""

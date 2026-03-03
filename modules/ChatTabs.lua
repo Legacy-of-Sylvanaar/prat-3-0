@@ -461,7 +461,7 @@ end
     end
   end
 
-  function module:OnTabShow(tab, ...)
+  function module:OnTabShow(tab)
     if needToHook[tab] then
       self:HookScript(tab, "OnHide", "OnTabHide")
       needToHook[tab] = nil
@@ -472,7 +472,7 @@ end
     end
   end
 
-  function module:OnTabHide(tab, ...)
+  function module:OnTabHide(tab)
     if self.db.profile.displaymode["ChatFrame" .. tab:GetID()] == true then
       tab:Show()
     end

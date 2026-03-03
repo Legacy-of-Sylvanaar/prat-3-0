@@ -74,8 +74,6 @@ Prat:AddModuleToLoad(function()
     ["Keep player information between session, but limit it to friends and guild members."] = true,
     ["Player Color Mode"] = true,
     ["How to color player's name."] = true,
-    ["Unknown Common Color From TasteTheNaimbow"] = true,
-    ["Let TasteTheNaimbow set the common color for unknown player names."] = true,
     ["Brackets Common Color"] = true,
     ["Sets common color of brackets to use around player names."] = true,
     ["Brackets Use Common Color"] = true,
@@ -169,7 +167,7 @@ L = {}
   module.Levels = {}
   module.Subgroups = {}
 
-  local NOP = function(self) return end
+  local NOP = function() return end
 
   module.OnPlayerDataChanged = NOP
 
@@ -204,7 +202,6 @@ L = {}
         b = 0.85,
         a = 1.0
       },
-      useTTN = true,
       usewho = false,
       color = {
         r = 0.65,
@@ -214,27 +211,6 @@ L = {}
       },
     }
   })
-
-
-  Prat:SetModuleInit(module,
-    function(self)
-      -- Right click - who
-
-      --      UnitPopupButtons["WHOIS"] = {
-      --        text = "Who Is?",
-      --        func = function()
-      --          local dropdownFrame = UIDROPDOWNMENU_INIT_MENU
-      --          local name = dropdownFrame.name
-      --
-      --          if name then
-      --            SendWho(name)
-      --          end
-      --        end
-      --      }
-      --  tinsert(UnitPopupMenus["FRIEND"], #UnitPopupMenus["FRIEND"] - 1, "WHOIS");
-
-      --Prat:RegisterDropdownButton("WHOIS")
-    end)
 
   module.pluginopts = {}
 
@@ -279,16 +255,6 @@ L = {}
         order = 121,
         get = "GetColorValue",
         set = "SetColorValue",
-        disabled = function(info) if not info.handler.db.profile.usecommoncolor then return true else return false
-        end
-        end,
-      },
-      useTTN = {
-        name = PL["Unknown Common Color From TasteTheNaimbow"],
-        desc = PL["Let TasteTheNaimbow set the common color for unknown player names."],
-        type = "toggle",
-        order = 122,
-        hidden = function(info) if TasteTheNaimbow_Loaded then return false else return true end end,
         disabled = function(info) if not info.handler.db.profile.usecommoncolor then return true else return false
         end
         end,
@@ -376,7 +342,7 @@ L = {}
         desc = PL["Query the server for all player names we do not know. Note: This happpens pretty slowly, and this data is not saved."],
         type = "toggle",
         order = 202,
-        hidden = function(info)
+        hidden = function()
           if LibStub:GetLibrary("LibWho-2.0", true) then
             return false
           end
@@ -412,9 +378,6 @@ L = {}
       self:OnPlayerDataChanged(b and UnitName("player") or nil)
     end
   end
-
-  local mt_GuildClass = {}
-
 
   function module:OnModuleEnable()
     Prat.RegisterChatEvent(self, "Prat_FrameMessage")
@@ -481,8 +444,8 @@ L = {}
   }
 
 
-  function module:EmptyDataCache(force)
-    for k, v in pairs(cache) do
+  function module:EmptyDataCache()
+    for _, v in pairs(cache) do
       wipe(v)
     end
 
@@ -511,12 +474,8 @@ L = {}
     info.gender;
   end
 
-  -- Use C_FriendList.SendWho instead
-  local SendWho = C_FriendList.SendWho;
-
   local function GetNumFriends()
-    return C_FriendList.GetNumFriends(),
-    C_FriendList.GetNumOnlineFriends();
+    return C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends();
   end
 
   -- Use C_FriendList.GetFriendInfo or C_FriendList.GetFriendInfoByIndex instead
@@ -554,8 +513,7 @@ L = {}
 
       local _, _, _, _, _, gameAccountID = BNGetFriendInfoByID(bnetAccountID)
       if gameAccountID then
-        local _, toonName, client, realmName, _, faction, race, class, _, zoneName, level, gameText,
-        broadcastText, broadcastTime = BNGetGameAccountInfo(gameAccountID)
+        local _, toonName, _, _, _, _, _, class, _, _, level = BNGetGameAccountInfo(gameAccountID)
         -- Pre-8.2.5 API returns empty strings if friend is online on non-WoW client
         -- We return only non-empty strings for consistency with other "no data" situations
         if toonName ~= "" then
@@ -583,8 +541,7 @@ L = {}
 
       local _, _, _, _, _, gameAccountID = BNGetFriendInfoByID(bnetAccountID)
       if gameAccountID then
-        local _, toonName, client, realmName, _, faction, race, class, _, zoneName, level, gameText,
-        broadcastText, broadcastTime = BNGetGameAccountInfo(gameAccountID)
+        local _, _, client = BNGetGameAccountInfo(gameAccountID)
         -- Pre-8.2.5 API returns empty strings if friend is online on non-WoW client
         -- We return only non-empty strings for consistency with other "no data" situations
         if client ~= "" then
@@ -684,7 +641,7 @@ L = {}
     self:addName(Name, Server, PlayerClass, UnitLevel("player"), nil, "PLAYER")
   end
 
-  function module:updatePlayerLevel(event, level, hp, mp, talentPoints, str, agi, sta, int, spi)
+  function module:updatePlayerLevel(_, level)
     local PlayerClass = select(2, UnitClass("player"))
     local Name, Server = UnitName("player")
     self:addName(Name, Server, PlayerClass, level, nil, "PLAYER")
@@ -692,9 +649,8 @@ L = {}
 
 
   function module:updateFriends()
-    local Name, Class, Level
     for i = 1, GetNumFriends() do
-      Name, Level, Class = GetFriendInfo(i) -- name, level, class, area, connected, status
+      local Name, Level, Class = GetFriendInfo(i)
       self:addName(Name, nil, Class, Level, nil, "FRIEND")
     end
   end
@@ -728,26 +684,22 @@ L = {}
   end
 
   function module:updateRaid()
-    --  self:Debug("updateRaid -->")
-    local Name, Class, SubGroup, Level, Server, rank
-    local _, zone, online, isDead, role, isML
-    for k, v in pairs(self.Subgroups) do
+    for k, _ in pairs(self.Subgroups) do
       self.Subgroups[k] = nil
     end
 
     for i = 1, GetNumGroupMembers() do
-      _, rank, SubGroup, Level, _, Class, zone, online, isDead, role, isML = GetRaidRosterInfo(i)
-      Name, Server = UnitName("raid" .. i)
+      local _, _, SubGroup, Level, _, Class = GetRaidRosterInfo(i)
+      local Name, Server = UnitName("raid" .. i)
       self:addName(Name, Server, Class, Level, SubGroup, "RAID")
     end
   end
 
   function module:updateParty()
-    local Class, Unit, Name, Server, _
     for i = 1, GetNumSubgroupMembers() do
-      Unit = "party" .. i
-      _, Class = UnitClass(Unit)
-      Name, Server = UnitName(Unit)
+      local Unit = "party" .. i
+      local _, Class = UnitClass(Unit)
+      local Name, Server = UnitName(Unit)
       self:addName(Name, Server, Class, UnitLevel(Unit), nil, "PARTY")
     end
   end
@@ -761,22 +713,20 @@ L = {}
   end
 
   function module:updateTarget()
-    local Class, Name, Server
     if not UnitIsPlayer("target") or not UnitIsFriend("player", "target") then
       return
     end
-    Class = select(2, UnitClass("target"))
-    Name, Server = UnitName("target")
+    local Class = select(2, UnitClass("target"))
+    local Name, Server = UnitName("target")
     self:addName(Name, Server, Class, UnitLevel("target"), nil, "TARGET")
   end
 
-  function module:updateMouseOver(event)
-    local Class, Name, Server
+  function module:updateMouseOver()
     if not UnitIsPlayer("mouseover") or not UnitIsFriend("player", "mouseover") then
       return
     end
-    Class = select(2, UnitClass("mouseover"))
-    Name, Server = UnitName("mouseover")
+    local Class = select(2, UnitClass("mouseover"))
+    local Name, Server = UnitName("mouseover")
     self:addName(Name, Server, Class, UnitLevel("mouseover"), nil, "MOUSE")
   end
 
@@ -784,17 +734,15 @@ L = {}
   function module:updateWho()
     if self.wholib then return end
 
-    local Name, Class, Level, Server, _
     for i = 1, GetNumWhoResults() do
-      Name, _, Level, _, _, _, Class = GetWhoInfo(i)
-      self:addName(Name, Server, Class, Level, nil, "WHO")
+      local Name, _, Level, _, _, _, Class = GetWhoInfo(i)
+      self:addName(Name, nil, Class, Level, nil, "WHO")
     end
   end
 
   function module:updateBG()
     for i = 1, GetNumBattlefieldScores() do
-      local name, killingBlows, honorKills, deaths, honorGained, faction, rank, race, class, filename, damageDone,
-      healingDone = GetBattlefieldScore(i);
+      local name, _, _, _, _, _, _, _, class = GetBattlefieldScore(i);
 
       if name then
         local plr, svr = name:match("([^%-]+)%-?(.*)")
@@ -829,7 +777,7 @@ L = {}
 
   local colorFunc = GetQuestDifficultyColor or GetDifficultyColor
   function CLR:Level(text, level, name, class, mode)
-    local mode = mode or module.db.profile.levelcolor
+    mode = mode or module.db.profile.levelcolor
     if mode and type(level) == "number" and level > 0 then
       if mode == "DIFFICULTY" then
         local diff = colorFunc(level)
@@ -918,7 +866,7 @@ L = {}
     return self.Subgroups[player:lower()]
   end
 
-  function module:GetData(player, frame)
+  function module:GetData(player)
     local class = self:getClass(player)
     local level = self:getLevel(player)
 
@@ -926,7 +874,7 @@ L = {}
     if class == UNKNOWN then class = nil end
 
     if self.wholib and not (class and level) then
-      local user, cachetime = self.wholib:UserInfo(player, { timeout = 20 })
+      local user = self.wholib:UserInfo(player, { timeout = 20 })
 
       if user then
         level = user.Level or level
@@ -938,10 +886,6 @@ L = {}
 
   function module:GetClassColor(class)
     return CLR:GetHexColor(Prat.GetClassGetColor(class))
-  end
-
-  function module:addInfo(Name, Server)
-    return
   end
 
 
@@ -984,15 +928,15 @@ L = {}
 
     if message.PLAYERLINKDATA and (message.PLAYERLINKDATA:find("BN_") and message.PLAYER ~= UnitName("player")) then
       if self.db.profile.realidcolor == "CLASS" then
-        local toonName, level, class = GetToonInfoByBnetID(message.PRESENCE_ID)
+        local toonName, toonLevel, toonClass = GetToonInfoByBnetID(message.PRESENCE_ID)
         if toonName and self.db.profile.realidname then
           message.PLAYER = toonName
           if level and self.db.profile.level then
-            message.PLAYERLEVEL = CLR:Level(tostring(level), tonumber(level), nil, nil, "DIFFICULTY")
+            message.PLAYERLEVEL = CLR:Level(tostring(toonLevel), tonumber(toonLevel), nil, nil, "DIFFICULTY")
             message.PREPLAYERDELIM = ":"
           end
         end
-        message.PLAYER = CLR:Class(message.PLAYER, class or "") -- Empty string to get default gray color
+        message.PLAYER = CLR:Class(message.PLAYER, toonClass or "") -- Empty string to get default gray color
       elseif self.db.profile.realidcolor == "RANDOM" then
         message.PLAYER = CLR:Random(message.PLAYER, message.PLAYER:lower())
       end
@@ -1020,8 +964,7 @@ L = {}
       if prof_brackets == "Angled" then
         message.pP = CLR:Bracket("<") .. message.pP
         message.Pp = message.Pp .. CLR:Bracket(">")
-      elseif prof_brackets == "None" then
-      else
+      elseif prof_brackets ~= "None" then
         message.pP = CLR:Bracket("[") .. message.pP
         message.Pp = message.Pp .. CLR:Bracket("]")
       end
@@ -1069,7 +1012,7 @@ L = {}
   end
 
 
-  function module:Prat_FrameMessage(info, message, frame, event)
+  function module:Prat_FrameMessage(_, message, frame, event)
     local _
     if self.NEEDS_INIT then
       self:updateAll()
@@ -1130,11 +1073,7 @@ L = {}
   function module:GetCommonCLR()
     local color = CLR.COLOR_NONE
     if self.db.profile.usecommoncolor then
-      if self.db.profile.useTTN and TasteTheNaimbow_Loaded then
-        color = TasteTheNaimbowExternalColor(name)
-      else
         color = CLR:GetHexColor(self.db.profile.color)
-      end
     end
     return color
   end
@@ -1166,14 +1105,13 @@ L = {}
       servernames = servernames or Prat:GetModule("ServerNames", true)
 
       if not AceTab:IsTabCompletionRegistered(PL["tabcomplete_name"]) then
-        local foundCache = {}
         AceTab:RegisterTabCompletion(PL["tabcomplete_name"], nil,
-          function(t, text, pos)
+          function(t)
             for name in pairs(self.Classes) do
               table.insert(t, name)
             end
           end,
-          function(u, cands, ...)
+          function(_, cands)
             local candcount = #cands
             if candcount <= self.db.profile.tabcompletelimit then
               local text
