@@ -2,7 +2,6 @@
 ..\FrameXML\UI.xsd">
 	<Include file="..\frames\popup.xml"/>
 	<Include file="..\frames\pratcc.xml"/>
-
 	<Script file="Achievements.lua" />
 	<!--<Script file="AddonMessages.lua"/>-->
 	<Script file="Alias.lua"/>
@@ -15,6 +14,7 @@
 	<Script file="ChatFrames.lua"/>
 	<Script file="ChatLog.lua"/>
 	<Script file="ChatTabs.lua"/>
+	<Script file="SideTabs.lua"/>
 	<Script file="Clear.lua"/>
 	<Script file="CopyChat.lua"/>
 	<Script file="CustomFilters.lua"/>
