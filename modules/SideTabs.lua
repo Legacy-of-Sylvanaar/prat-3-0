@@ -81,26 +81,34 @@ Prat:AddModuleToLoad(function()
     }
   })
 
+  local function GroupLabel(text)
+    return "|cffffffff" .. text .. "|r"
+  end
+
+  local function SettingLabel(text)
+    return "|cffd6d6d6" .. text .. "|r"
+  end
+
   Prat:SetModuleOptions(module.name, {
     name = "Side Tabs",
     desc = "Move chat tabs to the side of the chat frame and stack them vertically.",
     type = "group",
     args = {
       layout = {
-        name = "Layout",
+        name = GroupLabel("Layout"),
         type = "group",
         inline = true,
         order = 100,
         args = {
           side = {
-            name = "Side",
+            name = SettingLabel("Side"),
             desc = "Which side of the chat frame to anchor tabs to.",
             type = "select",
             order = 100,
             values = { LEFT = "Left", RIGHT = "Right" },
           },
           xoffset = {
-            name = "X Offset",
+            name = SettingLabel("X Offset"),
             desc = "Horizontal offset from the frame edge.",
             type = "range",
             order = 110,
@@ -109,7 +117,7 @@ Prat:AddModuleToLoad(function()
             step = 1,
           },
           yoffset = {
-            name = "Y Offset",
+            name = SettingLabel("Y Offset"),
             desc = "Vertical offset from the top of the frame.",
             type = "range",
             order = 120,
@@ -118,7 +126,7 @@ Prat:AddModuleToLoad(function()
             step = 1,
           },
           spacing = {
-            name = "Spacing",
+            name = SettingLabel("Spacing"),
             desc = "Space between vertically stacked tabs.",
             type = "range",
             order = 130,
@@ -129,13 +137,13 @@ Prat:AddModuleToLoad(function()
         },
       },
       sizing = {
-        name = "Sizing",
+        name = GroupLabel("Sizing"),
         type = "group",
         inline = true,
         order = 110,
         args = {
           tabwidth = {
-            name = "Tab Width",
+            name = SettingLabel("Tab Width"),
             desc = "Set a fixed tab width for a cleaner vertical stack.",
             type = "range",
             order = 140,
@@ -144,7 +152,7 @@ Prat:AddModuleToLoad(function()
             step = 1,
           },
           tabheight = {
-            name = "Tab Height",
+            name = SettingLabel("Tab Height"),
             desc = "Set tab button height for the vertical stack.",
             type = "range",
             order = 145,
@@ -153,7 +161,7 @@ Prat:AddModuleToLoad(function()
             step = 1,
           },
           tabscale = {
-            name = "Tab Scale",
+            name = SettingLabel("Tab Scale"),
             desc = "Scale tab button size without changing your chosen width/height values.",
             type = "range",
             order = 146,
@@ -162,7 +170,7 @@ Prat:AddModuleToLoad(function()
             step = 0.05,
           },
           normalizeuiscale = {
-            name = "Normalize for UI Scale",
+            name = SettingLabel("Normalize for UI Scale"),
             desc = "Compensate tab size and offsets for WoW native UI scale.",
             type = "toggle",
             order = 147,
@@ -170,13 +178,13 @@ Prat:AddModuleToLoad(function()
         },
       },
       text = {
-        name = "Text",
+        name = GroupLabel("Text"),
         type = "group",
         inline = true,
         order = 120,
         args = {
           fontface = {
-            name = "Font",
+            name = SettingLabel("Font"),
             desc = "Select the tab text font.",
             type = "select",
             dialogControl = "LSM30_Font",
@@ -184,7 +192,7 @@ Prat:AddModuleToLoad(function()
             order = 170,
           },
           fontsize = {
-            name = "Font Size",
+            name = SettingLabel("Font Size"),
             desc = "Set tab text font size.",
             type = "range",
             order = 171,
@@ -193,7 +201,7 @@ Prat:AddModuleToLoad(function()
             step = 1,
           },
           fontcolor = {
-            name = "Font Color",
+            name = SettingLabel("Font Color"),
             desc = "Set tab text color.",
             type = "color",
             hasAlpha = true,
@@ -204,13 +212,13 @@ Prat:AddModuleToLoad(function()
         },
       },
       behavior = {
-        name = "Behavior",
+        name = GroupLabel("Behavior"),
         type = "group",
         inline = true,
         order = 130,
         args = {
           undocked = {
-            name = "Apply to Undocked Windows",
+            name = SettingLabel("Apply to Undocked Windows"),
             desc = "Also move tabs for non-docked chat windows.",
             type = "toggle",
             order = 150,
@@ -218,13 +226,13 @@ Prat:AddModuleToLoad(function()
         },
       },
       visual = {
-        name = "Visual",
+        name = GroupLabel("Visual"),
         type = "group",
         inline = true,
         order = 140,
         args = {
           simpleskin = {
-            name = "Simple Skin",
+            name = SettingLabel("Simple Skin"),
             desc = "Hide default tab art and draw a simple background for cleaner side tabs.",
             type = "toggle",
             order = 160,
