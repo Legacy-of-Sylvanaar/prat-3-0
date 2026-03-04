@@ -424,6 +424,38 @@ Prat:AddModuleToLoad(function()
     self:LayoutUndockedTabs()
   end
 
+  function module:FCF_OnUpdate(elapsed)
+    -- Blizzard's hover fade logic checks the chat frame/top region, not moved side tabs.
+    -- Keep fade timers alive while the cursor is over a side tab.
+    for _, frameName in pairs(CHAT_FRAMES or {}) do
+      local chatFrame = _G[frameName]
+      local chatTab = _G[frameName .. "Tab"]
+      if chatFrame and chatTab and chatFrame:IsShown() and chatTab:IsShown() and chatTab:IsMouseOver() then
+        chatFrame.mouseOutTime = 0
+        chatFrame.mouseInTime = (chatFrame.mouseInTime or 0) + (elapsed or 0)
+        if not chatFrame.hasBeenFaded and chatFrame.mouseInTime > CHAT_TAB_SHOW_DELAY then
+          FCF_FadeInChatFrame(chatFrame)
+        end
+      end
+    end
+  end
+
+  function module:FCF_FadeOutChatFrame(chatFrame)
+    if not chatFrame then
+      return self.hooks.FCF_FadeOutChatFrame(chatFrame)
+    end
+
+    local chatTab = _G[chatFrame:GetName() .. "Tab"]
+    if chatTab and chatTab:IsShown() and chatTab:IsMouseOver() then
+      -- Preserve default behavior semantics while hovered over a moved side tab.
+      chatFrame.mouseOutTime = 0
+      FCF_FadeInChatFrame(chatFrame)
+      return
+    end
+
+    return self.hooks.FCF_FadeOutChatFrame(chatFrame)
+  end
+
   function module:QueueApply()
     if self._pendingApply then
       return
@@ -465,6 +497,8 @@ Prat:AddModuleToLoad(function()
     self:SecureHook("FCFDock_UpdateTabs", "QueueApply")
     self:SecureHook("FloatingChatFrame_Update", "QueueApply")
     self:SecureHook("FCF_SetTabPosition", "QueueApply")
+    self:SecureHook("FCF_OnUpdate")
+    self:RawHook("FCF_FadeOutChatFrame", true)
 
     Prat.RegisterChatEvent(self, Prat.Events.FRAMES_UPDATED)
 
