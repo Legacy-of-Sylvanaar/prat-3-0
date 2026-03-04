@@ -82,11 +82,11 @@ Prat:AddModuleToLoad(function()
   })
 
   local function GroupLabel(text)
-    return "|cffffffff" .. text .. "|r"
+    return "|cffffff78" .. text .. "|r"
   end
 
   local function SettingLabel(text)
-    return "|cffd6d6d6" .. text .. "|r"
+    return "|cffffffff" .. text .. "|r"
   end
 
   Prat:SetModuleOptions(module.name, {
