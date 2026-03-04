@@ -398,6 +398,40 @@ Prat:AddModuleToLoad(function()
     return _G[frame:GetName() .. "Tab"]
   end
 
+  local function IsTabHovered(tab)
+    if not tab or not tab:IsShown() then
+      return false
+    end
+
+    if tab:IsMouseOver() then
+      return true
+    end
+
+    if tab.Text and tab.Text:IsMouseOver() then
+      return true
+    end
+
+    if tab.conversationIcon and tab.conversationIcon:IsShown() and tab.conversationIcon:IsMouseOver() then
+      return true
+    end
+
+    return false
+  end
+
+  local function IsAnyDockedTabHovered()
+    local dock = GENERAL_CHAT_DOCK
+    if not dock then return false end
+
+    for _, frame in ipairs(FCFDock_GetChatFrames(dock) or {}) do
+      local tab = _G[frame:GetName() .. "Tab"]
+      if IsTabHovered(tab) then
+        return true
+      end
+    end
+
+    return false
+  end
+
   function module:ApplySkin(tab, simpleOverride)
     if not tab then return end
 
@@ -484,26 +518,6 @@ Prat:AddModuleToLoad(function()
     MOON = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t",
     SKULL = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t",
   }
-
-  local function ColorToHex(c)
-    local a = math.floor((c.a or 1) * 255 + 0.5)
-    local r = math.floor((c.r or 1) * 255 + 0.5)
-    local g = math.floor((c.g or 1) * 255 + 0.5)
-    local b = math.floor((c.b or 1) * 255 + 0.5)
-    return string.format("|c%02x%02x%02x%02x", a, r, g, b)
-  end
-
-  local function To255(v)
-    return math.floor((v or 1) * 255 + 0.5)
-  end
-
-  local function MakeTextureTag(texturePath, size, texW, texH, color)
-    local r = To255(color and color.r or 1)
-    local g = To255(color and color.g or 1)
-    local b = To255(color and color.b or 1)
-    local a = To255(color and color.a or 1)
-    return string.format("|T%s:%d:%d:0:0:%d:%d:0:%d:0:%d:%d:%d:%d:%d|t", texturePath, size, size, texW, texH, texW, texH, r, g, b, a)
-  end
 
   local function EnsureShapeTexture(tab)
     if not tab.PratSideTabsShapeTex then
@@ -767,14 +781,18 @@ Prat:AddModuleToLoad(function()
       end
     end
 
-    PanelTemplates_TabResize(tab, 0, tabwidth)
+    if PanelTemplates_TabResize then
+      PanelTemplates_TabResize(tab, 0, tabwidth)
+    end
     tab:SetHeight(tabheight)
     tab:SetScale(p.tabscale)
     self:ApplyTextLayout(tab)
     self:ApplyTabLabel(frame or FCF_GetChatFrameByID(tab:GetID()), tab)
     self:ApplySkin(tab)
     self:ApplyTextStyle(tab)
-    FCF_CheckShowChatFrame(tab)
+    if FCF_CheckShowChatFrame then
+      FCF_CheckShowChatFrame(tab)
+    end
 
     return tab
   end
@@ -812,7 +830,8 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:ApplyAll()
-    if not self:IsEnabled() or not self.db.profile.on then
+    local profile = self.db and self.db.profile
+    if not self:IsEnabled() or not profile or not profile.on then
       return
     end
 
@@ -823,7 +842,7 @@ Prat:AddModuleToLoad(function()
   function module:FCF_OnUpdate(elapsed)
     -- Blizzard's hover fade logic checks the chat frame/top region, not moved side tabs.
     -- Keep fade timers alive while the cursor is over a side tab.
-    for _, frameName in pairs(CHAT_FRAMES or {}) do
+    for _, frameName in ipairs(CHAT_FRAMES or {}) do
       local chatFrame = _G[frameName]
       local chatTab = _G[frameName .. "Tab"]
       if chatFrame and chatTab and chatFrame:IsShown() and chatTab:IsShown() and chatTab:IsMouseOver() then
@@ -839,40 +858,6 @@ Prat:AddModuleToLoad(function()
   function module:FCF_FadeOutChatFrame(chatFrame)
     if not chatFrame then
       return self.hooks.FCF_FadeOutChatFrame(chatFrame)
-    end
-
-    local function IsTabHovered(tab)
-      if not tab or not tab:IsShown() then
-        return false
-      end
-
-      if tab:IsMouseOver() then
-        return true
-      end
-
-      if tab.Text and tab.Text:IsMouseOver() then
-        return true
-      end
-
-      if tab.conversationIcon and tab.conversationIcon:IsShown() and tab.conversationIcon:IsMouseOver() then
-        return true
-      end
-
-      return false
-    end
-
-    local function IsAnyDockedTabHovered()
-      local dock = GENERAL_CHAT_DOCK
-      if not dock then return false end
-
-      for _, frame in pairs(FCFDock_GetChatFrames(dock) or {}) do
-        local tab = _G[frame:GetName() .. "Tab"]
-        if IsTabHovered(tab) then
-          return true
-        end
-      end
-
-      return false
     end
 
     local chatTab = _G[chatFrame:GetName() .. "Tab"]
@@ -908,10 +893,12 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:RestoreDefaults()
-    FCF_DockUpdate()
+    if FCF_DockUpdate then
+      FCF_DockUpdate()
+    end
 
     for _, frame in pairs(Prat.Frames) do
-      if frame and not frame.isDocked then
+      if frame and not frame.isDocked and FCF_SetTabPosition then
         FCF_SetTabPosition(frame, 0)
       end
       local tab = GetTab(frame)
