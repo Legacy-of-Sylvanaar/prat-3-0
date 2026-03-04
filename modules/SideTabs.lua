@@ -117,7 +117,7 @@ Prat:AddModuleToLoad(function()
         desc = "Set a fixed tab width for a cleaner vertical stack.",
         type = "range",
         order = 140,
-        min = 60,
+        min = 10,
         max = 200,
         step = 1,
       },
