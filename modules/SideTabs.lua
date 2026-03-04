@@ -137,7 +137,9 @@ Prat:AddModuleToLoad(function()
             ["SKULL"] = "Skull",
           },
           hidden = function(info)
-            return module.db.profile.labelmode[info[#info - 1]] ~= "preset"
+            local profile = module.db and module.db.profile
+            if not profile then return true end
+            return (profile.labelmode and profile.labelmode[info[#info - 1]]) ~= "preset"
           end,
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
@@ -152,7 +154,9 @@ Prat:AddModuleToLoad(function()
             ["CIRCLE"] = "Circle",
           },
           hidden = function(info)
-            return module.db.profile.labelmode[info[#info - 1]] ~= "shape"
+            local profile = module.db and module.db.profile
+            if not profile then return true end
+            return (profile.labelmode and profile.labelmode[info[#info - 1]]) ~= "shape"
           end,
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
@@ -164,7 +168,9 @@ Prat:AddModuleToLoad(function()
           hasAlpha = true,
           order = 130,
           hidden = function(info)
-            return module.db.profile.labelmode[info[#info - 1]] ~= "shape"
+            local profile = module.db and module.db.profile
+            if not profile then return true end
+            return (profile.labelmode and profile.labelmode[info[#info - 1]]) ~= "shape"
           end,
           get = "GetTabLabelColorValue",
           set = "SetTabLabelColorValue",
@@ -176,7 +182,9 @@ Prat:AddModuleToLoad(function()
           width = "full",
           order = 140,
           hidden = function(info)
-            return module.db.profile.labelmode[info[#info - 1]] ~= "custom"
+            local profile = module.db and module.db.profile
+            if not profile then return true end
+            return (profile.labelmode and profile.labelmode[info[#info - 1]]) ~= "custom"
           end,
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
@@ -338,6 +346,7 @@ Prat:AddModuleToLoad(function()
       tablabels = {
         name = GroupLabel("Tab Labels"),
         type = "group",
+        childGroups = "tree",
         order = 150,
         args = {
           labelsenabled = {
@@ -474,26 +483,43 @@ Prat:AddModuleToLoad(function()
   function module:GetTabLabelValue(info)
     local key = info[#info]
     local frameName = info[#info - 1]
-    return self.db.profile[key][frameName]
+    local profile = self.db and self.db.profile
+    if not profile then return nil end
+    local section = profile[key]
+    if not section then return nil end
+    return section[frameName]
   end
 
   function module:SetTabLabelValue(info, value)
     local key = info[#info]
     local frameName = info[#info - 1]
-    self.db.profile[key][frameName] = value
+    local profile = self.db and self.db.profile
+    if not profile then return end
+    profile[key] = profile[key] or {}
+    profile[key][frameName] = value
     self:OnValueChanged()
   end
 
   function module:GetTabLabelColorValue(info)
     local frameName = info[#info - 1]
-    local c = self.db.profile.labelcolor[frameName] or { r = 1, g = 1, b = 1, a = 1 }
+    local profile = self.db and self.db.profile
+    if not profile then
+      return 1, 1, 1, 1
+    end
+
+    local section = profile.labelcolor or {}
+    local c = section[frameName] or { r = 1, g = 1, b = 1, a = 1 }
     return c.r, c.g, c.b, c.a
   end
 
   function module:SetTabLabelColorValue(info, r, g, b, a)
     local frameName = info[#info - 1]
-    self.db.profile.labelcolor[frameName] = self.db.profile.labelcolor[frameName] or {}
-    local c = self.db.profile.labelcolor[frameName]
+    local profile = self.db and self.db.profile
+    if not profile then return end
+
+    profile.labelcolor = profile.labelcolor or {}
+    profile.labelcolor[frameName] = profile.labelcolor[frameName] or {}
+    local c = profile.labelcolor[frameName]
     c.r, c.g, c.b, c.a = r, g, b, a
     self:OnValueChanged()
   end
