@@ -540,7 +540,11 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
 	-- This is only ever called on classic
 	if not Prat.HookedFrames[this:GetName()] then
-		return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
+		if ChatFrame_MessageEventHandler then
+			return self.hooks["ChatFrame_MessageEventHandler"](this, event, ...)
+		else
+			return ChatFrameMixin.MessageEventHandler(this, event, ...)
+		end
 	end
 
 	local message, info
