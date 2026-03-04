@@ -102,12 +102,21 @@ Prat:AddModuleToLoad(function()
     return "|cffffffff" .. text .. "|r"
   end
 
+  local function GetInfoFrameName(info)
+    for i = #info, 1, -1 do
+      local v = info[i]
+      if type(v) == "string" and v:match("^ChatFrame%d+$") then
+        return v
+      end
+    end
+    return nil
+  end
+
   local function MakeTabLabelOption(order)
     return {
       name = function(info) return Prat.FrameList[info[#info]] or info[#info] end,
       type = "group",
       order = order,
-      hidden = function(info) return Prat.FrameList[info[#info]] == nil end,
       args = {
         labelmode = {
           name = SettingLabel("Label Mode"),
@@ -139,7 +148,9 @@ Prat:AddModuleToLoad(function()
           hidden = function(info)
             local profile = module.db and module.db.profile
             if not profile then return true end
-            return (profile.labelmode and profile.labelmode[info[#info - 1]]) ~= "preset"
+            local frameName = GetInfoFrameName(info)
+            if not frameName then return true end
+            return (profile.labelmode and profile.labelmode[frameName]) ~= "preset"
           end,
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
@@ -156,7 +167,9 @@ Prat:AddModuleToLoad(function()
           hidden = function(info)
             local profile = module.db and module.db.profile
             if not profile then return true end
-            return (profile.labelmode and profile.labelmode[info[#info - 1]]) ~= "shape"
+            local frameName = GetInfoFrameName(info)
+            if not frameName then return true end
+            return (profile.labelmode and profile.labelmode[frameName]) ~= "shape"
           end,
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
@@ -170,7 +183,9 @@ Prat:AddModuleToLoad(function()
           hidden = function(info)
             local profile = module.db and module.db.profile
             if not profile then return true end
-            return (profile.labelmode and profile.labelmode[info[#info - 1]]) ~= "shape"
+            local frameName = GetInfoFrameName(info)
+            if not frameName then return true end
+            return (profile.labelmode and profile.labelmode[frameName]) ~= "shape"
           end,
           get = "GetTabLabelColorValue",
           set = "SetTabLabelColorValue",
@@ -184,7 +199,9 @@ Prat:AddModuleToLoad(function()
           hidden = function(info)
             local profile = module.db and module.db.profile
             if not profile then return true end
-            return (profile.labelmode and profile.labelmode[info[#info - 1]]) ~= "custom"
+            local frameName = GetInfoFrameName(info)
+            if not frameName then return true end
+            return (profile.labelmode and profile.labelmode[frameName]) ~= "custom"
           end,
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
@@ -482,7 +499,8 @@ Prat:AddModuleToLoad(function()
 
   function module:GetTabLabelValue(info)
     local key = info[#info]
-    local frameName = info[#info - 1]
+    local frameName = GetInfoFrameName(info)
+    if not frameName then return nil end
     local profile = self.db and self.db.profile
     if not profile then return nil end
     local section = profile[key]
@@ -492,7 +510,8 @@ Prat:AddModuleToLoad(function()
 
   function module:SetTabLabelValue(info, value)
     local key = info[#info]
-    local frameName = info[#info - 1]
+    local frameName = GetInfoFrameName(info)
+    if not frameName then return end
     local profile = self.db and self.db.profile
     if not profile then return end
     profile[key] = profile[key] or {}
@@ -501,7 +520,10 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:GetTabLabelColorValue(info)
-    local frameName = info[#info - 1]
+    local frameName = GetInfoFrameName(info)
+    if not frameName then
+      return 1, 1, 1, 1
+    end
     local profile = self.db and self.db.profile
     if not profile then
       return 1, 1, 1, 1
@@ -513,7 +535,8 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:SetTabLabelColorValue(info, r, g, b, a)
-    local frameName = info[#info - 1]
+    local frameName = GetInfoFrameName(info)
+    if not frameName then return end
     local profile = self.db and self.db.profile
     if not profile then return end
 
