@@ -445,8 +445,49 @@ Prat:AddModuleToLoad(function()
       return self.hooks.FCF_FadeOutChatFrame(chatFrame)
     end
 
+    local function IsTabHovered(tab)
+      if not tab or not tab:IsShown() then
+        return false
+      end
+
+      if tab:IsMouseOver() then
+        return true
+      end
+
+      if tab.Text and tab.Text:IsMouseOver() then
+        return true
+      end
+
+      if tab.conversationIcon and tab.conversationIcon:IsShown() and tab.conversationIcon:IsMouseOver() then
+        return true
+      end
+
+      return false
+    end
+
+    local function IsAnyDockedTabHovered()
+      local dock = GENERAL_CHAT_DOCK
+      if not dock then return false end
+
+      for _, frame in pairs(FCFDock_GetChatFrames(dock) or {}) do
+        local tab = _G[frame:GetName() .. "Tab"]
+        if IsTabHovered(tab) then
+          return true
+        end
+      end
+
+      return false
+    end
+
     local chatTab = _G[chatFrame:GetName() .. "Tab"]
-    if chatTab and chatTab:IsShown() and chatTab:IsMouseOver() then
+    if chatFrame.isDocked and IsAnyDockedTabHovered() then
+      -- Any hovered docked tab should keep docked chat tabs visible.
+      chatFrame.mouseOutTime = 0
+      FCF_FadeInChatFrame(chatFrame)
+      return
+    end
+
+    if IsTabHovered(chatTab) then
       -- Preserve default behavior semantics while hovered over a moved side tab.
       chatFrame.mouseOutTime = 0
       FCF_FadeInChatFrame(chatFrame)
