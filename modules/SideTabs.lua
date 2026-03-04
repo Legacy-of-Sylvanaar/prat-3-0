@@ -36,7 +36,7 @@ Prat:AddModuleToLoad(function()
 
   --@debug@
   PL:AddLocale(PRAT_MODULE, "enUS", {
-    ["Side Tabs"] = true,
+    ["SideTabs"] = true,
     ["Move chat tabs to the side of the chat frame and stack them vertically."] = true,
     ["Side"] = true,
     ["Which side of the chat frame to anchor tabs to."] = true,
@@ -53,7 +53,7 @@ Prat:AddModuleToLoad(function()
     ["Apply to Undocked Windows"] = true,
     ["Also move tabs for non-docked chat windows."] = true,
     ["Simple Skin"] = true,
-    ["Hide default tab art and draw a simple background for cleaner side tabs."] = true,
+    ["Hide default tab art and draw a simple background for a cleaner SideTabs look."] = true,
   })
   --@end-debug@
 
@@ -212,7 +212,7 @@ Prat:AddModuleToLoad(function()
   end
 
   Prat:SetModuleOptions(module.name, {
-    name = "Side Tabs",
+    name = "SideTabs",
     desc = "Move chat tabs to the side of the chat frame and stack them vertically.",
     type = "group",
     args = {
@@ -355,7 +355,7 @@ Prat:AddModuleToLoad(function()
         args = {
           simpleskin = {
             name = SettingLabel("Simple Skin"),
-            desc = "Hide default tab art and draw a simple background for cleaner side tabs.",
+            desc = "Hide default tab art and draw a simple background for a cleaner SideTabs look.",
             type = "toggle",
             order = 160,
           },
@@ -368,7 +368,7 @@ Prat:AddModuleToLoad(function()
         order = 150,
         args = {
           labelsenabled = {
-            name = SettingLabel("Enable Per-Tab Labels"),
+            name = SettingLabel("Enable Per-tab Labels"),
             desc = "Replace chat tab names with per-tab symbols, shapes, or custom labels.",
             type = "toggle",
             order = 10,
@@ -376,7 +376,7 @@ Prat:AddModuleToLoad(function()
           help = {
             type = "description",
             order = 20,
-            name = "Configure each tab below. Use Label Mode = Default Name to keep Blizzard text.",
+            name = "Configure each tab below. Choose Label Mode per tab: Default Name keeps Blizzard text, while Symbol / Glyph, Colored Shape, and Custom Text replace it.",
           },
           ChatFrame1 = MakeTabLabelOption(101),
           ChatFrame2 = MakeTabLabelOption(102),
