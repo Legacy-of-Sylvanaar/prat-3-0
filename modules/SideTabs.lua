@@ -65,6 +65,8 @@ Prat:AddModuleToLoad(function()
       yoffset = -2,
       spacing = 2,
       tabwidth = 110,
+      tabheight = 22,
+      tabscale = 1.0,
       undocked = true,
       simpleskin = false,
     }
@@ -117,6 +119,24 @@ Prat:AddModuleToLoad(function()
         min = 60,
         max = 200,
         step = 1,
+      },
+      tabheight = {
+        name = "Tab Height",
+        desc = "Set tab button height for the vertical stack.",
+        type = "range",
+        order = 145,
+        min = 14,
+        max = 40,
+        step = 1,
+      },
+      tabscale = {
+        name = "Tab Scale",
+        desc = "Scale tab button size without changing your chosen width/height values.",
+        type = "range",
+        order = 146,
+        min = 0.7,
+        max = 1.5,
+        step = 0.05,
       },
       undocked = {
         name = "Apply to Undocked Windows",
@@ -172,6 +192,13 @@ Prat:AddModuleToLoad(function()
     local p = self.db.profile
     local side = p.side
 
+    if tab.PratSideTabsDefaultHeight == nil then
+      tab.PratSideTabsDefaultHeight = tab:GetHeight()
+    end
+    if tab.PratSideTabsDefaultScale == nil then
+      tab.PratSideTabsDefaultScale = tab:GetScale()
+    end
+
     -- Dock scroll-frame tabs are clipped when anchored outside their parent;
     -- use a top-level parent so side tabs remain visible.
     local fullscreenParent = (FCF_GetCurrentFullScreenFrame and FCF_GetCurrentFullScreenFrame()) or UIParent
@@ -196,6 +223,8 @@ Prat:AddModuleToLoad(function()
     end
 
     PanelTemplates_TabResize(tab, tab.sizePadding or 0, p.tabwidth)
+    tab:SetHeight(p.tabheight)
+    tab:SetScale(p.tabscale)
     self:ApplySkin(tab)
     FCF_CheckShowChatFrame(tab)
 
@@ -266,6 +295,12 @@ Prat:AddModuleToLoad(function()
       end
       local tab = GetTab(frame)
       if tab then
+        if tab.PratSideTabsDefaultHeight ~= nil then
+          tab:SetHeight(tab.PratSideTabsDefaultHeight)
+        end
+        if tab.PratSideTabsDefaultScale ~= nil then
+          tab:SetScale(tab.PratSideTabsDefaultScale)
+        end
         self:ApplySkin(tab, false)
       end
     end
