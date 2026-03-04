@@ -509,10 +509,23 @@ Prat:AddModuleToLoad(function()
     if not tab.PratSideTabsShapeTex then
       local tex = tab:CreateTexture(nil, "OVERLAY")
       tex:SetPoint("CENTER", tab, "CENTER", 0, 0)
+      tex:SetTexture("Interface\\Buttons\\WHITE8X8")
       tab.PratSideTabsShapeTex = tex
     end
 
     return tab.PratSideTabsShapeTex
+  end
+
+  local function EnsureShapeCircleMask(tab)
+    if not tab.PratSideTabsShapeMask then
+      local mask = tab:CreateMaskTexture(nil, "OVERLAY")
+      mask:SetPoint("CENTER", tab, "CENTER", 0, 0)
+      -- This is a built-in circular alpha mask used by Blizzard UI.
+      mask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+      tab.PratSideTabsShapeMask = mask
+    end
+
+    return tab.PratSideTabsShapeMask
   end
 
   local function HideShapeTexture(tab)
@@ -525,6 +538,7 @@ Prat:AddModuleToLoad(function()
     if not tab then return end
 
     local tex = EnsureShapeTexture(tab)
+    local mask = EnsureShapeCircleMask(tab)
     local fs = tab.Text or tab:GetFontString()
     local fontSize = 12
     if fs then
@@ -533,14 +547,16 @@ Prat:AddModuleToLoad(function()
     end
     local shapeSize = math.max(8, math.floor((fontSize or 12) * 0.9 + 0.5))
 
+    tex:SetTexture("Interface\\Buttons\\WHITE8X8")
+    tex:SetSize(shapeSize, shapeSize)
+
     if shape == "CIRCLE" then
-      -- Circular alpha texture; tint via vertex color.
-      tex:SetTexture("Interface\\COMMON\\Indicator-Gray")
-      tex:SetSize(shapeSize, shapeSize)
+      -- Filled/tintable circle using a circular alpha mask (no border ring).
+      mask:SetSize(shapeSize, shapeSize)
+      tex:RemoveMaskTexture(mask)
+      tex:AddMaskTexture(mask)
     else
-      -- Solid square built from plain white texture, then tinted.
-      tex:SetTexture("Interface\\Buttons\\WHITE8X8")
-      tex:SetSize(shapeSize, shapeSize)
+      tex:RemoveMaskTexture(mask)
     end
 
     tex:SetVertexColor(color.r or 1, color.g or 1, color.b or 1, color.a or 1)
