@@ -129,6 +129,7 @@ Prat:AddModuleToLoad(function()
             ["shape"] = "Colored Shape",
             ["custom"] = "Custom Text",
           },
+          sorting = { "default", "preset", "shape", "custom" },
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
         },
