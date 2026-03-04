@@ -485,17 +485,24 @@ Prat:AddModuleToLoad(function()
     SKULL = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t",
   }
 
-  local SHAPE_GLYPHS = {
-    SQUARE = "■",
-    CIRCLE = "●",
-  }
-
   local function ColorToHex(c)
     local a = math.floor((c.a or 1) * 255 + 0.5)
     local r = math.floor((c.r or 1) * 255 + 0.5)
     local g = math.floor((c.g or 1) * 255 + 0.5)
     local b = math.floor((c.b or 1) * 255 + 0.5)
     return string.format("|c%02x%02x%02x%02x", a, r, g, b)
+  end
+
+  local function To255(v)
+    return math.floor((v or 1) * 255 + 0.5)
+  end
+
+  local function MakeTextureTag(texturePath, size, texW, texH, color)
+    local r = To255(color and color.r or 1)
+    local g = To255(color and color.g or 1)
+    local b = To255(color and color.b or 1)
+    local a = To255(color and color.a or 1)
+    return string.format("|T%s:%d:%d:0:0:%d:%d:0:%d:0:%d:%d:%d:%d:%d|t", texturePath, size, size, texW, texH, texW, texH, r, g, b, a)
   end
 
   function module:GetTabLabelValue(info)
@@ -586,9 +593,13 @@ Prat:AddModuleToLoad(function()
 
     if mode == "shape" then
       local shape = self.db.profile.labelshape[frameName] or "SQUARE"
-      local glyph = SHAPE_GLYPHS[shape] or SHAPE_GLYPHS.SQUARE
       local color = self.db.profile.labelcolor[frameName] or { r = 1, g = 1, b = 1, a = 1 }
-      tab:SetText(ColorToHex(color) .. glyph .. "|r")
+      if shape == "CIRCLE" then
+        -- Use a generic client texture (non-raid marker) for circle mode.
+        tab:SetText(MakeTextureTag("Interface\\COMMON\\Indicator-Gray", 12, 16, 16, color))
+      else
+        tab:SetText(MakeTextureTag("Interface\\Buttons\\WHITE8X8", 12, 8, 8, color))
+      end
       return
     end
 
@@ -598,6 +609,54 @@ Prat:AddModuleToLoad(function()
   function module:RestoreTabLabel(frame, tab)
     if not frame or not tab then return end
     tab:SetText(frame.name or tab.PratSideTabsDefaultText or "")
+  end
+
+  function module:ApplyTextLayout(tab)
+    if not tab then return end
+
+    local fs = tab.Text or tab:GetFontString()
+    if not fs then return end
+
+    if not tab.PratSideTabsTextLayoutDefaults then
+      tab.PratSideTabsTextLayoutDefaults = {
+        points = {},
+        justifyH = fs:GetJustifyH(),
+        justifyV = fs:GetJustifyV(),
+        width = fs:GetWidth(),
+      }
+
+      for i = 1, fs:GetNumPoints() do
+        local p, rel, rp, x, y = fs:GetPoint(i)
+        tab.PratSideTabsTextLayoutDefaults.points[i] = { p, rel, rp, x, y }
+      end
+    end
+
+    fs:ClearAllPoints()
+    fs:SetPoint("CENTER", tab, "CENTER", 0, 0)
+    fs:SetJustifyH("CENTER")
+    fs:SetJustifyV("MIDDLE")
+    fs:SetWidth(math.max(1, tab:GetWidth() - 4))
+  end
+
+  function module:RestoreTextLayout(tab)
+    if not tab or not tab.PratSideTabsTextLayoutDefaults then return end
+
+    local fs = tab.Text or tab:GetFontString()
+    if not fs then return end
+
+    local d = tab.PratSideTabsTextLayoutDefaults
+    fs:ClearAllPoints()
+    if d.points and #d.points > 0 then
+      for _, point in ipairs(d.points) do
+        fs:SetPoint(point[1], point[2], point[3], point[4], point[5])
+      end
+    end
+
+    if d.justifyH then fs:SetJustifyH(d.justifyH) end
+    if d.justifyV then fs:SetJustifyV(d.justifyV) end
+    if d.width and d.width > 0 then
+      fs:SetWidth(d.width)
+    end
   end
 
   function module:AnchorTab(tab, anchor, prevTab, frame)
@@ -648,9 +707,10 @@ Prat:AddModuleToLoad(function()
       end
     end
 
-    PanelTemplates_TabResize(tab, tab.sizePadding or 0, tabwidth)
+    PanelTemplates_TabResize(tab, 0, tabwidth)
     tab:SetHeight(tabheight)
     tab:SetScale(p.tabscale)
+    self:ApplyTextLayout(tab)
     self:ApplyTabLabel(frame or FCF_GetChatFrameByID(tab:GetID()), tab)
     self:ApplySkin(tab)
     self:ApplyTextStyle(tab)
@@ -803,6 +863,7 @@ Prat:AddModuleToLoad(function()
           tab:SetScale(tab.PratSideTabsDefaultScale)
         end
         self:RestoreTabLabel(frame, tab)
+        self:RestoreTextLayout(tab)
         self:ApplySkin(tab, false)
         self:RestoreTextStyle(tab)
       end
