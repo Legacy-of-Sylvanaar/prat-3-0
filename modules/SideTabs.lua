@@ -67,6 +67,7 @@ Prat:AddModuleToLoad(function()
       tabwidth = 110,
       tabheight = 22,
       tabscale = 1.0,
+      normalizeuiscale = false,
       undocked = true,
       simpleskin = false,
     }
@@ -138,6 +139,12 @@ Prat:AddModuleToLoad(function()
         max = 1.5,
         step = 0.05,
       },
+      normalizeuiscale = {
+        name = "Normalize for UI Scale",
+        desc = "Compensate tab size and offsets for WoW native UI scale.",
+        type = "toggle",
+        order = 147,
+      },
       undocked = {
         name = "Apply to Undocked Windows",
         desc = "Also move tabs for non-docked chat windows.",
@@ -206,24 +213,36 @@ Prat:AddModuleToLoad(function()
       tab:SetParent(fullscreenParent)
     end
 
+    local normalize = 1
+    if p.normalizeuiscale then
+      local parentScale = fullscreenParent:GetEffectiveScale() or UIParent:GetEffectiveScale() or 1
+      normalize = 1 / math.max(parentScale, 0.01)
+    end
+
+    local xoffset = p.xoffset * normalize
+    local yoffset = p.yoffset * normalize
+    local spacing = p.spacing * normalize
+    local tabwidth = p.tabwidth * normalize
+    local tabheight = p.tabheight * normalize
+
     tab:ClearAllPoints()
 
     if side == "LEFT" then
       if prevTab then
-        tab:SetPoint("TOPRIGHT", prevTab, "BOTTOMRIGHT", 0, -p.spacing)
+        tab:SetPoint("TOPRIGHT", prevTab, "BOTTOMRIGHT", 0, -spacing)
       else
-        tab:SetPoint("TOPRIGHT", anchor, "TOPLEFT", p.xoffset, p.yoffset)
+        tab:SetPoint("TOPRIGHT", anchor, "TOPLEFT", xoffset, yoffset)
       end
     else
       if prevTab then
-        tab:SetPoint("TOPLEFT", prevTab, "BOTTOMLEFT", 0, -p.spacing)
+        tab:SetPoint("TOPLEFT", prevTab, "BOTTOMLEFT", 0, -spacing)
       else
-        tab:SetPoint("TOPLEFT", anchor, "TOPRIGHT", p.xoffset, p.yoffset)
+        tab:SetPoint("TOPLEFT", anchor, "TOPRIGHT", xoffset, yoffset)
       end
     end
 
-    PanelTemplates_TabResize(tab, tab.sizePadding or 0, p.tabwidth)
-    tab:SetHeight(p.tabheight)
+    PanelTemplates_TabResize(tab, tab.sizePadding or 0, tabwidth)
+    tab:SetHeight(tabheight)
     tab:SetScale(p.tabscale)
     self:ApplySkin(tab)
     FCF_CheckShowChatFrame(tab)
