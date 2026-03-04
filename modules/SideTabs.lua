@@ -505,6 +505,48 @@ Prat:AddModuleToLoad(function()
     return string.format("|T%s:%d:%d:0:0:%d:%d:0:%d:0:%d:%d:%d:%d:%d|t", texturePath, size, size, texW, texH, texW, texH, r, g, b, a)
   end
 
+  local function EnsureShapeTexture(tab)
+    if not tab.PratSideTabsShapeTex then
+      local tex = tab:CreateTexture(nil, "OVERLAY")
+      tex:SetPoint("CENTER", tab, "CENTER", 0, 0)
+      tab.PratSideTabsShapeTex = tex
+    end
+
+    return tab.PratSideTabsShapeTex
+  end
+
+  local function HideShapeTexture(tab)
+    if tab and tab.PratSideTabsShapeTex then
+      tab.PratSideTabsShapeTex:Hide()
+    end
+  end
+
+  function module:ApplyShapeLabel(tab, shape, color)
+    if not tab then return end
+
+    local tex = EnsureShapeTexture(tab)
+    local fs = tab.Text or tab:GetFontString()
+    local fontSize = 12
+    if fs then
+      local _, s = fs:GetFont()
+      fontSize = s or 12
+    end
+    local shapeSize = math.max(8, math.floor((fontSize or 12) * 0.9 + 0.5))
+
+    if shape == "CIRCLE" then
+      -- Circular alpha texture; tint via vertex color.
+      tex:SetTexture("Interface\\COMMON\\Indicator-Gray")
+      tex:SetSize(shapeSize, shapeSize)
+    else
+      -- Solid square built from plain white texture, then tinted.
+      tex:SetTexture("Interface\\Buttons\\WHITE8X8")
+      tex:SetSize(shapeSize, shapeSize)
+    end
+
+    tex:SetVertexColor(color.r or 1, color.g or 1, color.b or 1, color.a or 1)
+    tex:Show()
+  end
+
   function module:GetTabLabelValue(info)
     local key = info[#info]
     local frameName = GetInfoFrameName(info)
@@ -563,6 +605,7 @@ Prat:AddModuleToLoad(function()
     end
 
     if not self.db.profile.labelsenabled then
+      HideShapeTexture(tab)
       tab:SetText(frame.name or tab.PratSideTabsDefaultText or "")
       return
     end
@@ -571,11 +614,13 @@ Prat:AddModuleToLoad(function()
     local mode = self.db.profile.labelmode[frameName] or "default"
 
     if mode == "default" then
+      HideShapeTexture(tab)
       tab:SetText(frame.name or tab.PratSideTabsDefaultText or "")
       return
     end
 
     if mode == "custom" then
+      HideShapeTexture(tab)
       local custom = self.db.profile.customlabel[frameName]
       if custom and custom ~= "" then
         tab:SetText(custom)
@@ -586,6 +631,7 @@ Prat:AddModuleToLoad(function()
     end
 
     if mode == "preset" then
+      HideShapeTexture(tab)
       local preset = self.db.profile.labelpreset[frameName] or "STAR"
       tab:SetText(PRESET_LABELS[preset] or PRESET_LABELS.STAR)
       return
@@ -594,20 +640,18 @@ Prat:AddModuleToLoad(function()
     if mode == "shape" then
       local shape = self.db.profile.labelshape[frameName] or "SQUARE"
       local color = self.db.profile.labelcolor[frameName] or { r = 1, g = 1, b = 1, a = 1 }
-      if shape == "CIRCLE" then
-        -- Use a generic client texture (non-raid marker) for circle mode.
-        tab:SetText(MakeTextureTag("Interface\\COMMON\\Indicator-Gray", 12, 16, 16, color))
-      else
-        tab:SetText(MakeTextureTag("Interface\\Buttons\\WHITE8X8", 12, 8, 8, color))
-      end
+      tab:SetText(" ")
+      self:ApplyShapeLabel(tab, shape, color)
       return
     end
 
+    HideShapeTexture(tab)
     tab:SetText(frame.name or tab.PratSideTabsDefaultText or "")
   end
 
   function module:RestoreTabLabel(frame, tab)
     if not frame or not tab then return end
+    HideShapeTexture(tab)
     tab:SetText(frame.name or tab.PratSideTabsDefaultText or "")
   end
 
