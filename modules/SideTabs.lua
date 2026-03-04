@@ -163,10 +163,10 @@ Prat:AddModuleToLoad(function()
       },
       fontsize = {
         name = "Font Size",
-        desc = "Set tab text font size. Set to 0 to keep the default size.",
+        desc = "Set tab text font size.",
         type = "range",
         order = 171,
-        min = 0,
+        min = 4,
         max = 32,
         step = 1,
       },
