@@ -25,17 +25,12 @@
 -------------------------------------------------------------------------------
 
 Prat:AddModuleToLoad(function()
-
-  local PRAT_MODULE = Prat:RequestModuleName("SideTabs")
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local module = Prat:NewModule(PRAT_MODULE, "AceHook-3.0")
+  local MODULE_NAME = "SideTabs"
+  local module = Prat:NewModule(MODULE_NAME, "AceHook-3.0")
   local PL = module.PL
 
   --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
+  PL:AddLocale(MODULE_NAME, "enUS", {
     ["SideTabs"] = true,
     ["Move chat tabs to the side of the chat frame and stack them vertically."] = true,
     ["Side"] = true,
@@ -57,7 +52,7 @@ Prat:AddModuleToLoad(function()
   })
   --@end-debug@
 
-  Prat:SetModuleDefaults(module.name, {
+  Prat:SetModuleDefaults(module, {
     profile = {
       on = false,
       side = "LEFT", -- LEFT | RIGHT
@@ -211,7 +206,7 @@ Prat:AddModuleToLoad(function()
     }
   end
 
-  Prat:SetModuleOptions(module.name, {
+  Prat:SetModuleOptions(module, {
     name = "SideTabs",
     desc = "Move chat tabs to the side of the chat frame and stack them vertically.",
     type = "group",
