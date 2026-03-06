@@ -261,10 +261,8 @@ Prat:AddModuleToLoad(function()
 			self.WontAlias[string.lower(naughtyalias)] = 1
 		end
 
-		if _G.ChatFrameEditBoxBaseMixin and _G.ChatFrameEditBoxBaseMixin.HandleChatType then
-			_G.ChatFrame1EditBox.HandleChatType = function(editBox, msg, command, send)
-				return self:ChatEdit_HandleChatType(editBox, msg, command, send)
-			end
+		if ChatFrame1EditBox and ChatFrame1EditBox.OnTextChanged then
+			self:HookScript(ChatFrame1EditBox, 'OnTextChanged', 'ChatEdit_OnTextChanged')
 		else
 			self:RawHook('ChatEdit_HandleChatType', true)
 		end
@@ -453,7 +451,51 @@ Prat:AddModuleToLoad(function()
 		Prat:Print(string.format("%s: %s", clrmodname(self.moduleName), str))
 	end
 
-	local fake = {}
+	-- Retail logic
+	function module:ChatEdit_OnTextChanged(editBox)
+		-- We cannot perform logic while in lockdown
+		if C_ChatInfo.InChatMessagingLockdown() then
+			return
+		end
+
+		local text = editBox:GetText()
+		-- If the string is in the format "/cmd blah", command will be "/cmd"
+		local command = strmatch(text, "^(/[^%s]+)") or "";
+		local msg = "";
+
+		if ( command ~= text ) then
+			msg = strsub(text, strlen(command) + 2);
+			msg = strmatch(msg, "^%s*(.*)$") or msg;
+		end
+
+		command = strupper(command);
+
+		command = command or ""
+		msg = msg or ""
+		self.processing = true
+		local alias = self.Aliases[string.lower(strsub(command, 2))]
+
+		if alias and alias ~= "" then
+			local newcmd = strmatch(alias, "^/*([^%s]+)") or ""
+			local premsg = strsub(alias, strlen(newcmd) + 2) or ""
+
+			if premsg ~= "" then
+				msg = premsg .. ' ' .. msg
+			end
+
+			command = '/' .. string.upper(newcmd) -- this needs to be upper
+			text = string.lower(command) -- this needs to be lower
+
+			if msg and msg ~= "" then
+				text = text .. ' ' .. msg
+			end
+
+			editBox:SetText(text)
+			return true
+		end
+	end
+
+	-- Classic logic
 	function module:ChatEdit_HandleChatType(editBox, msg, command, send)
 		command = command or ""
 		msg = msg or ""
@@ -461,6 +503,7 @@ Prat:AddModuleToLoad(function()
 		local alias = self.Aliases[string.lower(strsub(command, 2))]
 
 		if alias and alias ~= "" then
+			print("Has alias")
 			if (send == 1) and self.db.profile.verbose then
 				self:warnUser(string.format(PL['dealiasing command /%s to /%s'], clralias(strsub(command, 2)), clrexpansion(alias)))
 				editBox:AddHistoryLine(editBox:GetText())
@@ -478,6 +521,7 @@ Prat:AddModuleToLoad(function()
 			local text = string.lower(command) -- this needs to be lower
 
 			if msg and msg ~= "" then
+				local fake = {}
 				fake.MESSAGE = msg
 
 				Prat.Addon:ProcessUserEnteredChat(fake)
@@ -489,17 +533,12 @@ Prat:AddModuleToLoad(function()
 			if (send == 1) then
 				editBox:SetText(text)
 				ChatEdit_ParseText(editBox, send)
-				return true
 			elseif (self.db.profile.inline) then
 				editBox:SetText(text .. ' ')
 			end
 			return true
 		end
-		if _G.ChatFrameEditBoxBaseMixin and _G.ChatFrameEditBoxBaseMixin.HandleChatType then
-			return _G.ChatFrameEditBoxMixin.HandleChatType(editBox, msg, command, send)
-		else
-			return self.hooks["ChatEdit_HandleChatType"](editBox, msg, command, send)
-		end
+		return self.hooks["ChatEdit_HandleChatType"](editBox, msg, command, send)
 	end
 
 	return

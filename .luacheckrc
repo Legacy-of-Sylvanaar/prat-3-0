@@ -239,6 +239,7 @@ globals = {
 	"C_ChatBubbles.GetAllChatBubbles",
 	"C_ChatInfo.GetChannelRulesetForChannelID",
 	"C_ChatInfo.IsChatLineCensored",
+	"C_ChatInfo.InChatMessagingLockdown",
 	"C_ChatInfo.IsTimerunningPlayer",
 	"C_ChatInfo.ReplaceIconAndGroupExpressions",
 	"C_ChatInfo.SwapChatChannelsByChannelIndex",

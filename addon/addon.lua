@@ -326,11 +326,6 @@ function addon:FCF_SetTemporaryWindowType(chatFrame, chatType, chatTarget)
 
 	Prat.Frames[name] = chatFrame
 	Prat.HookedFrames[name] = chatFrame
-	if _G["ChatFrameMixin"] and _G["ChatFrameMixin"].MessageEventHandler then
-		chatFrame.MessageEventHandler = function(frame, event, ...)
-			return addon:ChatFrame_MessageEventHandler(frame, event, ...)
-		end
-	end
 
 	if ChatFrameMixin and ChatFrameMixin.MessageEventHandler then
 		chatFrame.MessageEventHandler = function(frame, event, ...)
@@ -346,6 +341,9 @@ function addon:FCF_Close(frame)
 
 	Prat.Frames[name] = nil
 	Prat.HookedFrames[name] = nil
+	if ChatFrameMixin and ChatFrameMixin.MessageEventHandler then
+		frame.MessageEventHandler = ChatFrameMixin.MessageEventHandler
+	end
 
 	Prat.callbacks:Fire(Prat.Events.FRAMES_REMOVED, name, frame)
 end
