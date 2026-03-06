@@ -363,9 +363,7 @@ function private.SplitChatMessage(frame, event, ...)
 		elseif not isSecret and strlen(arg2) > 0 then
 			if type == "EMOTE" then
 				s.PLAYER = Ambiguate(arg2, "none"):match("([^%-]+)%-?(.*)")
-			elseif type == "TEXT_EMOTE" then
-				-- luacheck: ignore 542
-			else
+			elseif type ~= "TEXT_EMOTE" then
 				s.PLAYERLINK = arg2
 
 				--ambiguate guild chat names
