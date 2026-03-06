@@ -463,7 +463,7 @@ Prat:AddModuleToLoad(function()
 		local command = strmatch(text, "^(/[^%s]+)") or "";
 		local msg = "";
 
-		if ( command ~= text ) then
+		if (command ~= text) then
 			msg = strsub(text, strlen(command) + 2);
 			msg = strmatch(msg, "^%s*(.*)$") or msg;
 		end

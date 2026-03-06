@@ -58,7 +58,7 @@ local SplitMessageSrc = {
 	lL = "", -- link start
 	PLAYERLINK = "",
 	PLAYERLINKDATA = "",
-	LL = "", --  link text start
+	LL = "", -- link text start
 	PLAYER = "",
 	NONPLAYER = "",
 	sS = "",
@@ -170,10 +170,9 @@ function private.RegisterMessageItem(itemname, anchorvar, relativepos)
 	making up a chat message. Primarily intended to help resolve
 	conflicts between modules.
 
-	 - itemname  = name of the variable to be injected
+	 - itemname = name of the variable to be injected
 
-	 - aftervar  = the position in the chat message after which the item
-				   will be displayed
+	 - aftervar = the position in the chat message after which the item will be displayed
 
 	 - relativepos = "before" or "after"
 	Leave aftervar blank to position the item at the beginning of the list.
@@ -297,7 +296,7 @@ function private.SplitChatMessage(frame, event, ...)
 		end
 
 		s.CHATTARGET = chatTarget
-		s.MESSAGE = isSecret and arg1 or safestr(arg1):gsub("^%s*(.-)%s*$", "%1")  -- trim spaces
+		s.MESSAGE = isSecret and arg1 or safestr(arg1):gsub("^%s*(.-)%s*$", "%1") -- trim spaces
 
 
 		if not isSecret and FCFManager_ShouldSuppressMessage(frame, s.CHATGROUP, s.CHATTARGET) then
@@ -364,7 +363,8 @@ function private.SplitChatMessage(frame, event, ...)
 		elseif not isSecret and strlen(arg2) > 0 then
 			if type == "EMOTE" then
 				s.PLAYER = Ambiguate(arg2, "none"):match("([^%-]+)%-?(.*)")
-			elseif type == "TEXT_EMOTE" then -- luacheck: ignore 542
+			elseif type == "TEXT_EMOTE" then
+				-- luacheck: ignore 542
 			else
 				s.PLAYERLINK = arg2
 

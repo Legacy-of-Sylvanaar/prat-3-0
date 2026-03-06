@@ -213,7 +213,7 @@ Prat:AddModuleToLoad(function()
 			end
 		end)
 
-		Prat.RegisterChatCommand("copychatfull",function()
+		Prat.RegisterChatCommand("copychatfull", function()
 			local frame = SELECTED_CHAT_FRAME
 			if frame then
 				self:ScrapeFullChatFrame(frame)

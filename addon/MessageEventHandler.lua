@@ -48,8 +48,8 @@ function private.MessageEventHandler(self, event, ...)
 
 	if type == "VOICE_TEXT" and not GetCVarBool("speechToText") then
 		return
-	elseif ( (type == "COMMUNITIES_CHANNEL") or ((strsub(type, 1, 7) == "CHANNEL") and (type ~= "CHANNEL_LIST")) ) then
-		local newInfoType = "CHANNEL"..arg8
+	elseif ((type == "COMMUNITIES_CHANNEL") or ((strsub(type, 1, 7) == "CHANNEL") and (type ~= "CHANNEL_LIST"))) then
+		local newInfoType = "CHANNEL" .. arg8
 		if newInfoType then
 			info = ChatTypeInfo[newInfoType]
 		end
@@ -58,33 +58,33 @@ function private.MessageEventHandler(self, event, ...)
 	local chatGroup = ChatFrameUtil.GetChatCategory(type)
 	local chatTarget = GetChatTarget(chatGroup, arg2, arg8)
 
-	if ( type == "SYSTEM" or type == "SKILL" or type == "CURRENCY" or type == "MONEY" or
+	if (type == "SYSTEM" or type == "SKILL" or type == "CURRENCY" or type == "MONEY" or
 		type == "OPENING" or type == "TRADESKILLS" or type == "PET_INFO" or type == "TARGETICONS" or type == "BN_WHISPER_PLAYER_OFFLINE") then
 		self:AddMessage(arg1, info.r, info.g, info.b, info.id)
 	elseif (type == "LOOT") then
 		self:AddMessage(arg1, info.r, info.g, info.b, info.id)
-	elseif ( strsub(type,1,7) == "COMBAT_" ) then
+	elseif (strsub(type, 1, 7) == "COMBAT_") then
 		self:AddMessage(arg1, info.r, info.g, info.b, info.id)
-	elseif ( strsub(type,1,6) == "SPELL_" ) then
+	elseif (strsub(type, 1, 6) == "SPELL_") then
 		self:AddMessage(arg1, info.r, info.g, info.b, info.id)
-	elseif ( strsub(type,1,10) == "BG_SYSTEM_" ) then
+	elseif (strsub(type, 1, 10) == "BG_SYSTEM_") then
 		self:AddMessage(arg1, info.r, info.g, info.b, info.id)
-	elseif ( strsub(type,1,11) == "ACHIEVEMENT" ) then
+	elseif (strsub(type, 1, 11) == "ACHIEVEMENT") then
 		self:AddMessage(arg1:format(private.GetPlayerLink(arg2, ("[%s]"):format(coloredName))), info.r, info.g, info.b, info.id)
-	elseif ( strsub(type,1,18) == "GUILD_ACHIEVEMENT" ) then
+	elseif (strsub(type, 1, 18) == "GUILD_ACHIEVEMENT") then
 		local message = arg1:format(private.GetPlayerLink(arg2, ("[%s]"):format(coloredName)))
 		self:AddMessage(message, info.r, info.g, info.b, info.id)
 	elseif (type == "PING") then
 		self:AddMessage(arg1, info.r, info.g, info.b, info.id)
-	elseif ( type == "IGNORED" ) then
+	elseif (type == "IGNORED") then
 		self:AddMessage(string.format(CHAT_IGNORED, arg2), info.r, info.g, info.b, info.id)
-	elseif ( type == "FILTERED" ) then
+	elseif (type == "FILTERED") then
 		self:AddMessage(string.format(CHAT_FILTERED, arg2), info.r, info.g, info.b, info.id)
-	elseif ( type == "RESTRICTED" ) then
+	elseif (type == "RESTRICTED") then
 		self:AddMessage(CHAT_RESTRICTED_TRIAL, info.r, info.g, info.b, info.id)
-	elseif ( type == "CHANNEL_LIST") then
-		if(channelLength > 0) then
-			self:AddMessage(string.format(ChatFrameUtil.GetOutMessageFormatKey(type)..arg1, tonumber(arg8), arg4), info.r, info.g, info.b, info.id)
+	elseif (type == "CHANNEL_LIST") then
+		if (channelLength > 0) then
+			self:AddMessage(string.format(ChatFrameUtil.GetOutMessageFormatKey(type) .. arg1, tonumber(arg8), arg4), info.r, info.g, info.b, info.id)
 		else
 			self:AddMessage(arg1, info.r, info.g, info.b, info.id)
 		end
@@ -92,17 +92,17 @@ function private.MessageEventHandler(self, event, ...)
 		return
 	elseif (type == "CHANNEL_NOTICE") then
 		return
-	elseif ( type == "BN_INLINE_TOAST_ALERT" ) then
+	elseif (type == "BN_INLINE_TOAST_ALERT") then
 		return
-	elseif ( type == "BN_INLINE_TOAST_BROADCAST" ) then
-		if ( arg1 ~= "" ) then
+	elseif (type == "BN_INLINE_TOAST_BROADCAST") then
+		if (arg1 ~= "") then
 			arg1 = C_StringUtil.RemoveContiguousSpaces(arg1)
 			local linkDisplayText = ("[%s]"):format(arg2)
 			local playerLink = private.GetBNPlayerLink(arg2, linkDisplayText, arg13, arg11, ChatFrameUtil.GetChatCategory(type), 0)
 			self:AddMessage(string.format(BN_INLINE_TOAST_BROADCAST, playerLink, arg1), info.r, info.g, info.b, info.id)
 		end
-	elseif ( type == "BN_INLINE_TOAST_BROADCAST_INFORM" ) then
-		if ( arg1 ~= "" ) then
+	elseif (type == "BN_INLINE_TOAST_BROADCAST_INFORM") then
+		if (arg1 ~= "") then
 			self:AddMessage(BN_INLINE_TOAST_BROADCAST_INFORM, info.r, info.g, info.b, info.id)
 		end
 	else
@@ -112,12 +112,12 @@ function private.MessageEventHandler(self, event, ...)
 			-- Add AFK/DND flags
 			local pflag = ChatFrameUtil.GetPFlag(arg6, arg7, arg8)
 
-			if ( type == "WHISPER_INFORM" and GMChatFrame_IsGM and GMChatFrame_IsGM(arg2) ) then
+			if (type == "WHISPER_INFORM" and GMChatFrame_IsGM and GMChatFrame_IsGM(arg2)) then
 				return
 			end
 
 			local showLink = 1
-			if ( strsub(type, 1, 7) == "MONSTER" or strsub(type, 1, 9) == "RAID_BOSS") then
+			if (strsub(type, 1, 7) == "MONSTER" or strsub(type, 1, 9) == "RAID_BOSS") then
 				showLink = nil
 			else
 				msg = C_StringUtil.EscapeLuaFormatString(msg)
@@ -132,22 +132,22 @@ function private.MessageEventHandler(self, event, ...)
 			local playerLink
 			local playerLinkDisplayText = coloredName
 			local relevantDefaultLanguage = self.defaultLanguage
-			if ( (type == "SAY") or (type == "YELL") ) then
+			if ((type == "SAY") or (type == "YELL")) then
 				relevantDefaultLanguage = self.alternativeDefaultLanguage
 			end
 			local usingDifferentLanguage = (arg3 ~= "") and (arg3 ~= relevantDefaultLanguage)
 			local usingEmote = (type == "EMOTE") or (type == "TEXT_EMOTE")
 
-			if ( usingDifferentLanguage or not usingEmote ) then
+			if (usingDifferentLanguage or not usingEmote) then
 				playerLinkDisplayText = ("[%s]"):format(coloredName)
 			end
 
 			local isCommunityType = type == "COMMUNITIES_CHANNEL"
-			if ( isCommunityType ) then
+			if (isCommunityType) then
 				local isBattleNetCommunity = bnetIDAccount ~= nil
 				local messageInfo, clubId, streamId = C_Club.GetInfoFromLastCommunityChatLine()
 				if (messageInfo ~= nil) then
-					if ( isBattleNetCommunity ) then
+					if (isBattleNetCommunity) then
 						playerLink = private.GetBNPlayerCommunityLink(playerName, playerLinkDisplayText, bnetIDAccount, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
 					else
 						playerLink = private.GetPlayerCommunityLink(playerName, playerLinkDisplayText, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
@@ -156,7 +156,7 @@ function private.MessageEventHandler(self, event, ...)
 					playerLink = playerLinkDisplayText
 				end
 			else
-				if ( type == "BN_WHISPER" or type == "BN_WHISPER_INFORM" ) then
+				if (type == "BN_WHISPER" or type == "BN_WHISPER_INFORM") then
 					playerLink = private.GetBNPlayerLink(playerName, playerLinkDisplayText, bnetIDAccount, lineID, chatGroup, chatTarget)
 				else
 					playerLink = private.GetPlayerLink(playerName, playerLinkDisplayText, lineID, chatGroup, chatTarget)
@@ -166,40 +166,40 @@ function private.MessageEventHandler(self, event, ...)
 			local message = msg
 			-- isMobile
 			if arg14 then
-				message = ChatFrameUtil.GetMobileEmbeddedTexture(info.r, info.g, info.b)..message
+				message = ChatFrameUtil.GetMobileEmbeddedTexture(info.r, info.g, info.b) .. message
 			end
 
 			local outMsg
-			if ( usingDifferentLanguage ) then
-				local languageHeader = "["..arg3.."] "
+			if (usingDifferentLanguage) then
+				local languageHeader = "[" .. arg3 .. "] "
 				if showLink then
-					outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type)..languageHeader..message, pflag..playerLink)
+					outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type) .. languageHeader .. message, pflag .. playerLink)
 				else
-					outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type)..languageHeader..message, pflag..arg2)
+					outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type) .. languageHeader .. message, pflag .. arg2)
 				end
 			else
 				if not showLink then
-					if ( type == "TEXT_EMOTE" ) then
+					if (type == "TEXT_EMOTE") then
 						outMsg = message
 					else
-						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type)..message, pflag..arg2, arg2)
+						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type) .. message, pflag .. arg2, arg2)
 					end
 				else
-					if ( type == "EMOTE" ) then
-						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type)..message, pflag..playerLink)
-					elseif ( type == "TEXT_EMOTE") then
-						outMsg = string.gsub(message, arg2, pflag..playerLink, 1)
+					if (type == "EMOTE") then
+						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type) .. message, pflag .. playerLink)
+					elseif (type == "TEXT_EMOTE") then
+						outMsg = string.gsub(message, arg2, pflag .. playerLink, 1)
 					elseif (type == "GUILD_ITEM_LOOTED") then
 						outMsg = string.gsub(message, "$s", private.GetPlayerLink(arg2, playerLinkDisplayText))
 					else
-						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type)..message, pflag..playerLink)
+						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type) .. message, pflag .. playerLink)
 					end
 				end
 			end
 
 			-- Add Channel
 			if (channelLength > 0) then
-				outMsg = "|Hchannel:channel:"..arg8.."|h["..private.ResolvePrefixedChannelName(arg4).."]|h "..outMsg
+				outMsg = "|Hchannel:channel:" .. arg8 .. "|h[" .. private.ResolvePrefixedChannelName(arg4) .. "]|h " .. outMsg
 			end
 
 			return outMsg
@@ -216,8 +216,8 @@ function private.MessageEventHandler(self, event, ...)
 		self:AddMessage(msg, info.r, info.g, info.b, info.id, accessID, typeID, event, eventArgs, MessageFormatter)
 	end
 
-	if ( type == "WHISPER" or type == "BN_WHISPER" ) then
-		if ( not self.tellTimer or (GetTime() > self.tellTimer) ) then
+	if (type == "WHISPER" or type == "BN_WHISPER") then
+		if (not self.tellTimer or (GetTime() > self.tellTimer)) then
 			PlaySound(SOUNDKIT.TELL_MESSAGE)
 		end
 		self.tellTimer = GetTime() + ChatFrameConstants.WhisperSoundAlertCooldown

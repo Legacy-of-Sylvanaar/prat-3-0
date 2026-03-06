@@ -3,10 +3,10 @@ local _, private = ...
 local chanTable = {}
 function private.RebuildChannelTable()
 	table.wipe(chanTable)
-	local channels = {GetChannelList()}
+	local channels = { GetChannelList() }
 	if #channels > 0 then
 		for i = 1, #channels, 3 do
-			local num, name = channels[i], channels[i+1]
+			local num, name = channels[i], channels[i + 1]
 			name = private.ResolveChannelName(name)
 			if not issecretvalue or not issecretvalue(name) then
 				chanTable[num] = name

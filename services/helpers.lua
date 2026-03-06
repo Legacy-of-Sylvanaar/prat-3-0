@@ -1,6 +1,6 @@
 local _, private = ...
 
-local issecretvalue = issecretvalue or function ()
+local issecretvalue = issecretvalue or function()
 	return false
 end
 
@@ -36,7 +36,7 @@ function private.GetCommunityAndStreamName(clubId, streamId)
 		if not issecretvalue(_name) then
 			_name = ChatFrameUtil.TruncateToMaxLength(_name, ChatFrameConstants.TruncatedCommunityNameLength)
 		end
-		return _name.." - "..streamName
+		return _name .. " - " .. streamName
 	end
 end
 

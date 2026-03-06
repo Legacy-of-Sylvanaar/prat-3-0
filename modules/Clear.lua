@@ -27,155 +27,162 @@
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
 Prat:AddModuleToLoad(function()
-  local module = Prat:NewModule("Clear")
-  local PL = module.PL
+	local module = Prat:NewModule("Clear")
+	local PL = module.PL
 
-  --@debug@
-  PL:AddLocale("enUS", {
-    ["Clear"] = true,
-    ["Adds clear text slash commands (/clear)(/cls)(/clearall)(/clsall)."] = true,
-    ["Clears the current chat frame."] = true,
-    ["Clearall"] = true,
-    ["Clears all chat frames."] = true,
-  })
-  --@end-debug@
+	--@debug@
+	PL:AddLocale("enUS", {
+		["Clear"] = true,
+		["Adds clear text slash commands (/clear)(/cls)(/clearall)(/clsall)."] = true,
+		["Clears the current chat frame."] = true,
+		["Clearall"] = true,
+		["Clears all chat frames."] = true,
+	})
+	--@end-debug@
 
-  -- These Localizations are auto-generated. To help with localization
-  -- please go to http://www.wowace.com/projects/prat-3-0/localization/
-
-
-  --[===[@non-debug@
-do
-    local L
+	-- These Localizations are auto-generated. To help with localization
+	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
 
 
-L = {}
---@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("enUS", L)
+	--[===[@non-debug@
+  do
+	  local L
 
 
-
-L = {}
---@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("itIT", L)
+  L = {}
+  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("enUS", L)
 
 
 
-L = {}
---@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("ptBR", L)
-
-
-L = {}
---@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("frFR",L)
+  L = {}
+  --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("itIT", L)
 
 
 
+  L = {}
+  --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("ptBR", L)
 
-L = {}
---@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("deDE", L)
+
+  L = {}
+  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("frFR",L)
 
 
-L = {}
---@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("koKR",L)
 
-L = {}
---@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("esMX",L)
 
-L = {}
---@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("ruRU",L)
+  L = {}
+  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("deDE", L)
 
-L = {}
---@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("zhCN",L)
 
-L = {}
---@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("esES",L)
+  L = {}
+  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("koKR",L)
 
-L = {}
---@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
-PL:AddLocale("zhTW",L)
-end
---@end-non-debug@]===]
+  L = {}
+  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("esMX",L)
 
-  Prat:SetModuleDefaults(module.name, {
-    profile = {
-      on = false,
-    }
-  })
+  L = {}
+  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("ruRU",L)
 
-  Prat:SetModuleOptions(module.name, {
-    name = PL["Clear"],
-    desc = PL["Adds clear text slash commands (/clear)(/cls)(/clearall)(/clsall)."],
-    type = "group",
-    args = {}
-  })
+  L = {}
+  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("zhCN",L)
 
-  --[[------------------------------------------------
-    Module Event Functions
-  ------------------------------------------------]] --
+  L = {}
+  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("esES",L)
 
-  -- things to do when the module is enabled
-  function module:OnModuleEnable()
-    Prat.RegisterChatCommand("clear", function() module:clear(SELECTED_CHAT_FRAME) end)
-    Prat.RegisterChatCommand("cls", function() module:clear(SELECTED_CHAT_FRAME) end)
-    Prat.RegisterChatCommand("clearall", function() module:clearAll() end)
-    Prat.RegisterChatCommand("clsall", function() module:clearAll() end)
-
-    --	local slashcmds, cmdopts
-    --
-    --	-- clear
-    --	cmdopts_clear = {
-    --		name	= PL["Clear"],
-    --		desc	= PL["Clears the current chat frame."],
-    --		type	= "execute",
-    --		func	= function() module:clear(SELECTED_CHAT_FRAME) end,
-    --		}
-    --
-    --	-- cleartastic
-    --	cmdopts_clearall = {
-    --		name	= PL["Clearall"],
-    --		desc	= PL["Clears all chat frames."],
-    --		type	= "execute",
-    --		func	= function() module:clearAll() end,
-    --		}
-
-    -- TODO - need to find call equivalent to RCC in Ace2
-    --	Prat.Addon:RegisterChatCommand({ '/clear', '/cls' }, cmdopts_clear)
-    --	Prat.Addon:RegisterChatCommand({ '/clearall', '/clsall' }, cmdopts_clearall)
+  L = {}
+  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Clear")@
+  PL:AddLocale("zhTW",L)
   end
+  --@end-non-debug@]===]
 
-  function module:OnModuleDisable()
-  end
+	Prat:SetModuleDefaults(module.name, {
+		profile = {
+			on = false,
+		}
+	})
 
-  --[[ - - ------------------------------------------------
-    Core Functions
-  --------------------------------------------- - ]] --
+	Prat:SetModuleOptions(module.name, {
+		name = PL["Clear"],
+		desc = PL["Adds clear text slash commands (/clear)(/cls)(/clearall)(/clsall)."],
+		type = "group",
+		args = {}
+	})
 
-  function module:GetDescription()
-    return PL["Adds clear text slash commands (/clear)(/cls)(/clearall)(/clsall)."]
-  end
+	--[[------------------------------------------------
+	  Module Event Functions
+	------------------------------------------------]] --
 
-  function module:clear(chatframe)
-    local type = chatframe:GetObjectType() or nil
+	-- things to do when the module is enabled
+	function module:OnModuleEnable()
+		Prat.RegisterChatCommand("clear", function()
+			module:clear(SELECTED_CHAT_FRAME)
+		end)
+		Prat.RegisterChatCommand("cls", function()
+			module:clear(SELECTED_CHAT_FRAME)
+		end)
+		Prat.RegisterChatCommand("clearall", function()
+			module:clearAll()
+		end)
+		Prat.RegisterChatCommand("clsall", function()
+			module:clearAll()
+		end)
 
-    if self.db.profile.on and type == 'Frame' and chatframe.Clear then
-      chatframe:Clear()
-    end
-  end
+		--	local slashcmds, cmdopts
+		--
+		--	-- clear
+		--	cmdopts_clear = {
+		--		name	= PL["Clear"],
+		--		desc	= PL["Clears the current chat frame."],
+		--		type	= "execute",
+		--		func	= function() module:clear(SELECTED_CHAT_FRAME) end,
+		--		}
+		--
+		--	-- cleartastic
+		--	cmdopts_clearall = {
+		--		name	= PL["Clearall"],
+		--		desc	= PL["Clears all chat frames."],
+		--		type	= "execute",
+		--		func	= function() module:clearAll() end,
+		--		}
 
-  function module:clearAll()
-    for i = 1, NUM_CHAT_WINDOWS do
-      self:clear(_G['ChatFrame' .. i])
-    end
-  end
+		-- TODO - need to find call equivalent to RCC in Ace2
+		--	Prat.Addon:RegisterChatCommand({ '/clear', '/cls' }, cmdopts_clear)
+		--	Prat.Addon:RegisterChatCommand({ '/clearall', '/clsall' }, cmdopts_clearall)
+	end
 
+	function module:OnModuleDisable()
+	end
 
-  return
+	--[[ - - ------------------------------------------------
+	  Core Functions
+	--------------------------------------------- - ]] --
+
+	function module:GetDescription()
+		return PL["Adds clear text slash commands (/clear)(/cls)(/clearall)(/clsall)."]
+	end
+
+	function module:clear(chatframe)
+		local type = chatframe:GetObjectType() or nil
+
+		if self.db.profile.on and type == 'Frame' and chatframe.Clear then
+			chatframe:Clear()
+		end
+	end
+
+	function module:clearAll()
+		for i = 1, NUM_CHAT_WINDOWS do
+			self:clear(_G['ChatFrame' .. i])
+		end
+	end
+
+	return
 end) -- Prat:AddModuleToLoad

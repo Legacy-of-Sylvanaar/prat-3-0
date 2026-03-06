@@ -27,384 +27,391 @@
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
 Prat:AddModuleToLoad(function()
-  local module = Prat:NewModule("Frames", "AceHook-3.0")
-  local PL = module.PL
+	local module = Prat:NewModule("Frames", "AceHook-3.0")
+	local PL = module.PL
 
-  --@debug@
-  PL:AddLocale("enUS", {
-    ["Frames"] = true,
-    ["Chat window frame parameter options"] = true,
-    ["removeclamp_name"] = "Zero Clamp Size",
-    ["removeclamp_desc"] = "Allow the chatframe to be moved flush with the edge of the screen",
-    ["minchatwidth_name"] = "Set Minimum Width",
-    ["minchatwidth_desc"] = "Sets the minimum width for all chat windows.",
-    ["maxchatwidth_name"] = "Set Maximum Width",
-    ["maxchatwidth_desc"] = "Sets the maximum width for all chat windows.",
-    ["minchatheight_name"] = "Set Minimum Height",
-    ["minchatheight_desc"] = "Sets the minimum height for all chat windows.",
-    ["maxchatheight_name"] = "Set Maximum Height",
-    ["maxchatheight_desc"] = "Sets the maximum height for all chat windows.",
-    ["mainchatonload_name"] = "Force Main Chat Frame On Load",
-    ["mainchatonload_desc"] = "Automatically select the first chat frame and make it active on load.",
-    ["framealphastatic_name"] = "Static Chatframe Alpha",
-    ["framealphastatic_desc"] = "Set the transparency of the chatframe to always match the configured transparency",
-    ["defaultframealpha_name"] = "Default alpha on mouseover",
-    ["defaultframealpha_desc"] = "Sets minimum alpha for the chat on mouseover when the static chatframe alpha setting is disabled AND the default alpha is greater than the custom alpha set to the chat window.",
-  })
-  --@end-debug@
+	--@debug@
+	PL:AddLocale("enUS", {
+		["Frames"] = true,
+		["Chat window frame parameter options"] = true,
+		["removeclamp_name"] = "Zero Clamp Size",
+		["removeclamp_desc"] = "Allow the chatframe to be moved flush with the edge of the screen",
+		["minchatwidth_name"] = "Set Minimum Width",
+		["minchatwidth_desc"] = "Sets the minimum width for all chat windows.",
+		["maxchatwidth_name"] = "Set Maximum Width",
+		["maxchatwidth_desc"] = "Sets the maximum width for all chat windows.",
+		["minchatheight_name"] = "Set Minimum Height",
+		["minchatheight_desc"] = "Sets the minimum height for all chat windows.",
+		["maxchatheight_name"] = "Set Maximum Height",
+		["maxchatheight_desc"] = "Sets the maximum height for all chat windows.",
+		["mainchatonload_name"] = "Force Main Chat Frame On Load",
+		["mainchatonload_desc"] = "Automatically select the first chat frame and make it active on load.",
+		["framealphastatic_name"] = "Static Chatframe Alpha",
+		["framealphastatic_desc"] = "Set the transparency of the chatframe to always match the configured transparency",
+		["defaultframealpha_name"] = "Default alpha on mouseover",
+		["defaultframealpha_desc"] = "Sets minimum alpha for the chat on mouseover when the static chatframe alpha setting is disabled AND the default alpha is greater than the custom alpha set to the chat window.",
+	})
+	--@end-debug@
 
-  -- These Localizations are auto-generated. To help with localization
-  -- please go to http://www.wowace.com/projects/prat-3-0/localization/
+	-- These Localizations are auto-generated. To help with localization
+	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
 
-  --[===[@non-debug@
-do
-    local L
-
-
-L = {}
---@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("enUS", L)
-
-L = {}
---@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("itIT", L)
-
-L = {}
---@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("ptBR", L)
-
-L = {}
---@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("frFR", L)
-
-L = {}
---@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("deDE", L)
-
-L = {}
---@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("koKR", L)
-
-L = {}
---@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("esMX", L)
-
-L = {}
---@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("ruRU", L)
-
-L = {}
---@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("zhCN", L)
-
-L = {}
---@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("esES",  L)
-
-L = {}
---@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
-PL:AddLocale("zhTW", L)
-end
---@end-non-debug@]===]
-
-  -- We have to set the insets here before blizzard has a chance to move them
-  for i = 1, NUM_CHAT_WINDOWS do
-    local f = _G["ChatFrame" .. i]
-    f:SetClampRectInsets(0, 0, 0, 0)
-  end
-
-
-  Prat:SetModuleDefaults(module.name, {
-    profile = {
-      on = true,
-      minchatwidth = 160,
-      minchatwidthdefault = 160,
-      maxchatwidth = 800,
-      maxchatwidthdefault = 800,
-      minchatheight = 120,
-      minchatheightdefault = 120,
-      maxchatheight = 600,
-      maxchatheightdefault = 600,
-      mainchatonload = true,
-      removeclamp = true,
-      framealphastatic = false,
-      defaultframealpha = 0.25,
-      framemetrics = {
-        ['*'] = {
-          width = 430,
-          height = 120,
-        }
-      }
-    }
-  })
-
+	--[===[@non-debug@
   do
-    local frameoption = {
-      name = function(info) return PL[info[#info] .. "_name"] end,
-      desc = function(info) return PL[info[#info] .. "_desc"] end,
-      type = "range",
-      min = 25,
-      max = 1024,
-      step = 1
-    }
+	  local L
 
-    Prat:SetModuleOptions(module.name, {
-      name = PL["Frames"],
-      desc = PL["Chat window frame parameter options"],
-      type = "group",
-      args = {
-        minchatwidth = frameoption,
-        maxchatwidth = frameoption,
-        minchatheight = frameoption,
-        maxchatheight = frameoption,
-        removeclamp = {
-          type = "toggle",
-          order = 110,
-          name = PL["removeclamp_name"],
-          desc = PL["removeclamp_desc"],
-        },
-        framealphastatic = {
-          type = "toggle",
-          order = 130,
-          name = PL.framealphastatic_name,
-          desc = PL.framealphastatic_desc,
-        },
-        defaultframealpha = {
-          name = PL["defaultframealpha_name"],
-          desc = PL["defaultframealpha_desc"],
-          type = "range",
-          order = 140,
-          min = 0.0,
-          max = 1,
-          step = 0.01,
-        },
-      }
-    })
+
+  L = {}
+  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("enUS", L)
+
+  L = {}
+  --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("itIT", L)
+
+  L = {}
+  --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("ptBR", L)
+
+  L = {}
+  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("frFR", L)
+
+  L = {}
+  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("deDE", L)
+
+  L = {}
+  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("koKR", L)
+
+  L = {}
+  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("esMX", L)
+
+  L = {}
+  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("ruRU", L)
+
+  L = {}
+  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("zhCN", L)
+
+  L = {}
+  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("esES",  L)
+
+  L = {}
+  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Frames")@
+  PL:AddLocale("zhTW", L)
   end
+  --@end-non-debug@]===]
+
+	-- We have to set the insets here before blizzard has a chance to move them
+	for i = 1, NUM_CHAT_WINDOWS do
+		local f = _G["ChatFrame" .. i]
+		f:SetClampRectInsets(0, 0, 0, 0)
+	end
+
+	Prat:SetModuleDefaults(module.name, {
+		profile = {
+			on = true,
+			minchatwidth = 160,
+			minchatwidthdefault = 160,
+			maxchatwidth = 800,
+			maxchatwidthdefault = 800,
+			minchatheight = 120,
+			minchatheightdefault = 120,
+			maxchatheight = 600,
+			maxchatheightdefault = 600,
+			mainchatonload = true,
+			removeclamp = true,
+			framealphastatic = false,
+			defaultframealpha = 0.25,
+			framemetrics = {
+				['*'] = {
+					width = 430,
+					height = 120,
+				}
+			}
+		}
+	})
+
+	do
+		local frameoption = {
+			name = function(info)
+				return PL[info[#info] .. "_name"]
+			end,
+			desc = function(info)
+				return PL[info[#info] .. "_desc"]
+			end,
+			type = "range",
+			min = 25,
+			max = 1024,
+			step = 1
+		}
+
+		Prat:SetModuleOptions(module.name, {
+			name = PL["Frames"],
+			desc = PL["Chat window frame parameter options"],
+			type = "group",
+			args = {
+				minchatwidth = frameoption,
+				maxchatwidth = frameoption,
+				minchatheight = frameoption,
+				maxchatheight = frameoption,
+				removeclamp = {
+					type = "toggle",
+					order = 110,
+					name = PL["removeclamp_name"],
+					desc = PL["removeclamp_desc"],
+				},
+				framealphastatic = {
+					type = "toggle",
+					order = 130,
+					name = PL.framealphastatic_name,
+					desc = PL.framealphastatic_desc,
+				},
+				defaultframealpha = {
+					name = PL["defaultframealpha_name"],
+					desc = PL["defaultframealpha_desc"],
+					type = "range",
+					order = 140,
+					min = 0.0,
+					max = 1,
+					step = 0.01,
+				},
+			}
+		})
+	end
 
 
-  --[[------------------------------------------------
-      Module Event Functions
-  ------------------------------------------------]] --
+	--[[------------------------------------------------
+		Module Event Functions
+	------------------------------------------------]] --
 
-  Prat:SetModuleInit(module, function() module:GetDefaults() end)
+	Prat:SetModuleInit(module, function()
+		module:GetDefaults()
+	end)
 
-  function module:OnModuleEnable()
-    CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0
-    self:ConfigureAllChatFrames(true)
+	function module:OnModuleEnable()
+		CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0
+		self:ConfigureAllChatFrames(true)
 
-    self:SecureHook("FCF_DockFrame")
-    self:SecureHook("FCF_UnDockFrame")
-    self:SecureHook("FloatingChatFrame_UpdateBackgroundAnchors")
+		self:SecureHook("FCF_DockFrame")
+		self:SecureHook("FCF_UnDockFrame")
+		self:SecureHook("FloatingChatFrame_UpdateBackgroundAnchors")
 
-    self:SecureHook("FCF_SetWindowAlpha")
-    self:SecureHook("FCF_SetWindowColor")
+		self:SecureHook("FCF_SetWindowAlpha")
+		self:SecureHook("FCF_SetWindowColor")
 
-    if not Prat.IsClassic then
-      local prevClamp = ChatFrame1.SetClampRectInsets
-      self:SecureHook(ChatFrame1, "SetClampRectInsets", function(frame)
-		  -- If in combat, SetClampRectInsets is protected... This should likely never happen, but to be safe.
-		  if _G.InCombatLockdown() then
-			  return
-		  end
-        if self.db.profile.on and self.db.profile.removeclamp then
-          prevClamp(frame, 0, 0, 0, 0)
-        end
-      end)
-    end
-  end
+		if not Prat.IsClassic then
+			local prevClamp = ChatFrame1.SetClampRectInsets
+			self:SecureHook(ChatFrame1, "SetClampRectInsets", function(frame)
+				-- If in combat, SetClampRectInsets is protected... This should likely never happen, but to be safe.
+				if _G.InCombatLockdown() then
+					return
+				end
+				if self.db.profile.on and self.db.profile.removeclamp then
+					prevClamp(frame, 0, 0, 0, 0)
+				end
+			end)
+		end
+	end
 
+	function module:OnModuleDisable()
+		CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0.2
+		self:ConfigureAllChatFrames(false)
+	end
 
-  function module:OnModuleDisable()
-    CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0.2
-    self:ConfigureAllChatFrames(false)
-  end
+	function module:GetDescription()
+		return PL["Chat window frame parameter options"]
+	end
 
-  function module:GetDescription()
-    return PL["Chat window frame parameter options"]
-  end
+	function module:FloatingChatFrame_UpdateBackgroundAnchors(frame)
+		if self.db.profile.removeclamp then
+			frame:SetClampRectInsets(0, 0, 0, 0)
+		end
+		Prat.Frames[frame:GetName()] = frame
+		local m = Prat:GetModule("Font")
+		if m then
+			m:ConfigureAllChatFrames()
+		end
+	end
+	function module:FCF_DockFrame(frame)
+		if self.db.profile.removeclamp then
+			frame:SetClampRectInsets(0, 0, 0, 0)
+		end
+		Prat.Frames[frame:GetName()] = frame
+		local m = Prat:GetModule("Font")
+		if m then
+			m:ConfigureAllChatFrames()
+		end
+	end
 
+	function module:FCF_UnDockFrame(frame)
+		if self.db.profile.removeclamp then
+			frame:SetClampRectInsets(0, 0, 0, 0)
+		end
+		Prat.Frames[frame:GetName()] = frame
+		local m = Prat:GetModule("Font")
+		if m then
+			m:ConfigureAllChatFrames()
+		end
+	end
 
-  function module:FloatingChatFrame_UpdateBackgroundAnchors(frame)
-    if self.db.profile.removeclamp then
-      frame:SetClampRectInsets(0, 0, 0, 0)
-    end
-    Prat.Frames[frame:GetName()] = frame
-    local m = Prat:GetModule("Font")
-    if m then m:ConfigureAllChatFrames() end
-  end
-  function module:FCF_DockFrame(frame)
-    if self.db.profile.removeclamp then
-      frame:SetClampRectInsets(0, 0, 0, 0)
-    end
-    Prat.Frames[frame:GetName()] = frame
-    local m = Prat:GetModule("Font")
-    if m then m:ConfigureAllChatFrames() end
-  end
+	--[[------------------------------------------------
+		Core Functions
+	------------------------------------------------]] --
+	-- set parameters for each chatframe
+	function module:ConfigureAllChatFrames(enabled)
+		for _, v in pairs(Prat.Frames) do
+			self:SetParameters(v, enabled)
+		end
+	end
 
-  function module:FCF_UnDockFrame(frame)
-    if self.db.profile.removeclamp then
-      frame:SetClampRectInsets(0, 0, 0, 0)
-    end
-    Prat.Frames[frame:GetName()] = frame
-    local m = Prat:GetModule("Font")
-    if m then m:ConfigureAllChatFrames() end
-  end
+	function module:RecreateBackgroundTextures(frame)
+		if frame.PratTextures then
+			return
+		end
+		frame.PratTextures = {}
+		for _, name in ipairs(CHAT_FRAME_TEXTURES) do
+			local texture = _G[frame:GetName() .. name]
+			local layer, sublevel = texture:GetDrawLayer()
 
-  --[[------------------------------------------------
-      Core Functions
-  ------------------------------------------------]] --
-  -- set parameters for each chatframe
-  function module:ConfigureAllChatFrames(enabled)
-    for _, v in pairs(Prat.Frames) do
-      self:SetParameters(v, enabled)
-    end
-  end
+			local newTexture = texture:GetParent():CreateTexture(nil, layer, nil, sublevel)
+			for i = 1, texture:GetNumPoints() do
+				newTexture:SetPoint(texture:GetPoint(i))
+			end
 
+			newTexture:SetTexture(texture:GetTexture())
+			newTexture:SetTexCoord(texture:GetTexCoord())
 
-  function module:RecreateBackgroundTextures(frame)
-    if frame.PratTextures then
-      return
-    end
-    frame.PratTextures = {}
-    for _, name in ipairs(CHAT_FRAME_TEXTURES) do
-      local texture = _G[frame:GetName() .. name]
-      local layer, sublevel = texture:GetDrawLayer()
+			newTexture:SetSize(texture:GetSize())
 
-      local newTexture = texture:GetParent():CreateTexture(nil, layer, nil, sublevel)
-      for i = 1, texture:GetNumPoints() do
-        newTexture:SetPoint(texture:GetPoint(i))
-      end
+			table.insert(frame.PratTextures, newTexture)
+			texture:Hide()
+		end
+	end
 
-      newTexture:SetTexture(texture:GetTexture())
-      newTexture:SetTexCoord(texture:GetTexCoord())
+	function module:HidePratTextures(frame)
+		if frame.PratTextures then
+			for _, name in ipairs(CHAT_FRAME_TEXTURES) do
+				local texture = _G[frame:GetName() .. name]
+				texture:Show()
+			end
+			for _, texture in ipairs(frame.PratTextures) do
+				texture:Hide()
+			end
+		end
+	end
 
-      newTexture:SetSize(texture:GetSize())
+	function module:RestorePratTextures(frame)
+		if not frame.PratTextures then
+			self:RecreateBackgroundTextures(frame)
+		end
 
-      table.insert(frame.PratTextures, newTexture)
-      texture:Hide()
-    end
-  end
+		for _, name in ipairs(CHAT_FRAME_TEXTURES) do
+			local texture = _G[frame:GetName() .. name]
+			texture:Hide()
+		end
+		local _, _, r, g, b, a = FCF_GetChatWindowInfo(frame:GetID())
+		for _, texture in ipairs(frame.PratTextures) do
+			texture:Show()
+			texture:SetVertexColor(r, g, b)
+			texture:SetAlpha(a)
+		end
+	end
 
-  function module:HidePratTextures(frame)
-    if frame.PratTextures then
-      for _, name in ipairs(CHAT_FRAME_TEXTURES) do
-        local texture = _G[frame:GetName() .. name]
-        texture:Show()
-      end
-      for _, texture in ipairs(frame.PratTextures) do
-        texture:Hide()
-      end
-    end
-  end
+	-- get the defaults for chat frame1 max/min width/height for use when disabling the module
+	function module:GetDefaults()
+		local cf = _G["ChatFrame1"]
+		local prof = self.db.profile
 
-  function module:RestorePratTextures(frame)
-    if not frame.PratTextures then
-      self:RecreateBackgroundTextures(frame)
-    end
+		local minwidthdefault, minheightdefault, maxwidthdefault, maxheightdefault
+		if cf.GetResizeBounds then
+			minwidthdefault, minheightdefault, maxwidthdefault, maxheightdefault = cf:GetResizeBounds()
+		else
+			minwidthdefault, minheightdefault = cf:GetMinResize()
+			maxwidthdefault, maxheightdefault = cf:GetMaxResize()
+		end
 
-    for _, name in ipairs(CHAT_FRAME_TEXTURES) do
-      local texture = _G[frame:GetName() .. name]
-      texture:Hide()
-    end
-    local _, _, r, g, b, a = FCF_GetChatWindowInfo(frame:GetID())
-    for _, texture in ipairs(frame.PratTextures) do
-      texture:Show()
-      texture:SetVertexColor(r, g, b)
-      texture:SetAlpha(a)
-    end
-  end
+		prof.minchatwidthdefault = minwidthdefault
+		prof.maxchatwidthdefault = maxwidthdefault
+		prof.minchatheightdefault = minheightdefault
+		prof.maxchatheightdefault = maxheightdefault
 
-  -- get the defaults for chat frame1 max/min width/height for use when disabling the module
-  function module:GetDefaults()
-    local cf = _G["ChatFrame1"]
-    local prof = self.db.profile
+		prof.initialized = true
+	end
 
-    local minwidthdefault, minheightdefault, maxwidthdefault, maxheightdefault
-    if cf.GetResizeBounds then
-      minwidthdefault, minheightdefault, maxwidthdefault, maxheightdefault = cf:GetResizeBounds()
-    else
-      minwidthdefault, minheightdefault = cf:GetMinResize()
-      maxwidthdefault, maxheightdefault = cf:GetMaxResize()
-    end
+	function module:FCF_SetWindowColor(frame, r, g, b)
+		if frame.PratTextures then
+			for _, texture in ipairs(frame.PratTextures) do
+				texture:SetVertexColor(r, g, b)
+			end
+		end
+	end
 
-    prof.minchatwidthdefault = minwidthdefault
-    prof.maxchatwidthdefault = maxwidthdefault
-    prof.minchatheightdefault = minheightdefault
-    prof.maxchatheightdefault = maxheightdefault
+	function module:FCF_SetWindowAlpha(frame)
+		local _, _, _, _, _, a = FCF_GetChatWindowInfo(frame:GetID())
+		if frame.PratTextures then
+			for _, texture in ipairs(frame.PratTextures) do
+				texture:SetAlpha(a)
+			end
+		end
+	end
+	-- set the max/min width/height for a chatframe
+	function module:SetParameters(cf, enabled)
+		local prof = self.db.profile
 
-    prof.initialized = true
-  end
+		local minWidth, minHeight, maxWidth, maxHeight
+		if enabled then
+			if prof.framealphastatic then
+				self:RestorePratTextures(cf)
+			else
+				self:HidePratTextures(cf)
+			end
 
-  function module:FCF_SetWindowColor(frame, r, g, b)
-    if frame.PratTextures then
-      for _, texture in ipairs(frame.PratTextures) do
-        texture:SetVertexColor(r, g, b)
-      end
-    end
-  end
+			DEFAULT_CHATFRAME_ALPHA = prof.defaultframealpha
 
-  function module:FCF_SetWindowAlpha(frame)
-    local _, _, _, _, _, a = FCF_GetChatWindowInfo(frame:GetID())
-    if frame.PratTextures then
-      for _, texture in ipairs(frame.PratTextures) do
-        texture:SetAlpha(a)
-      end
-    end
-  end
-  -- set the max/min width/height for a chatframe
-  function module:SetParameters(cf, enabled)
-    local prof = self.db.profile
+			minWidth, minHeight = prof.minchatwidth, prof.minchatheight
+			maxWidth, maxHeight = prof.maxchatwidth, prof.maxchatheight
 
-    local minWidth, minHeight, maxWidth, maxHeight
-    if enabled then
-      if prof.framealphastatic then
-        self:RestorePratTextures(cf)
-      else
-        self:HidePratTextures(cf)
-      end
+			if prof.removeclamp then
+				if not Prat.IsClassic then
+					cf:SetClampedToScreen(false)
+				end
+				cf:SetClampRectInsets(0, 0, 0, 0)
+				if not Prat.IsClassic then
+					EventRegistry:RegisterCallback("EditMode.Enter", function()
+						cf:SetClampedToScreen(true)
+						EventRegistry:UnregisterCallback("EditMode.Enter", cf)
+					end, cf)
+				end
+			end
 
-      DEFAULT_CHATFRAME_ALPHA = prof.defaultframealpha
+			if cf.ScrollBar then
+				cf.ScrollBar:SetAlpha(0)
+			end
+		else
+			self:HidePratTextures(cf)
+			DEFAULT_CHATFRAME_ALPHA = 0.25
 
-      minWidth, minHeight = prof.minchatwidth, prof.minchatheight
-      maxWidth, maxHeight = prof.maxchatwidth, prof.maxchatheight
+			minWidth, minHeight = prof.minchatwidthdefault, prof.minchatheightdefault
+			maxWidth, maxHeight = prof.maxchatwidthdefault, prof.maxchatheightdefault
+		end
 
-      if prof.removeclamp then
-        if not Prat.IsClassic then
-          cf:SetClampedToScreen(false)
-        end
-        cf:SetClampRectInsets(0, 0, 0, 0)
-        if not Prat.IsClassic then
-          EventRegistry:RegisterCallback("EditMode.Enter", function()
-            cf:SetClampedToScreen(true)
-            EventRegistry:UnregisterCallback("EditMode.Enter", cf)
-          end, cf)
-        end
-      end
+		if cf.SetResizeBounds then
+			cf:SetResizeBounds(minWidth, minHeight, maxWidth, maxHeight)
+		else
+			cf:SetMinResize(minWidth, minHeight)
+			cf:SetMaxResize(maxWidth, maxHeight)
+		end
+	end
 
-      if cf.ScrollBar then
-        cf.ScrollBar:SetAlpha(0)
-      end
-    else
-      self:HidePratTextures(cf)
-      DEFAULT_CHATFRAME_ALPHA = 0.25
+	function module:OnValueChanged()
+		self:ConfigureAllChatFrames(true)
+	end
 
-      minWidth, minHeight = prof.minchatwidthdefault, prof.minchatheightdefault
-      maxWidth, maxHeight = prof.maxchatwidthdefault, prof.maxchatheightdefault
-    end
-
-    if cf.SetResizeBounds then
-      cf:SetResizeBounds(minWidth, minHeight, maxWidth, maxHeight)
-    else
-      cf:SetMinResize(minWidth, minHeight)
-      cf:SetMaxResize(maxWidth, maxHeight)
-    end
-  end
-
-
-  function module:OnValueChanged()
-    self:ConfigureAllChatFrames(true)
-  end
-
-  return
+	return
 end) -- Prat:AddModuleToLoad

@@ -32,6 +32,7 @@ globals = {
 	"GLDG_Data",
 	"LibStub",
 	"LOKWhoIsWho_Config",
+	"WIM",
 
 	-- Utility functions
 	"date",

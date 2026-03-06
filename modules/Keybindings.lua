@@ -25,153 +25,155 @@
 -------------------------------------------------------------------------------
 
 Prat:AddModuleToLoad(function()
-  local module = Prat:NewModule("KeyBindings")
-  local PL = module.PL
+	local module = Prat:NewModule("KeyBindings")
+	local PL = module.PL
 
-  --@debug@
-  PL:AddLocale("enUS", {
-    module_desc = "Adds chat related keybindings",
-    ["Prat Keybindings"] = true,
-    ["Officer Channel"] = true,
-    ["Guild Channel"] = true,
-    ["Party Channel"] = true,
-    ["Raid Channel"] = true,
-    ["Raid Warning Channel"] = true,
-    ["Instance Channel"] = true,
-    ["Say"] = true,
-    ["Yell"] = true,
-    ["Whisper"] = true,
-    ["Channel %d"] = true,
-    ["Prat TellTarget"] = true,
-    ["TellTarget"] = true,
-    ["Prat CopyChat"] = true,
-    ["Copy Selected Chat Frame"] = true,
-    ["Smart Group Channel"] = true,
-    ["Next Chat Tab"] = true
-  })
-  --@end-debug@
+	--@debug@
+	PL:AddLocale("enUS", {
+		module_desc = "Adds chat related keybindings",
+		["Prat Keybindings"] = true,
+		["Officer Channel"] = true,
+		["Guild Channel"] = true,
+		["Party Channel"] = true,
+		["Raid Channel"] = true,
+		["Raid Warning Channel"] = true,
+		["Instance Channel"] = true,
+		["Say"] = true,
+		["Yell"] = true,
+		["Whisper"] = true,
+		["Channel %d"] = true,
+		["Prat TellTarget"] = true,
+		["TellTarget"] = true,
+		["Prat CopyChat"] = true,
+		["Copy Selected Chat Frame"] = true,
+		["Smart Group Channel"] = true,
+		["Next Chat Tab"] = true
+	})
+	--@end-debug@
 
-  -- These Localizations are auto-generated. To help with localization
-  -- please go to http://www.wowace.com/projects/prat-3-0/localization/
-  --[===[@non-debug@
- do
-     local L
-
-
-L = {}
---@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
-
-   PL:AddLocale("enUS",L)
+	-- These Localizations are auto-generated. To help with localization
+	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
+	--[===[@non-debug@
+   do
+	   local L
 
 
+  L = {}
+  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
 
-L = {}
---@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
-
-   PL:AddLocale("frFR",L)
+	 PL:AddLocale("enUS",L)
 
 
 
-L = {}
---@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
+  L = {}
+  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
 
-   PL:AddLocale("deDE",L)
-
-
-
-L = {}
---@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
-
-   PL:AddLocale("koKR",L)
+	 PL:AddLocale("frFR",L)
 
 
 
-L = {}
---@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
+  L = {}
+  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
 
-   PL:AddLocale("esMX",L)
-
-
-
-L = {}
---@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
-
-   PL:AddLocale("ruRU",L)
+	 PL:AddLocale("deDE",L)
 
 
 
-L = {}
---@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
+  L = {}
+  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
 
-   PL:AddLocale("zhCN",L)
-
-
-
-L = {}
---@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
-
-   PL:AddLocale("esES",L)
+	 PL:AddLocale("koKR",L)
 
 
 
-L = {}
---@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
+  L = {}
+  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
 
-   PL:AddLocale("zhTW",L)
+	 PL:AddLocale("esMX",L)
 
 
- end
- --@end-non-debug@]===]
 
-  Prat:SetModuleInit(module,
-    function()
-      BINDING_HEADER_Prat = PL["Prat Keybindings"]
-      BINDING_NAME_officer = PL["Officer Channel"]
-      BINDING_NAME_guild = PL["Guild Channel"]
-      BINDING_NAME_party = PL["Party Channel"]
-      BINDING_NAME_raid = PL["Raid Channel"]
-      BINDING_NAME_raidwarn = PL["Raid Warning Channel"]
-      BINDING_NAME_instance = PL["Instance Channel"]
-      BINDING_NAME_say = PL["Say"]
-      BINDING_NAME_yell = PL["Yell"]
-      BINDING_NAME_whisper = PL["Whisper"]
-      BINDING_NAME_one = (PL["Channel %d"]):format(1)
-      BINDING_NAME_two = (PL["Channel %d"]):format(2)
-      BINDING_NAME_three = (PL["Channel %d"]):format(3)
-      BINDING_NAME_four = (PL["Channel %d"]):format(4)
-      BINDING_NAME_five = (PL["Channel %d"]):format(5)
-      BINDING_NAME_six = (PL["Channel %d"]):format(6)
-      BINDING_NAME_seven = (PL["Channel %d"]):format(7)
-      BINDING_NAME_eight = (PL["Channel %d"]):format(8)
-      BINDING_NAME_nine = (PL["Channel %d"]):format(9)
-      BINDING_NAME_SmartGroup = PL["Smart Group Channel"]
-      --	    BINDING_HEADER_Prat_TellTarget = PL["Prat TellTarget"]
-      --	    BINDING_HEADER_Prat_CopyChat = PL["Prat CopyChat"]
-      BINDING_NAME_NextTab = PL["Next Chat Tab"]
-      BINDING_NAME_CopySelected = PL["Copy Selected Chat Frame"]
-    end)
+  L = {}
+  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
 
-  -- /script keybindings:CycleChatTabs()
-  function module:CycleChatTabs()
-    local current = FCFDock_GetSelectedWindow(GENERAL_CHAT_DOCK)
-    local idx
-    local dockedFrames = FCFDock_GetChatFrames(GENERAL_CHAT_DOCK)
+	 PL:AddLocale("ruRU",L)
 
-    for i, v in ipairs(dockedFrames) do
-      if v == current then
-        idx = i
-      end
-    end
 
-    if idx == nil then return end
 
-    idx = idx + 1
-    if dockedFrames[idx] == nil then
-      idx = 1
-    end
+  L = {}
+  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
 
-    FCFDock_SelectWindow(GENERAL_CHAT_DOCK, dockedFrames[idx])
-  end
+	 PL:AddLocale("zhCN",L)
 
-  return
+
+
+  L = {}
+  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
+
+	 PL:AddLocale("esES",L)
+
+
+
+  L = {}
+  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="KeyBindings")@
+
+	 PL:AddLocale("zhTW",L)
+
+
+   end
+   --@end-non-debug@]===]
+
+	Prat:SetModuleInit(module,
+		function()
+			BINDING_HEADER_Prat = PL["Prat Keybindings"]
+			BINDING_NAME_officer = PL["Officer Channel"]
+			BINDING_NAME_guild = PL["Guild Channel"]
+			BINDING_NAME_party = PL["Party Channel"]
+			BINDING_NAME_raid = PL["Raid Channel"]
+			BINDING_NAME_raidwarn = PL["Raid Warning Channel"]
+			BINDING_NAME_instance = PL["Instance Channel"]
+			BINDING_NAME_say = PL["Say"]
+			BINDING_NAME_yell = PL["Yell"]
+			BINDING_NAME_whisper = PL["Whisper"]
+			BINDING_NAME_one = (PL["Channel %d"]):format(1)
+			BINDING_NAME_two = (PL["Channel %d"]):format(2)
+			BINDING_NAME_three = (PL["Channel %d"]):format(3)
+			BINDING_NAME_four = (PL["Channel %d"]):format(4)
+			BINDING_NAME_five = (PL["Channel %d"]):format(5)
+			BINDING_NAME_six = (PL["Channel %d"]):format(6)
+			BINDING_NAME_seven = (PL["Channel %d"]):format(7)
+			BINDING_NAME_eight = (PL["Channel %d"]):format(8)
+			BINDING_NAME_nine = (PL["Channel %d"]):format(9)
+			BINDING_NAME_SmartGroup = PL["Smart Group Channel"]
+			--	    BINDING_HEADER_Prat_TellTarget = PL["Prat TellTarget"]
+			--	    BINDING_HEADER_Prat_CopyChat = PL["Prat CopyChat"]
+			BINDING_NAME_NextTab = PL["Next Chat Tab"]
+			BINDING_NAME_CopySelected = PL["Copy Selected Chat Frame"]
+		end)
+
+	-- /script keybindings:CycleChatTabs()
+	function module:CycleChatTabs()
+		local current = FCFDock_GetSelectedWindow(GENERAL_CHAT_DOCK)
+		local idx
+		local dockedFrames = FCFDock_GetChatFrames(GENERAL_CHAT_DOCK)
+
+		for i, v in ipairs(dockedFrames) do
+			if v == current then
+				idx = i
+			end
+		end
+
+		if idx == nil then
+			return
+		end
+
+		idx = idx + 1
+		if dockedFrames[idx] == nil then
+			idx = 1
+		end
+
+		FCFDock_SelectWindow(GENERAL_CHAT_DOCK, dockedFrames[idx])
+	end
+
+	return
 end) -- Prat:AddModuleToLoad

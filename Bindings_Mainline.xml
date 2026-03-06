@@ -1,18 +1,3 @@
-<!--
-Name: Prat_KeyBindings
-Revision: $Revision: 80432 $
-Author(s): Curney (asml8ed@gmail.com)
-           Krtek (krtek4@gmail.com)
-Website: http://files.wowace.com/Prat/
-Documentation: http://www.wowace.com/wiki/Prat/Integrated_Modules#KeyBindings
-SVN: http://svn.wowace.com/wowace/trunk/Prat/
-Discussions: http://groups.google.com/group/wow-prat
-Issues and feature requests: http://code.google.com/p/prat/issues/list
-License: http://groups.google.com/group/wow-prat/web/license
-Description: Module for Prat that adds keybindings for modules.
-Dependencies: Prat
--->
-
 <Bindings>
 	<!-- ChannelNames -->
 	<Binding name="officer" category="ADDONS">
@@ -83,33 +68,33 @@ Dependencies: Prat
 		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/8");
 	</Binding>
-  	<Binding name="nine" category="ADDONS">
+	<Binding name="nine" category="ADDONS">
 		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/9");
 	</Binding>
-  	<Binding name="SmartGroup" category="ADDONS">
+	<Binding name="SmartGroup" category="ADDONS">
 		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/smart");
 	</Binding>
 	<Binding name="NextTab" category="ADDONS">
 		local mod = Prat:GetModule("KeyBindings")
-        if mod then
-            mod:CycleChatTabs()
-        end
+		if mod then
+			mod:CycleChatTabs()
+		end
 	</Binding>
 	<!-- TellTarget -->
 	<Binding name="TellTarget" category="ADDONS">
 		local mod = Prat:GetModule("TellTarget")
-        if mod then
-            mod:SendTellToTarget(SELECTED_CHAT_FRAME, "");
-        end
+		if mod then
+			mod:SendTellToTarget(SELECTED_CHAT_FRAME, "");
+		end
 	</Binding>
 	<!-- CopyChat -->
 	<Binding name="Copy Selected Chat Frame" category="ADDONS">
 		local mod = Prat:GetModule("CopyChat")
-        if mod then
-            mod:CopyChat();
-        end
+		if mod then
+			mod:CopyChat();
+		end
 	</Binding>
 	<Binding name="Scroll To Bottom" category="ADDONS">
 		SELECTED_CHAT_FRAME:ScrollToBottom()
