@@ -190,12 +190,11 @@ end
   Prat:SetModuleInit(module, function() module:GetDefaults() end)
 
   function module:OnModuleEnable()
-    --[[CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0
+    CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0
     self:ConfigureAllChatFrames(true)
 
     self:SecureHook("FCF_DockFrame")
     self:SecureHook("FCF_UnDockFrame")
-    ]]--
     self:SecureHook("FloatingChatFrame_UpdateBackgroundAnchors")
 
     self:SecureHook("FCF_SetWindowAlpha")
