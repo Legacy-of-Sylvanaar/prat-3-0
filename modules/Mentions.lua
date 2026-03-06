@@ -145,8 +145,8 @@ end
     local CLR = Prat.CLR
     local AceTab = LibStub("AceTab-3.0")
     local tabcompleteName = "mentions-tab-complete"
-    local servernames = Prat:GetModule("ServerNames", true)
-    local playernames = Prat:GetModule("PlayerNames", true)
+    local servernames = Prat:GetModule("ServerNames")
+    local playernames = Prat:GetModule("PlayerNames")
 
     if not AceTab:IsTabCompletionRegistered(tabcompleteName) then
       AceTab:RegisterTabCompletion(tabcompleteName, "@",

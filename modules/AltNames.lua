@@ -875,7 +875,7 @@ L = {}
           end
 
           playernames = playernames or Prat:GetModule("PlayerNames")
-          if charname then
+          if charname and playernames then
             local class = playernames:GetData(charname)
             if class then
               hexcolour = playernames:GetClassColor(class)

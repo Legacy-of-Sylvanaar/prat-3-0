@@ -2,7 +2,10 @@ local _, private = ...
 
 function private:ExportProfile(profileKey)
 	local profile = private.db.sv.profiles[profileKey]
-	if not profile then return nil end
+	if not profile then
+		return
+	end
+
 	local namespaces = {}
 	for namespaceKey, namespaceData in pairs(private.db.sv.namespaces) do
 		if namespaceData.profiles[profileKey] then
@@ -11,12 +14,12 @@ function private:ExportProfile(profileKey)
 			namespaces[namespaceKey].profiles[profileKey] = namespaceData.profiles[profileKey]
 		end
 	end
+
 	local data = {
 		profile = profile,
 		namespaces = namespaces,
 	}
-	local dataString = C_EncodingUtil.EncodeBase64(C_EncodingUtil.SerializeCBOR(data))
-	return dataString
+	return C_EncodingUtil.EncodeBase64(C_EncodingUtil.SerializeCBOR(data))
 end
 
 function private:ImportProfile(dataString, profileKey)
@@ -24,6 +27,7 @@ function private:ImportProfile(dataString, profileKey)
 	if not data then
 		return false
 	end
+
 	private.db.sv.profiles[profileKey] = data.profile
 	private.db.sv.profileKeys[UnitName("player") .. " - " .. GetRealmName()] = profileKey
 	for namespaceKey, namespaceData in pairs(data.namespaces) do

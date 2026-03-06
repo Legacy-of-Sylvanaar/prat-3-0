@@ -190,10 +190,12 @@ end
   Prat:SetModuleInit(module, function() module:GetDefaults() end)
 
   function module:OnModuleEnable()
-    CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0
+    --[[CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0
     self:ConfigureAllChatFrames(true)
+
     self:SecureHook("FCF_DockFrame")
     self:SecureHook("FCF_UnDockFrame")
+    ]]--
     self:SecureHook("FloatingChatFrame_UpdateBackgroundAnchors")
 
     self:SecureHook("FCF_SetWindowAlpha")
@@ -229,7 +231,7 @@ end
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
     Prat.Frames[frame:GetName()] = frame
-    local m = Prat:GetModule("Font", true)
+    local m = Prat:GetModule("Font")
     if m then m:ConfigureAllChatFrames() end
   end
   function module:FCF_DockFrame(frame)
@@ -237,7 +239,7 @@ end
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
     Prat.Frames[frame:GetName()] = frame
-    local m = Prat:GetModule("Font", true)
+    local m = Prat:GetModule("Font")
     if m then m:ConfigureAllChatFrames() end
   end
 
@@ -246,21 +248,13 @@ end
       frame:SetClampRectInsets(0, 0, 0, 0)
     end
     Prat.Frames[frame:GetName()] = frame
-    local m = Prat:GetModule("Font", true)
+    local m = Prat:GetModule("Font")
     if m then m:ConfigureAllChatFrames() end
   end
 
   --[[------------------------------------------------
       Core Functions
   ------------------------------------------------]] --
-
-  -- make ChatFrame1 the selected chat frame
-  function module:AceEvent_FullyInitialized()
-    if self.db.profile.mainchatonload then
-      FCF_SelectDockFrame(ChatFrame1)
-    end
-  end
-
   -- set parameters for each chatframe
   function module:ConfigureAllChatFrames(enabled)
     for _, v in pairs(Prat.Frames) do
@@ -412,36 +406,6 @@ end
   function module:OnValueChanged()
     self:ConfigureAllChatFrames(true)
   end
-
-  -- Frame position saving feature credit to Chatter
-
-  function module:SetChatWindowSavedPosition(id, point, xOffset, yOffset)
-    local data = self.db.profile.framemetrics[id]
-    data.point, data.xOffset, data.yOffset = point, xOffset, yOffset
-  end
-
-  function module:GetChatWindowSavedPosition(id)
-    local data = self.db.profile.framemetrics[id]
-    if not data.point then
-      data.point, data.xOffset, data.yOffset = self.hooks.GetChatWindowSavedPosition(id)
-    end
-    return data.point, data.xOffset, data.yOffset
-  end
-
-  function module:SetChatWindowSavedDimensions(id, width, height)
-    local data = self.db.profile.framemetrics[id]
-    data.width, data.height = width, height
-  end
-
-  function module:GetChatWindowSavedDimensions(id)
-    local data = self.db.profile.framemetrics[id]
-    if not data.width then
-      data.width, data.height = self.hooks.GetChatWindowSavedDimensions(id)
-    end
-    return data.width, data.height
-  end
-
-
 
   return
 end) -- Prat:AddModuleToLoad

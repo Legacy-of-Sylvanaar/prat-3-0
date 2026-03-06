@@ -194,8 +194,8 @@ end
         name = PL["reflow_name"],
         desc = PL["reflow_desc"],
         get = function() return module.db.profile.reflow end,
-        set = function(_, v) module.db.profile.reflow = v if v then Prat:GetModule("SMFHax", true):Enable() end end,
-        hidden = function() return Prat:GetModule("SMFHax", true) == nil end,
+        set = function(_, v) module.db.profile.reflow = v if v then Prat:GetModule("SMFHax"):Enable() end end,
+        hidden = function() return Prat:GetModule("SMFHax") == nil end,
       },
       alpha = {
         name = PL["alpha_name"],
@@ -235,8 +235,8 @@ end
 
   -- things to do when the module is enabled
   function module:OnModuleEnable()
-    local buttons3 = Prat:GetModule("Buttons", true)
-    if buttons3 and buttons3:IsEnabled() then
+    local buttons3 = Prat:GetModule("Buttons")
+    if buttons3 then
       self.disabledB3 = true
       buttons3.db.profile.on = false
       buttons3:Disable()
@@ -261,7 +261,7 @@ end
     --        self.OnUpdateInterval = 0.05
     --    end
 
-    --    local smfhax = Prat:GetModule("SMFHax", true)
+    --    local smfhax = Prat:GetModule("SMFHax")
     --    if self.db.profile.reflow and smfhax then
     --        smfhax:Enable()
     --    end

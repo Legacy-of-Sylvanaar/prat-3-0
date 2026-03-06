@@ -813,7 +813,7 @@ L = {}
 
       if Server and Server:len() > 0 then
         nosave = true
-        servernames = servernames or Prat:GetModule("ServerNames", true)
+        servernames = servernames or Prat:GetModule("ServerNames")
 
         if servernames then
           servernames:GetServerKey(Server)
@@ -1102,7 +1102,7 @@ L = {}
     local AceTab = LibStub("AceTab-3.0")
 
     if enabled then
-      servernames = servernames or Prat:GetModule("ServerNames", true)
+      servernames = servernames or Prat:GetModule("ServerNames")
 
       if not AceTab:IsTabCompletionRegistered(PL["tabcomplete_name"]) then
         AceTab:RegisterTabCompletion(PL["tabcomplete_name"], nil,

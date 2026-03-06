@@ -213,8 +213,8 @@ end
   end
 
   function module:OnModuleEnable()
-    local buttons3 = Prat:GetModule("OriginalButtons", true)
-    if buttons3 and buttons3:IsEnabled() then
+    local buttons3 = Prat:GetModule("OriginalButtons")
+    if buttons3 then
       self.disabledB3 = true
       buttons3.db.profile.on = false
       buttons3:Disable()

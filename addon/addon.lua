@@ -779,7 +779,7 @@ end)
 Prat.RegisterChatCommand("pratdebugmsg", function()
 	Prat:PrintLiteral(Prat.LastMessage, Prat.LastMessage.ORG)
 
-	local cc = Prat:GetModule("CopyChat", true)
+	local cc = Prat:GetModule("CopyChat")
 	if cc then
 		cc:ScrapeFullChatFrame(DEFAULT_CHAT_FRAME, true)
 	end

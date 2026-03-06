@@ -100,7 +100,7 @@ do
 			opts.handler = self
 			opts.hidden = "IsDisabled"
 			private.Options.args[sectionlist[self.name]].args[self.name] = opts
-			private:SetModuleOptions(self, self.name, nil)
+			private:SetModuleOptions(self, nil)
 		end
 
 		private.db.profile.modules[self.moduleName] = self.db.profile.on and 3 or 2
@@ -108,10 +108,6 @@ do
 	end
 
 	local function onEnable(self)
-		if self:IsDisabled() then
-			return
-		end
-
 		local pats = private:GetModulePatterns(self)
 		if pats then
 			for _, v in pairs(pats) do
@@ -225,8 +221,13 @@ do
 		return module
 	end
 
-	function private:GetModule(name, ...)
-		local module = private.Addon:GetModule(name, ...)
+	function private:GetModule(name)
+		local module = private.Addon:GetModule(name, true)
+
+		if not module:IsEnabled() then
+			return
+		end
+
 		return module
 	end
 end
@@ -234,7 +235,7 @@ end
 do
 	local module_options = {}
 
-	function private:SetModuleOptions( module, options)
+	function private:SetModuleOptions(module, options)
 		module_options[type(module) == "table" and module.name or module or "null"] = options
 	end
 
