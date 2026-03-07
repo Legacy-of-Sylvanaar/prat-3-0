@@ -1,8 +1,6 @@
 local _, private = ...
 
-local issecretvalue = issecretvalue or function()
-	return false
-end
+local issecretvalue = issecretvalue or function() return false end
 
 function private.GetCommunityAndStreamFromChannel(communityChannel)
 	local clubId, streamId = communityChannel:match("(%d+)%:(%d+)")

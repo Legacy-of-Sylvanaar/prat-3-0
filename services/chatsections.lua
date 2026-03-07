@@ -5,6 +5,8 @@ local ChatFrame_GetMentorChannelStatus = ChatFrame_GetMentorChannelStatus or Cha
 local ChatFrame_GetMobileEmbeddedTexture = ChatFrame_GetMobileEmbeddedTexture or ChatFrameUtil.GetMobileEmbeddedTexture
 local MAX_WOW_CHAT_CHANNELS = MAX_WOW_CHAT_CHANNELS or Constants.ChatFrameConstants.MaxChatChannels
 
+local issecretvalue = issecretvalue or function () return false end
+
 local string = string
 local setmetatable = setmetatable
 local pairs, ipairs = pairs, ipairs
@@ -219,7 +221,7 @@ end
 
 function private.SplitChatMessage(frame, event, ...)
 	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17 = ...
-	local isSecret = issecretvalue and issecretvalue(arg1)
+	local isSecret = issecretvalue(arg1)
 
 	if (strsub((event or ""), 1, 8) == "CHAT_MSG") then
 		local type = strsub(event, 10)
@@ -288,7 +290,7 @@ function private.SplitChatMessage(frame, event, ...)
 		if (chatGroup == "CHANNEL" or chatGroup == "BN_CONVERSATION") then
 			chatTarget = tostring(arg8)
 		elseif (chatGroup == "WHISPER" or chatGroup == "BN_WHISPER") then
-			if (not issecretvalue or not issecretvalue(arg2)) and strsub(arg2, 1, 2) ~= "|K" then
+			if (not issecretvalue(arg2)) and strsub(arg2, 1, 2) ~= "|K" then
 				chatTarget = strupper(arg2)
 			else
 				chatTarget = arg2
@@ -344,7 +346,7 @@ function private.SplitChatMessage(frame, event, ...)
 			if strsub(type, 1, 11) == 'ACHIEVEMENT' or strsub(type, 1, 18) == 'GUILD_ACHIEVEMENT' then
 				s.PLAYER = string.format("|Hplayer:%s|h%s|h", arg2, coloredName)
 			elseif isCommunityType then
-				local isBattleNetCommunity = arg13 ~= nil and (issecretvalue and issecretvalue(arg13) or arg13 ~= 0)
+				local isBattleNetCommunity = arg13 ~= nil and (issecretvalue(arg13) or arg13 ~= 0)
 				local messageInfo, clubId, streamId, _ = C_Club.GetInfoFromLastCommunityChatLine()
 				if messageInfo ~= nil then
 					if isBattleNetCommunity then
@@ -410,43 +412,51 @@ function private.SplitChatMessage(frame, event, ...)
 		-- If we are handling notices, format them like bliz
 		if (type == "CHANNEL_NOTICE_USER") then
 			s.NOTICE = arg1
-			local globalstring = _G["CHAT_" .. arg1 .. "_NOTICE_BN"]
-			local chatnotice
-			if globalstring then
-				chatnotice = globalstring:gsub("|Hchannel:CHANNEL[^|]-|h[^|]-|h", ""):trim()
+			if issecretvalue(arg1) then
+				s.MESSAGE = arg1
 			else
-				globalstring = _G["CHAT_" .. arg1 .. "_NOTICE"]
-				chatnotice = globalstring:gsub("|Hchannel:[^|]-|h[^|]-|h", ""):trim()
-			end
-
-			if strlen(arg5) > 0 then
-				-- TWO users in this notice (E.G. x kicked y)
-				if GetLocale() == "koKR" then
-					s.MESSAGE = chatnotice:format("", "", arg2, arg5)
+				local globalstring = _G["CHAT_" .. arg1 .. "_NOTICE_BN"]
+				local chatnotice
+				if globalstring then
+					chatnotice = globalstring:gsub("|Hchannel:CHANNEL[^|]-|h[^|]-|h", ""):trim()
 				else
-					s.MESSAGE = chatnotice:format(arg2, arg5)
+					globalstring = _G["CHAT_" .. arg1 .. "_NOTICE"]
+					chatnotice = globalstring:gsub("|Hchannel:[^|]-|h[^|]-|h", ""):trim()
 				end
-			elseif (arg1 == "INVITE") then
-				s.MESSAGE = chatnotice:format(arg4, arg2)
-			else
-				s.MESSAGE = chatnotice:format(arg2)
+
+				if strlen(arg5) > 0 then
+					-- TWO users in this notice (E.G. x kicked y)
+					if GetLocale() == "koKR" then
+						s.MESSAGE = chatnotice:format("", "", arg2, arg5)
+					else
+						s.MESSAGE = chatnotice:format(arg2, arg5)
+					end
+				elseif (arg1 == "INVITE") then
+					s.MESSAGE = chatnotice:format(arg4, arg2)
+				else
+					s.MESSAGE = chatnotice:format(arg2)
+				end
 			end
 		elseif type == "CHANNEL_NOTICE" then
 			local globalstring
 			s.NOTICE = arg1
-			if (arg1 == "TRIAL_RESTRICTED") then
-				globalstring = CHAT_TRIAL_RESTRICTED_NOTICE_TRIAL
+			if issecretvalue(arg1) then
+				s.MESSAGE = arg1
 			else
-				globalstring = _G["CHAT_" .. arg1 .. "_NOTICE_BN"]
-				if (not globalstring) then
-					globalstring = _G["CHAT_" .. arg1 .. "_NOTICE"]
-					if not globalstring then
-						error(("Missing global string for %q"):format("CHAT_" .. arg1 .. "_NOTICE"))
-						return
+				if (arg1 == "TRIAL_RESTRICTED") then
+					globalstring = CHAT_TRIAL_RESTRICTED_NOTICE_TRIAL
+				else
+					globalstring = _G["CHAT_" .. arg1 .. "_NOTICE_BN"]
+					if (not globalstring) then
+						globalstring = _G["CHAT_" .. arg1 .. "_NOTICE"]
+						if not globalstring then
+							error(("Missing global string for %q"):format("CHAT_" .. arg1 .. "_NOTICE"))
+							return
+						end
 					end
 				end
+				s.MESSAGE = format(globalstring, arg8, private.ResolvePrefixedChannelName(arg4))
 			end
-			s.MESSAGE = format(globalstring, arg8, private.ResolvePrefixedChannelName(arg4))
 		end
 
 		arg6 = safestr(arg6)
@@ -526,7 +536,7 @@ function private.SplitChatMessage(frame, event, ...)
 				s.cC = "["
 				s.Cc = "] "
 				local _chanName = private.ResolveChannelName(arg4)
-				if issecretvalue and issecretvalue(_chanName) then
+				if issecretvalue(_chanName) then
 					s.CHANNEL = _chanName
 				else
 					s.CHANNEL = private.ResolvePrefixedChannelName(arg4):match("%d%.%s+(.+)")
