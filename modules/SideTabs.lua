@@ -801,7 +801,7 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:LayoutUndockedTabs()
-    if not self.db.profile.undocked or then
+    if not self.db.profile.undocked then
       return
     end
 
