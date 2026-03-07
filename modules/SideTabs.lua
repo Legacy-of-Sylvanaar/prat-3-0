@@ -25,13 +25,11 @@
 -------------------------------------------------------------------------------
 
 Prat:AddModuleToLoad(function()
-  local MODULE_NAME = "SideTabs"
-  local EMPTY_TABLE = {}
-  local module = Prat:NewModule(MODULE_NAME, "AceHook-3.0")
+  local module = Prat:NewModule("SideTabs", "AceHook-3.0")
   local PL = module.PL
 
   --@debug@
-  PL:AddLocale(MODULE_NAME, "enUS", {
+  PL:AddLocale("enUS", {
     ["SideTabs"] = true,
     ["Move chat tabs to the side of the chat frame and stack them vertically."] = true,
     ["Side"] = true,
@@ -105,7 +103,7 @@ Prat:AddModuleToLoad(function()
         return v
       end
     end
-    return nil
+    return
   end
 
   local function MakeTabLabelOption(order)
@@ -143,11 +141,9 @@ Prat:AddModuleToLoad(function()
             ["SKULL"] = "Skull",
           },
           hidden = function(info)
-            local profile = module.db and module.db.profile
-            if not profile then return true end
             local frameName = GetInfoFrameName(info)
             if not frameName then return true end
-            return (profile.labelmode and profile.labelmode[frameName]) ~= "preset"
+            return (module.db.profile.labelmode and module.db.profile.labelmode[frameName]) ~= "preset"
           end,
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
@@ -162,11 +158,9 @@ Prat:AddModuleToLoad(function()
             ["CIRCLE"] = "Circle",
           },
           hidden = function(info)
-            local profile = module.db and module.db.profile
-            if not profile then return true end
             local frameName = GetInfoFrameName(info)
             if not frameName then return true end
-            return (profile.labelmode and profile.labelmode[frameName]) ~= "shape"
+            return (module.db.profile.labelmode and module.db.profile.labelmode[frameName]) ~= "shape"
           end,
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
@@ -178,11 +172,9 @@ Prat:AddModuleToLoad(function()
           hasAlpha = true,
           order = 130,
           hidden = function(info)
-            local profile = module.db and module.db.profile
-            if not profile then return true end
             local frameName = GetInfoFrameName(info)
             if not frameName then return true end
-            return (profile.labelmode and profile.labelmode[frameName]) ~= "shape"
+            return (module.db.profile.labelmode and module.db.profile.labelmode[frameName]) ~= "shape"
           end,
           get = "GetTabLabelColorValue",
           set = "SetTabLabelColorValue",
@@ -194,11 +186,9 @@ Prat:AddModuleToLoad(function()
           width = "full",
           order = 140,
           hidden = function(info)
-            local profile = module.db and module.db.profile
-            if not profile then return true end
             local frameName = GetInfoFrameName(info)
             if not frameName then return true end
-            return (profile.labelmode and profile.labelmode[frameName]) ~= "custom"
+            return (module.db.profile.labelmode and module.db.profile.labelmode[frameName]) ~= "custom"
           end,
           get = "GetTabLabelValue",
           set = "SetTabLabelValue",
@@ -415,14 +405,7 @@ Prat:AddModuleToLoad(function()
   end
 
   local function IsAnyDockedTabHovered()
-    local dock = GENERAL_CHAT_DOCK
-    if not dock then return false end
-
-    if not FCFDock_GetChatFrames then
-      return false
-    end
-
-    for _, frame in ipairs(FCFDock_GetChatFrames(dock) or EMPTY_TABLE) do
+    for _, frame in ipairs(FCFDock_GetChatFrames(GENERAL_CHAT_DOCK)) do
       local tab = _G[frame:GetName() .. "Tab"]
       if IsTabHovered(tab) then
         return true
@@ -806,14 +789,10 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:LayoutDockedTabs()
-    if not GENERAL_CHAT_DOCK or not GENERAL_CHAT_DOCK.primary or not FCFDock_GetChatFrames then
-      return
-    end
-
     local anchor = GENERAL_CHAT_DOCK.primary.Background or GENERAL_CHAT_DOCK.primary
     local prevTab = nil
 
-    for _, frame in ipairs(FCFDock_GetChatFrames(GENERAL_CHAT_DOCK) or EMPTY_TABLE) do
+    for _, frame in ipairs(FCFDock_GetChatFrames(GENERAL_CHAT_DOCK)) do
       local tab = GetTab(frame)
       if tab then
         prevTab = self:AnchorTab(tab, anchor, prevTab, frame)
@@ -822,7 +801,7 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:LayoutUndockedTabs()
-    if not self.db.profile.undocked or not Prat.Frames then
+    if not self.db.profile.undocked or then
       return
     end
 
@@ -838,8 +817,7 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:ApplyAll()
-    local profile = self.db and self.db.profile
-    if not self:IsEnabled() or not profile or not profile.on then
+    if not self:IsEnabled() then
       return
     end
 
@@ -848,13 +826,9 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:FCF_OnUpdate(elapsed)
-    if not CHAT_TAB_SHOW_DELAY or not FCF_FadeInChatFrame then
-      return
-    end
-
     -- Blizzard's hover fade logic checks the chat frame/top region, not moved side tabs.
     -- Keep fade timers alive while the cursor is over a side tab.
-    for _, frameName in ipairs(CHAT_FRAMES or EMPTY_TABLE) do
+    for _, frameName in ipairs(CHAT_FRAMES) do
       local chatFrame = _G[frameName]
       local chatTab = _G[frameName .. "Tab"]
       if chatFrame and chatTab and chatFrame:IsShown() and chatTab:IsShown() and chatTab:IsMouseOver() then
@@ -869,17 +843,7 @@ Prat:AddModuleToLoad(function()
 
   function module:FCF_FadeOutChatFrame(chatFrame)
     if not chatFrame then
-      if self.hooks and self.hooks.FCF_FadeOutChatFrame then
-        return self.hooks.FCF_FadeOutChatFrame(chatFrame)
-      end
-      return
-    end
-
-    if not FCF_FadeInChatFrame then
-      if self.hooks and self.hooks.FCF_FadeOutChatFrame then
-        return self.hooks.FCF_FadeOutChatFrame(chatFrame)
-      end
-      return
+       return self.hooks.FCF_FadeOutChatFrame(chatFrame)
     end
 
     if chatFrame.isDocked and IsAnyDockedTabHovered() then
@@ -897,9 +861,7 @@ Prat:AddModuleToLoad(function()
       return
     end
 
-    if self.hooks and self.hooks.FCF_FadeOutChatFrame then
-      return self.hooks.FCF_FadeOutChatFrame(chatFrame)
-    end
+    return self.hooks.FCF_FadeOutChatFrame(chatFrame)
   end
 
   function module:QueueApply()
@@ -910,23 +872,17 @@ Prat:AddModuleToLoad(function()
     self._pendingApply = true
     C_Timer.After(0, function()
       self._pendingApply = nil
-      if self:IsEnabled() and self.db and self.db.profile and self.db.profile.on then
+      if self:IsEnabled() then
         self:ApplyAll()
       end
     end)
   end
 
   function module:RestoreDefaults()
-    if FCF_DockUpdate then
-      FCF_DockUpdate()
-    end
-
-    if not Prat.Frames then
-      return
-    end
+    FCF_DockUpdate()
 
     for _, frame in pairs(Prat.Frames) do
-      if frame and not frame.isDocked and FCF_SetTabPosition then
+      if not frame.isDocked then
         FCF_SetTabPosition(frame, 0)
       end
       local tab = GetTab(frame)
@@ -946,25 +902,12 @@ Prat:AddModuleToLoad(function()
   end
 
   function module:OnModuleEnable()
-    local function HookIfPresent(kind, globalName, method)
-      if not _G[globalName] then
-        return
-      end
-
-      if kind == "secure" then
-        self:SecureHook(globalName, method)
-      else
-        self:RawHook(globalName, true)
-      end
-    end
-
-    -- Blizzard frequently reanchors tabs; re-apply after each update path.
-    HookIfPresent("secure", "FCF_DockUpdate", "QueueApply")
-    HookIfPresent("secure", "FCFDock_UpdateTabs", "QueueApply")
-    HookIfPresent("secure", "FloatingChatFrame_Update", "QueueApply")
-    HookIfPresent("secure", "FCF_SetTabPosition", "QueueApply")
-    HookIfPresent("secure", "FCF_OnUpdate", "FCF_OnUpdate")
-    HookIfPresent("raw", "FCF_FadeOutChatFrame", "FCF_FadeOutChatFrame")
+    self:SecureHook("FCF_DockUpdate", "QueueApply")
+    self:SecureHook("FCFDock_UpdateTabs", "QueueApply")
+    self:SecureHook("FloatingChatFrame_Update", "QueueApply")
+    self:SecureHook("FCF_SetTabPosition", "QueueApply")
+    self:SecureHook("FCF_OnUpdate", "FCF_OnUpdate")
+    self:SecureHook("FCF_FadeOutChatFrame", "FCF_FadeOutChatFrame")
 
     Prat.RegisterChatEvent(self, Prat.Events.FRAMES_UPDATED)
 
