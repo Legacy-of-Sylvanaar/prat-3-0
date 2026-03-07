@@ -555,15 +555,6 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 		arg1 = arg1:gsub("\r", " ")
 	end
 
-	if strsub(event, 1, 8) == "CHAT_MSG" and ChatFrameUtil and ChatFrameUtil.ProcessMessageEventFilters then
-		local shouldDiscardMessage
-		shouldDiscardMessage, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14 =
-			ChatFrameUtil.ProcessMessageEventFilters(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
-		if shouldDiscardMessage then
-			return true
-		end
-	end
-
 	-- Create a message table. This table contains the chat message in a non-concatenated form
 	-- so that it can be modified easily without lots of complex gsub's
 	message, info = Prat.SplitChatMessage(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15)
