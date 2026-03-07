@@ -746,9 +746,21 @@ Prat:AddModuleToLoad(function()
       tab.PratSideTabsDefaultScale = tab:GetScale()
     end
 
-    -- Keep tabs attached to their chat frame so external UI fade/hide addons
-    -- (for example quest-immersion UIs) affect side tabs the same way.
-    local desiredParent = frame or UIParent
+    -- Keep a stable parent for stacked tabs. Mixed parents across a vertical
+    -- chain can cause tabs to anchor off-screen or disappear.
+    local desiredParent
+    if prevTab and prevTab.GetParent then
+      desiredParent = prevTab:GetParent()
+    end
+    if not desiredParent and anchor and anchor.GetParent then
+      desiredParent = anchor:GetParent()
+    end
+    if not desiredParent then
+      desiredParent = frame or UIParent
+    end
+
+    -- Ensure tabs participate in parent alpha/scale changes (Immersion-style
+    -- UI fading relies on this behavior).
     if tab:GetParent() ~= desiredParent then
       tab:SetParent(desiredParent)
     end
