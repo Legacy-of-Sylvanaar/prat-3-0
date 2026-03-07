@@ -746,16 +746,20 @@ Prat:AddModuleToLoad(function()
       tab.PratSideTabsDefaultScale = tab:GetScale()
     end
 
-    -- Dock scroll-frame tabs are clipped when anchored outside their parent;
-    -- use a top-level parent so side tabs remain visible.
-    local fullscreenParent = (FCF_GetCurrentFullScreenFrame and FCF_GetCurrentFullScreenFrame()) or UIParent
-    if tab:GetParent() ~= fullscreenParent then
-      tab:SetParent(fullscreenParent)
+    -- Keep tabs attached to their chat frame so external UI fade/hide addons
+    -- (for example quest-immersion UIs) affect side tabs the same way.
+    local desiredParent = frame or UIParent
+    if tab:GetParent() ~= desiredParent then
+      tab:SetParent(desiredParent)
     end
+
+    -- Ensure side tabs inherit parent alpha/scale transitions.
+    tab:SetIgnoreParentAlpha(false)
+    tab:SetIgnoreParentScale(false)
 
     local normalize = 1
     if p.normalizeuiscale then
-      local parentScale = fullscreenParent:GetEffectiveScale() or UIParent:GetEffectiveScale() or 1
+      local parentScale = desiredParent:GetEffectiveScale() or UIParent:GetEffectiveScale() or 1
       normalize = 1 / math.max(parentScale, 0.01)
     end
 
