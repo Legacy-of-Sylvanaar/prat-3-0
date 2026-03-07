@@ -746,18 +746,9 @@ Prat:AddModuleToLoad(function()
       tab.PratSideTabsDefaultScale = tab:GetScale()
     end
 
-    -- Keep a stable parent for stacked tabs. Mixed parents across a vertical
-    -- chain can cause tabs to anchor off-screen or disappear.
-    local desiredParent
-    if prevTab and prevTab.GetParent then
-      desiredParent = prevTab:GetParent()
-    end
-    if not desiredParent and anchor and anchor.GetParent then
-      desiredParent = anchor:GetParent()
-    end
-    if not desiredParent then
-      desiredParent = frame or UIParent
-    end
+    -- Use the chat frame's parent to avoid dock clipping while staying in the
+    -- normal UI fade hierarchy used by addons like Immersion.
+    local desiredParent = (frame and frame:GetParent()) or UIParent
 
     -- Ensure tabs participate in parent alpha/scale changes (Immersion-style
     -- UI fading relies on this behavior).
