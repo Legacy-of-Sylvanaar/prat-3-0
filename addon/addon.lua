@@ -405,10 +405,6 @@ function addon:PostEnable()
 	-- Prat's core wont operate until after this event
 	Prat.callbacks:Fire(Prat.Events.SECTIONS_UPDATED)
 	Prat.callbacks:Fire(Prat.Events.ENABLED)
-
-	if Prat.EnableGlobalCompletions then
-		Prat.EnableGlobalCompletions(Prat, "Prat-Global-Autocomplete")
-	end
 end
 
 function addon:PLAYER_REGEN_ENABLED()
