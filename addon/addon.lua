@@ -38,7 +38,6 @@ local tostring = tostring
 local pairs = pairs
 local ipairs = ipairs
 local type = type
-local strsub = strsub
 local Prat = Prat
 local setmetatable, getmetatable = setmetatable, getmetatable
 local strfind = strfind
