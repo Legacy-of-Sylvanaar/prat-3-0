@@ -185,14 +185,13 @@ Prat:AddModuleToLoad(function()
 		self.update = self.update or CreateFrame('Frame');
 		self.throttle = BUBBLE_SCAN_THROTTLE
 
-		self.update:SetScript("OnUpdate",
-			function(frame, elapsed)
-				self.throttle = self.throttle - elapsed
-				if frame:IsShown() and self.throttle < 0 then
-					self.throttle = BUBBLE_SCAN_THROTTLE
-					self:FormatBubbles()
-				end
-			end)
+		self.update:SetScript("OnUpdate", function(frame, elapsed)
+			self.throttle = self.throttle - elapsed
+			if frame:IsShown() and self.throttle < 0 then
+				self.throttle = BUBBLE_SCAN_THROTTLE
+				self:FormatBubbles()
+			end
+		end)
 
 		self:RestoreDefaults()
 		self:APLyOptions()

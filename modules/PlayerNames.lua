@@ -399,26 +399,22 @@ Prat:AddModuleToLoad(function()
 
 		Prat.RegisterMessageItem("PREPLAYERDELIM", "PLAYER", "before")
 		Prat.RegisterMessageItem("POSTPLAYERDELIM", "Ss", "after")
-
 		Prat.RegisterMessageItem("PLAYERTARGETICON", "Ss", "after")
+		Prat.RegisterMessageItem("PLAYERLEVEL", "PREPLAYERDELIM", "before")
+		Prat.RegisterMessageItem("PLAYERGROUP", "POSTPLAYERDELIM", "after")
+		Prat.RegisterMessageItem("PLAYERCLIENTICON", "PLAYERLEVEL", "before")
 
 		Prat.EnableProcessingForEvent("CHAT_MSG_GUILD_ACHIEVEMENT")
 		Prat.EnableProcessingForEvent("CHAT_MSG_ACHIEVEMENT")
 
-		Prat.RegisterMessageItem("PLAYERLEVEL", "PREPLAYERDELIM", "before")
-		Prat.RegisterMessageItem("PLAYERGROUP", "POSTPLAYERDELIM", "after")
-
-		Prat.RegisterMessageItem("PLAYERCLIENTICON", "PLAYERLEVEL", "before")
-
 		self:RegisterEvent("FRIENDLIST_UPDATE", "updateFriends")
-		self:RegisterEvent("GUILD_ROSTER_UPDATE", "updateGuild")
+		self:RegisterEvent("GUILD_ROSTER_UPDATE")
 		self:RegisterEvent("GROUP_ROSTER_UPDATE", "updateGroup")
-		self:RegisterEvent("PLAYER_LEVEL_UP", "updatePlayerLevel")
+		self:RegisterEvent("PLAYER_LEVEL_UP")
 		self:RegisterEvent("PLAYER_TARGET_CHANGED", "updateTarget")
 		self:RegisterEvent("UPDATE_MOUSEOVER_UNIT", "updateMouseOver")
 		self:RegisterEvent("WHO_LIST_UPDATE", "updateWho")
-		self:RegisterEvent("CHAT_MSG_SYSTEM", "updateWho") -- for short /who command
-
+		self:RegisterEvent("CHAT_MSG_SYSTEM", "updateWho")
 		self:RegisterEvent("PLAYER_LEAVING_WORLD", "EmptyDataCache")
 
 		if self.db.profile.usewho then
@@ -432,7 +428,7 @@ Prat:AddModuleToLoad(function()
 		self.NEEDS_INIT = true
 
 		if IsInGuild() then
-			self.GuildRoster()
+			C_GuildInfo.GuildRoster()
 		end
 
 		self:TabComplete(self.db.profile.tabcomplete)
@@ -469,115 +465,32 @@ Prat:AddModuleToLoad(function()
 	--[[------------------------------------------------
 	  Fill Functions
 	------------------------------------------------]] --
+	local function GetToonInfoByBnetID(bnetAccountID)
+		if not bnetAccountID then
+			return
+		end
 
-	-- Use C_FriendList.GetNumWhoResults instead
-	local GetNumWhoResults = C_FriendList.GetNumWhoResults;
+		local accountInfo = C_BattleNet.GetAccountInfoByID(bnetAccountID)
+		if not accountInfo then
+			return
+		end
 
-	-- Use C_FriendList.GetWhoInfo instead
-	local function GetWhoInfo(index)
-		local info = C_FriendList.GetWhoInfo(index);
-		return info.fullName,
-		info.fullGuildName,
-		info.level,
-		info.raceStr,
-		info.classStr,
-		info.area,
-		info.filename,
-		info.gender;
+		return accountInfo.gameAccountInfo.characterName,
+			accountInfo.gameAccountInfo.characterLevel,
+			accountInfo.gameAccountInfo.className
 	end
 
-	local function GetNumFriends()
-		return C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends();
-	end
-
-	-- Use C_FriendList.GetFriendInfo or C_FriendList.GetFriendInfoByIndex instead
-	local function GetFriendInfo(friend)
-		local info;
-		if type(friend) == "number" then
-			info = C_FriendList.GetFriendInfoByIndex(friend);
-		elseif type(friend) == "string" then
-			info = C_FriendList.GetFriendInfo(friend);
+	local function GetBnetClientByID(bnetAccountID)
+		if not bnetAccountID then
+			return
 		end
 
-		if info then
-			local chatFlag = "";
-			if info.dnd then
-				chatFlag = CHAT_FLAG_DND;
-			elseif info.afk then
-				chatFlag = CHAT_FLAG_AFK;
-			end
-			return info.name,
-			info.level,
-			info.className,
-			info.area,
-			info.connected,
-			chatFlag,
-			info.notes,
-			info.referAFriend,
-			info.guid;
+		local accountInfo = C_BattleNet.GetAccountInfoByID(bnetAccountID)
+		if not accountInfo then
+			return
 		end
-	end
 
-	local GetToonInfoByBnetID
-	if not Prat.IsRetail then
-		GetToonInfoByBnetID = function(bnetAccountID)
-			if not bnetAccountID then
-				return
-			end
-
-			local _, _, _, _, _, gameAccountID = BNGetFriendInfoByID(bnetAccountID)
-			if gameAccountID then
-				local _, toonName, _, _, _, _, _, class, _, _, level = BNGetGameAccountInfo(gameAccountID)
-				-- Pre-8.2.5 API returns empty strings if friend is online on non-WoW client
-				-- We return only non-empty strings for consistency with other "no data" situations
-				if toonName ~= "" then
-					return toonName, level, class
-				end
-			end
-		end
-	else
-		GetToonInfoByBnetID = function(bnetAccountID)
-			if not bnetAccountID then
-				return
-			end
-
-			local accountInfo = C_BattleNet.GetAccountInfoByID(bnetAccountID)
-			if accountInfo then
-				return accountInfo.gameAccountInfo.characterName,
-				accountInfo.gameAccountInfo.characterLevel,
-				accountInfo.gameAccountInfo.className
-			end
-		end
-	end
-
-	local GetBnetClientByID
-	if not Prat.IsRetail then
-		GetBnetClientByID = function(bnetAccountID)
-			if not bnetAccountID then
-				return
-			end
-
-			local _, _, _, _, _, gameAccountID = BNGetFriendInfoByID(bnetAccountID)
-			if gameAccountID then
-				local _, _, client = BNGetGameAccountInfo(gameAccountID)
-				-- Pre-8.2.5 API returns empty strings if friend is online on non-WoW client
-				-- We return only non-empty strings for consistency with other "no data" situations
-				if client ~= "" then
-					return client
-				end
-			end
-		end
-	else
-		GetBnetClientByID = function(bnetAccountID)
-			if not bnetAccountID then
-				return
-			end
-
-			local accountInfo = C_BattleNet.GetAccountInfoByID(bnetAccountID)
-			if accountInfo then
-				return accountInfo.gameAccountInfo.clientProgram
-			end
-		end
+		return accountInfo.gameAccountInfo.clientProgram
 	end
 
 	function module:CacheAppIcons()
@@ -613,18 +526,6 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	-- This function is a wrapper for the Blizzard GuildRoster function
-	-- All supported builds of WoW should now use C_GuildInfo.GuildRoster()
-	function module.GuildRoster()
-		if C_GuildInfo and C_GuildInfo.GuildRoster then
-			return C_GuildInfo.GuildRoster()
-		else
-			return GuildRoster()
-		end
-	end
-
-
-
 	--[[------------------------------------------------
 	  Core Functions
 	------------------------------------------------]] --
@@ -633,27 +534,31 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:updateAll()
-		self:updatePlayer()
-
-		self:updateGroup()
-
-		self:updateFriends()
-
 		self.NEEDS_INIT = nil
-
-		self:updateGuild()
+		self:updatePlayer()
+		self:updateFriends()
+		self:updateWho()
+		if IsInGuild() then
+			C_GuildInfo.GuildRoster()
+		end
+		if GetNumBattlefieldScores() > 0 then
+			self:updateBG()
+		else
+			self:UpdateGroup()
+		end
 	end
 
 	function module:updateGF()
-		if IsInGuild() then
-			self.GuildRoster()
-		end
 		self:updateFriends()
+		self:updateWho()
+		if IsInGuild() then
+			C_GuildInfo.GuildRoster()
+		end
 		if GetNumBattlefieldScores() > 0 then
 			self:updateBG()
+		else
+			self:UpdateGroup()
 		end
-		self:updateWho()
-		self:updateGuild()
 	end
 
 	function module:updatePlayer()
@@ -662,46 +567,26 @@ Prat:AddModuleToLoad(function()
 		self:addName(Name, Server, PlayerClass, UnitLevel("player"), nil, "PLAYER")
 	end
 
-	function module:updatePlayerLevel(_, level)
+	function module:PLAYER_LEVEL_UP(_, level)
 		local PlayerClass = select(2, UnitClass("player"))
 		local Name, Server = UnitName("player")
 		self:addName(Name, Server, PlayerClass, level, nil, "PLAYER")
 	end
 
 	function module:updateFriends()
-		for i = 1, GetNumFriends() do
-			local Name, Level, Class = GetFriendInfo(i)
-			self:addName(Name, nil, Class, Level, nil, "FRIEND")
+		for i = 1, C_FriendList.GetNumFriends() do
+			local info = C_FriendList.GetFriendInfoByIndex(i)
+			self:addName(info.name, nil, info.className, info.level, nil, "FRIEND")
 		end
 	end
 
-	local GuildRosterIsReady = false
-
-	function module:updateGuild(canRequestRosterUpdate)
-		if IsInGuild() then
-			if canRequestRosterUpdate ~= nil then
-				GuildRosterIsReady = true
-			end
-			self.GuildRoster()
-			if not GuildRosterIsReady then
-				return
-			end
-
-			local Name, Class, Level, _
-			for i = 1, GetNumGuildMembers() do
-				Name, _, _, Level, _, _, _, _, _, _, Class = GetGuildRosterInfo(i)
-
-				-- Despite the safeguards, it's still possible for GetGuildRosterInfo() to return invalid data.
-				-- Add an additional sanity check to make sure name isn't null before proceeding.
-				if Name then
-					local plr, svr = Name:match("([^%-]+)%-?(.*)")
-
-					-- @TODO: Note that since cross-realm guilds are now a thing, this logic may no longer be correct.
-					-- We can no longer assume that a player name without a server is automatically the same as being on our server.
-					-- In other words, if both Someplayer-ServerA and Someplayer-ServerB are in our guild, and they are different class/level, then this logic would overwrite the info of the first one processed with that of the second.
-					self:addName(plr, nil, Class, Level, nil, "GUILD")
-					self:addName(plr, svr, Class, Level, nil, "GUILD")
-				end
+	function module:GUILD_ROSTER_UPDATE()
+		for i = 1, GetNumGuildMembers() do
+			local Name, _, _, Level, _, _, _, _, _, _, Class = GetGuildRosterInfo(i)
+			if Name then
+				local plr, svr = Name:match("([^%-]+)%-?(.*)")
+				self:addName(plr, nil, Class, Level, nil, "GUILD")
+				self:addName(plr, svr, Class, Level, nil, "GUILD")
 			end
 		end
 	end
@@ -758,9 +643,9 @@ Prat:AddModuleToLoad(function()
 			return
 		end
 
-		for i = 1, GetNumWhoResults() do
-			local Name, _, Level, _, _, _, Class = GetWhoInfo(i)
-			self:addName(Name, nil, Class, Level, nil, "WHO")
+		for i = 1, C_FriendList.GetNumWhoResults() do
+			local info = C_FriendList.GetWhoInfo(i)
+			self:addName(info.fullName, nil, info.classStr, info.level, nil, "WHO")
 		end
 	end
 
@@ -770,8 +655,8 @@ Prat:AddModuleToLoad(function()
 
 			if name then
 				local plr, svr = name:match("([^%-]+)%-?(.*)")
-				self:addName(plr, svr, class, nil, nil, "BATTLEFIELD")
 				self:addName(plr, nil, class, nil, nil, "BATTLEFIELD")
+				self:addName(plr, svr, class, nil, nil, "BATTLEFIELD")
 			end
 		end
 		self:updateGroup()
@@ -826,64 +711,66 @@ Prat:AddModuleToLoad(function()
 	end
 
 	local servernames
-
 	function module:addName(Name, Server, Class, Level, SubGroup, Source)
-		if Name then
-			if issecretvalue and (issecretvalue(Name) or issecretvalue(Server)) then
-				return
+		if not Name then
+			return
+		end
+
+		if issecretvalue and (issecretvalue(Name) or issecretvalue(Server)) then
+			return
+		end
+
+		local nosave
+		Source = Source or "UNKNOWN"
+
+		-- Messy negations, but this says dont save data from
+		-- sources other than guild or friends unless you enable
+		-- the keeplots option
+		if Source ~= "GUILD" and Source ~= "FRIEND" and Source ~= "PLAYER" then
+			nosave = not self.db.profile.keeplots
+		end
+
+		if Server and Server:len() > 0 then
+			nosave = true
+			servernames = servernames or Prat:GetModule("ServerNames")
+
+			if servernames then
+				servernames:GetServerKey(Server)
 			end
-			local nosave
-			Source = Source or "UNKNOWN"
+		end
 
-			-- Messy negations, but this says dont save data from
-			-- sources other than guild or friends unless you enable
-			-- the keeplots option
-			if Source ~= "GUILD" and Source ~= "FRIEND" and Source ~= "PLAYER" then
-				nosave = not self.db.profile.keeplots
-			end
+		Name = Name .. (Server and Server:len() > 0 and ("-" .. Server) or "")
 
-			if Server and Server:len() > 0 then
-				nosave = true
-				servernames = servernames or Prat:GetModule("ServerNames")
-
-				if servernames then
-					servernames:GetServerKey(Server)
-				end
-			end
-
-			Name = Name .. (Server and Server:len() > 0 and ("-" .. Server) or "")
-
-			local changed
-			if Level and Level > 0 then
-				self.Levels[Name:lower()] = Level
-				if ((not nosave) and self.db.profile.keep) then
+		local changed
+		if Level and Level > 0 then
+			self.Levels[Name:lower()] = Level
+			if ((not nosave) and self.db.profile.keep) then
+				self.db.realm.levels[Name:lower()] = Level
+			else
+				-- Update it if it exists
+				if self.db.realm.levels[Name:lower()] then
 					self.db.realm.levels[Name:lower()] = Level
-				else
-					-- Update it if it exists
-					if self.db.realm.levels[Name:lower()] then
-						self.db.realm.levels[Name:lower()] = Level
-					end
 				end
-
-				changed = true
-			end
-			if Class and Class ~= UNKNOWN then
-				self.Classes[Name:lower()] = Class
-				if ((not nosave) and self.db.profile.keep) then
-					self.db.realm.classes[Name:lower()] = Class
-				end
-
-				changed = true
-			end
-			if SubGroup then
-				module.Subgroups[Name:lower()] = SubGroup
-
-				changed = true
 			end
 
-			if changed then
-				self:OnPlayerDataChanged(Name)
+			changed = true
+		end
+		if Class and Class ~= UNKNOWN then
+			self.Classes[Name:lower()] = Class
+			if ((not nosave) and self.db.profile.keep) then
+				self.db.realm.classes[Name:lower()] = Class
 			end
+
+			changed = true
+		end
+		if SubGroup then
+			module.Subgroups[Name:lower()] = SubGroup
+
+			changed = true
+		end
+
+		if changed then
+			self:OnPlayerDataChanged(Name)
 		end
 	end
 
@@ -1006,7 +893,6 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-
 	--
 	-- Prat Event Implementation
 	--
@@ -1030,7 +916,6 @@ Prat:AddModuleToLoad(function()
 	function module:MakePlayer(message, name)
 		if type(name) == "string" then
 			local plr, svr = name:match("([^%-]+)%-?(.*)")
-			--     self:Debug("MakePlayer", name, plr, svr)
 
 			message.lL = "|Hplayer:"
 			message.PLAYERLINK = name
@@ -1046,7 +931,6 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:Prat_FrameMessage(_, message, frame, event)
-		local _
 		if self.NEEDS_INIT then
 			self:updateAll()
 		end
@@ -1063,6 +947,7 @@ Prat:AddModuleToLoad(function()
 
 		Name = Ambiguate(Name, "all")
 
+		local _
 		local class, level, subgroup = self:GetData(Name)
 
 		if (class == nil) and message and message.ORG and message.ORG.GUID and message.ORG.GUID:len() > 0 and message.ORG.GUID ~= "0000000000000000" then
@@ -1072,6 +957,7 @@ Prat:AddModuleToLoad(function()
 				self:addName(Name, message.SERVER, class, level, subgroup, "GUID")
 			end
 		end
+
 		local fx = EVENTS_FOR_RECHECK[event]
 		if fx ~= nil and (level == nil or level == 0) then
 			fx(self)
@@ -1081,9 +967,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:GetPlayerCLR(name, class, mode)
-		if not mode then
-			mode = module.db.profile.colormode
-		end
+		mode = mode or module.db.profile.colormode
 
 		if name and strlen(name) > 0 then
 			if class and mode == "CLASS" then
@@ -1099,18 +983,17 @@ Prat:AddModuleToLoad(function()
 	function module:GetBracketCLR()
 		if not self.db.profile.bracketscommoncolor then
 			return CLR.COLOR_NONE
-		else
-			local color = self.db.profile.bracketscolor
-			return CLR:GetHexColor(color)
 		end
+
+		return CLR:GetHexColor(self.db.profile.bracketscolor)
 	end
 
 	function module:GetCommonCLR()
-		local color = CLR.COLOR_NONE
-		if self.db.profile.usecommoncolor then
-			color = CLR:GetHexColor(self.db.profile.color)
+		if not self.db.profile.usecommoncolor then
+			return CLR.COLOR_NONE
 		end
-		return color
+
+		return CLR:GetHexColor(self.db.profile.color)
 	end
 
 	function module:GetRandomCLR(Name)
@@ -1132,55 +1015,58 @@ Prat:AddModuleToLoad(function()
 		return string.format("%02x%02x%02x", r, g, b)
 	end
 
+	local AceTab = LibStub("AceTab-3.0", true)
 	function module:TabComplete(enabled)
-		local AceTab = LibStub("AceTab-3.0")
-
-		if enabled then
-			servernames = servernames or Prat:GetModule("ServerNames")
-
-			if not AceTab:IsTabCompletionRegistered(PL["tabcomplete_name"]) then
-				AceTab:RegisterTabCompletion(PL["tabcomplete_name"], nil,
-					function(t)
-						for name in pairs(self.Classes) do
-							table.insert(t, name)
-						end
-					end,
-					function(_, cands)
-						local candcount = #cands
-						if candcount <= self.db.profile.tabcompletelimit then
-							local text
-							for key, cand in pairs(cands) do
-								if servernames then
-									local plr, svr = key:match("([^%-]+)%-?(.*)")
-
-									cand = CLR:Player(cand, plr, self:getClass(key))
-
-									if svr then
-										svr = servernames:FormatServer(nil, servernames:GetServerKey(svr))
-										cand = cand .. (svr and ("-" .. svr) or "")
-									end
-								else
-									cand = CLR:Player(cand, cand, self:getClass(cand))
-								end
-
-								text = text and (text .. ", " .. cand) or cand
-							end
-							return "   " .. text
-						else
-							return "   " .. PL["Too many matches (%d possible)"]:format(candcount)
-						end
-					end,
-					nil,
-					function(name)
-						return name:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1):match("^[^%-]+")
-					end)
-			end
-		else
+		if not enabled then
 			if AceTab:IsTabCompletionRegistered(PL["tabcomplete_name"]) then
 				AceTab:UnregisterTabCompletion(PL["tabcomplete_name"])
 			end
+			return
+		end
+
+		servernames = servernames or Prat:GetModule("ServerNames")
+
+		if not AceTab:IsTabCompletionRegistered(PL["tabcomplete_name"]) then
+			AceTab:RegisterTabCompletion(
+				PL["tabcomplete_name"],
+				nil,
+				function(t)
+					for name in pairs(self.Classes) do
+						table.insert(t, name)
+					end
+				end,
+				function(_, cands)
+					local candcount = #cands
+					if candcount <= self.db.profile.tabcompletelimit then
+						local text
+						for key, cand in pairs(cands) do
+							if servernames then
+								local plr, svr = key:match("([^%-]+)%-?(.*)")
+
+								cand = CLR:Player(cand, plr, self:getClass(key))
+
+								if svr then
+									svr = servernames:FormatServer(nil, servernames:GetServerKey(svr))
+									cand = cand .. (svr and ("-" .. svr) or "")
+								end
+							else
+								cand = CLR:Player(cand, cand, self:getClass(cand))
+							end
+
+							text = text and (text .. ", " .. cand) or cand
+						end
+						return "   " .. text
+					else
+						return "   " .. PL["Too many matches (%d possible)"]:format(candcount)
+					end
+				end,
+				nil,
+				function(name)
+					return name:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1):match("^[^%-]+")
+				end
+			)
 		end
 	end
 
 	return
-end) -- Prat:AddModuleToLoad
+end)

@@ -562,12 +562,7 @@ Prat:AddModuleToLoad(function()
 			self:RegisterEvent("GUILD_ROSTER_UPDATE", function()
 				module:importGuildAlts(nil, true)
 			end)
-			-- Different functions for retail versus classic
-			if C_GuildInfo and C_GuildInfo.GuildRoster then
-				C_GuildInfo.GuildRoster()
-			else
-				GuildRoster()
-			end
+			C_GuildInfo.GuildRoster()
 		else
 			self:UnregisterEvent("GUILD_ROSTER_UPDATE")
 		end

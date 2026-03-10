@@ -50,8 +50,6 @@ Prat:AddModuleToLoad(function()
 		["Right, Outside Frame"] = true,
 		["alpha_name"] = "Set Alpha",
 		["alpha_desc"] = "Sets alpha of chat menu and arrows for all chat windows.",
-		["reflow_name"] = "Text Flows Around",
-		["reflow_desc"] = "Chatframe text should flow around the buttons not under them.",
 		buttonframe_desc = "Toggles the button frame menu on and off.",
 		buttonframe_name = "Show Button Frame",
 	})
@@ -143,7 +141,6 @@ Prat:AddModuleToLoad(function()
 			chatarrows = { ["*"] = true },
 			position = "RIGHTINSIDE",
 			reminder = true,
-			reflow = false,
 			alpha = 1.0,
 			buttonframe = false,
 			friendsbutton = false,
@@ -199,23 +196,6 @@ Prat:AddModuleToLoad(function()
 				end,
 				set = function(_, v)
 					module.db.profile.reminder = v
-				end,
-			},
-			reflow = {
-				type = "toggle",
-				name = PL["reflow_name"],
-				desc = PL["reflow_desc"],
-				get = function()
-					return module.db.profile.reflow
-				end,
-				set = function(_, v)
-					module.db.profile.reflow = v
-					if v then
-						Prat:GetModule("SMFHax"):Enable()
-					end
-				end,
-				hidden = function()
-					return Prat:GetModule("SMFHax") == nil
 				end,
 			},
 			alpha = {
@@ -286,18 +266,6 @@ Prat:AddModuleToLoad(function()
 		if QuickJoinToastButton then
 			QuickJoinToastButton:Hide()
 		end
-
-		-- set OnUpdateInterval, if they are profiling, update less
-		--    if GetCVar("scriptProfile") == "1" then
-		--        self.OnUpdateInterval = 0.5
-		--    else
-		--        self.OnUpdateInterval = 0.05
-		--    end
-
-		--    local smfhax = Prat:GetModule("SMFHax")
-		--    if self.db.profile.reflow and smfhax then
-		--        smfhax:Enable()
-		--    end
 
 		self.OnUpdateInterval = 0.05
 		self.lastupdate = 0

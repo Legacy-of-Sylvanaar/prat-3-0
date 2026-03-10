@@ -334,7 +334,7 @@ Prat:AddModuleToLoad(function()
 			if lastParsed == entry then
 				return
 			end
-			entry.message = self:InsertTimeStamp(entry.message, frame)
+			entry.message = self:InsertTimestamp(entry.message, frame)
 			lastParsed = entry
 		end
 	end
@@ -354,7 +354,7 @@ Prat:AddModuleToLoad(function()
 		return false
 	end
 
-	function module:InsertTimeStamp(text, cf)
+	function module:InsertTimestamp(text, cf)
 		if type(text) == "string" then
 			local db = self.db.profile
 			local space = db.space

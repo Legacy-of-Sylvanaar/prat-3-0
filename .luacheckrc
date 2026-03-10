@@ -253,10 +253,8 @@ globals = {
 	"C_EncodingUtil.DeserializeCBOR",
 	"C_EncodingUtil.EncodeBase64",
 	"C_EncodingUtil.SerializeCBOR",
-	"C_FriendList.GetFriendInfo",
 	"C_FriendList.GetFriendInfoByIndex",
 	"C_FriendList.GetNumFriends",
-	"C_FriendList.GetNumOnlineFriends",
 	"C_FriendList.GetNumWhoResults",
 	"C_FriendList.GetWhoInfo",
 	"C_GuildInfo.GuildRoster",
@@ -324,7 +322,6 @@ globals = {
 	"GetSpellInfo",
 	"GetTime",
 	"GetUnitName",
-	"GuildRoster",
 	"IsActivePlayerGuide",
 	"IsAddOnLoaded", -- Deprecated
 	"IsAltKeyDown",

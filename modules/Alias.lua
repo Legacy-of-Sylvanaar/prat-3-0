@@ -45,8 +45,6 @@ Prat:AddModuleToLoad(function()
 		['findaliases'] = true,
 		['find aliases matching a given search term'] = true,
 		['<keyword> - finds all aliases matching <keyword> (cmd aliases: /findalias)'] = true,
-		['verbose'] = true,
-		['Display extra information in the chat frame when commands are dealiased'] = true,
 		['inline'] = true,
 		['Expand aliases as you are typing'] = true,
 		["Options for altering the behaviour of Alias"] = true,
@@ -67,7 +65,6 @@ Prat:AddModuleToLoad(function()
 		["No aliases have been defined"] = true,
 		['There is no alias current defined for "%s"'] = true,
 		['infinite loop detected for alias /%s - ignoring'] = true,
-		['dealiasing command /%s to /%s'] = true,
 		['matching aliases found: %d'] = true,
 		['total aliases: %d'] = true,
 		["warnUser() called with nil argument!"] = true,
@@ -130,7 +127,6 @@ Prat:AddModuleToLoad(function()
 		profile = {
 			on = false,
 			aliases = {},
-			verbose = false,
 			inline = false,
 			noclobber = false,
 
@@ -224,12 +220,6 @@ Prat:AddModuleToLoad(function()
 				type = 'toggle',
 				order = 520,
 			},
-			verbose = {
-				name = PL['verbose'],
-				desc = PL['Display extra information in the chat frame when commands are dealiased'],
-				type = 'toggle',
-				order = 530,
-			},
 		}
 	})
 
@@ -280,9 +270,6 @@ Prat:AddModuleToLoad(function()
 
 	function module:OnModuleDisable()
 		self:UnhookAll()
-		if _G.ChatFrameEditBoxBaseMixin and _G.ChatFrameEditBoxBaseMixin.HandleChatType then
-			_G.ChatFrame1EditBox.HandleChatType = _G.ChatFrameEditBoxBaseMixin.HandleChatType
-		end
 		self.Aliases = nil
 	end
 
@@ -460,54 +447,45 @@ Prat:AddModuleToLoad(function()
 
 		local text = editBox:GetText()
 		-- If the string is in the format "/cmd blah", command will be "/cmd"
-		local command = strmatch(text, "^(/[^%s]+)") or "";
-		local msg = "";
+		local command = strmatch(text, "^(/[^%s]+)") or ""
+		local msg = ""
 
-		if (command ~= text) then
-			msg = strsub(text, strlen(command) + 2);
-			msg = strmatch(msg, "^%s*(.*)$") or msg;
+		if command ~= text then
+			msg = strsub(text, strlen(command) + 2)
+			msg = strmatch(msg, "^%s*(.*)$") or msg
 		end
-
-		command = strupper(command);
 
 		command = command or ""
 		msg = msg or ""
-		self.processing = true
 		local alias = self.Aliases[string.lower(strsub(command, 2))]
 
-		if alias and alias ~= "" then
-			local newcmd = strmatch(alias, "^/*([^%s]+)") or ""
-			local premsg = strsub(alias, strlen(newcmd) + 2) or ""
-
-			if premsg ~= "" then
-				msg = premsg .. ' ' .. msg
-			end
-
-			command = '/' .. string.upper(newcmd) -- this needs to be upper
-			text = string.lower(command) -- this needs to be lower
-
-			if msg and msg ~= "" then
-				text = text .. ' ' .. msg
-			end
-
-			editBox:SetText(text)
-			return true
+		if not alias or alias == "" then
+			return
 		end
+
+		local newcmd = strmatch(alias, "^/*([^%s]+)") or ""
+		local premsg = strsub(alias, strlen(newcmd) + 2) or ""
+
+		if premsg ~= "" then
+			msg = premsg .. ' ' .. msg
+		end
+
+		text = '/' ..  string.lower(newcmd)
+
+		if msg and msg ~= "" then
+			text = text .. ' ' .. msg
+		end
+
+		editBox:SetText(text)
 	end
 
 	-- Classic logic
 	function module:ChatEdit_HandleChatType(editBox, msg, command, send)
 		command = command or ""
 		msg = msg or ""
-		self.processing = true
 		local alias = self.Aliases[string.lower(strsub(command, 2))]
 
 		if alias and alias ~= "" then
-			print("Has alias")
-			if (send == 1) and self.db.profile.verbose then
-				self:warnUser(string.format(PL['dealiasing command /%s to /%s'], clralias(strsub(command, 2)), clrexpansion(alias)))
-				editBox:AddHistoryLine(editBox:GetText())
-			end
 			alias = Prat:ReplaceMatches(alias, 'OUTBOUND')
 
 			local newcmd = strmatch(alias, "^/*([^%s]+)") or ""
