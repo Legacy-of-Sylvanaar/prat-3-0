@@ -720,6 +720,9 @@ function Prat.PlaySound(_, sound)
 end
 
 function Prat.CanSendChatMessage(chatType)
+	if Prat.IsRetail and InCombatLockdown() then
+		return false
+	end
 	if chatType == "SAY" or chatType == "YELL" then
 		return IsInInstance("player")
 	elseif chatType == "RAID" or chatType == "GUILD" or chatType == "WHISPER" then

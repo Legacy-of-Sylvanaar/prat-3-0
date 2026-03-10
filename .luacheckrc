@@ -243,6 +243,7 @@ globals = {
 	"C_ChatInfo.InChatMessagingLockdown",
 	"C_ChatInfo.IsTimerunningPlayer",
 	"C_ChatInfo.ReplaceIconAndGroupExpressions",
+	"C_ChatInfo.SendChatMessage",
 	"C_ChatInfo.SwapChatChannelsByChannelIndex",
 	"C_ClassColor.GetClassColor",
 	"C_Club.GetClubInfo",
