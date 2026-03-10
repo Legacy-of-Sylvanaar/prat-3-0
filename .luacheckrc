@@ -322,6 +322,7 @@ globals = {
 	"GetSpellInfo",
 	"GetTime",
 	"GetUnitName",
+	"InCombatLockdown",
 	"IsActivePlayerGuide",
 	"IsAddOnLoaded", -- Deprecated
 	"IsAltKeyDown",

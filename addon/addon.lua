@@ -379,8 +379,15 @@ function addon:PostEnable()
 	end
 
 	-- Outbound hooking
-	if ChatFrame1EditBox and ChatFrame1EditBox.ParseText then
-		self:SecureHook(ChatFrame1EditBox, 'ParseText', 'ChatEdit_ParseText')
+	if Prat.IsRetail then
+		EventRegistry:RegisterCallback("ChatFrame.OnEditBoxPreSendText", function(_, editBox)
+			local success, ret = pcall(function()
+				addon:ChatEdit_ParseText(editBox)
+			end)
+			if not success then
+				geterrorhandler()(ret)
+			end
+		end)
 	else
 		self:SecureHook("ChatEdit_ParseText")
 	end
@@ -437,7 +444,11 @@ function addon:ChatEdit_ParseText(editBox, send)
 	wipe(m)
 	Prat.CurrentMessage = m
 
-	m.MESSAGE = command:gsub("^%s*(.-)%s*$", "%1") -- trim whitespace
+	if issecretvalue and issecretvalue(command) then
+		m.MESSAGE = command
+	else
+		m.MESSAGE = command:gsub("^%s*(.-)%s*$", "%1") -- trim whitespace
+	end
 
 	m.CTYPE = editBox:GetAttribute("chatType")
 	m.TARGET = editBox:GetAttribute("tellTarget")
@@ -456,10 +467,12 @@ function addon:ChatEdit_ParseText(editBox, send)
 	editBox:SetAttribute("channelTarget", m.CHANNEL)
 	editBox.languague = m.LANGUAGE
 
-	if m.DONOTPROCESS then
-		editBox:SetText("")
-	else
-		editBox:SetText(m.MESSAGE)
+	if not InCombatLockdown() then
+		if m.DONOTPROCESS then
+			editBox:SetText("")
+		else
+			editBox:SetText(m.MESSAGE)
+		end
 	end
 
 	Prat.CurrentMessage = nil
