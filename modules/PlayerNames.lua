@@ -387,7 +387,7 @@ Prat:AddModuleToLoad(function()
 				C_AddOns.LoadAddOn("LibWho-2.0")
 			end
 			self.wholib = b and LibStub:GetLibrary("LibWho-2.0", true)
-			self:updateAll()
+			self:UpdateAll()
 		elseif field == "coloreverywhere" then
 			self:OnPlayerDataChanged(b and UnitName("player") or nil)
 		end
@@ -407,14 +407,14 @@ Prat:AddModuleToLoad(function()
 		Prat.EnableProcessingForEvent("CHAT_MSG_GUILD_ACHIEVEMENT")
 		Prat.EnableProcessingForEvent("CHAT_MSG_ACHIEVEMENT")
 
-		self:RegisterEvent("FRIENDLIST_UPDATE", "updateFriends")
+		self:RegisterEvent("FRIENDLIST_UPDATE", "UpdateFriends")
 		self:RegisterEvent("GUILD_ROSTER_UPDATE")
-		self:RegisterEvent("GROUP_ROSTER_UPDATE", "updateGroup")
+		self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateGroup")
 		self:RegisterEvent("PLAYER_LEVEL_UP")
-		self:RegisterEvent("PLAYER_TARGET_CHANGED", "updateTarget")
-		self:RegisterEvent("UPDATE_MOUSEOVER_UNIT", "updateMouseOver")
-		self:RegisterEvent("WHO_LIST_UPDATE", "updateWho")
-		self:RegisterEvent("CHAT_MSG_SYSTEM", "updateWho")
+		self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdateTarget")
+		self:RegisterEvent("UPDATE_MOUSEOVER_UNIT", "UpdateMouseOver")
+		self:RegisterEvent("WHO_LIST_UPDATE", "UpdateWho")
+		self:RegisterEvent("CHAT_MSG_SYSTEM", "UpdateWho")
 		self:RegisterEvent("PLAYER_LEAVING_WORLD", "EmptyDataCache")
 
 		if self.db.profile.usewho then
@@ -424,7 +424,7 @@ Prat:AddModuleToLoad(function()
 			self.wholib = LibStub:GetLibrary("LibWho-2.0", true)
 		end
 
-		self:updatePlayer()
+		self:UpdatePlayer()
 		self.NEEDS_INIT = true
 
 		if IsInGuild() then
@@ -443,7 +443,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:Prat_Ready()
-		self:updateAll()
+		self:UpdateAll()
 	end
 
 	local cache = {
@@ -457,7 +457,7 @@ Prat:AddModuleToLoad(function()
 			wipe(v)
 		end
 
-		self:updatePlayer()
+		self:UpdatePlayer()
 		self.NEEDS_INIT = true
 		self:OnPlayerDataChanged()
 	end
@@ -533,35 +533,35 @@ Prat:AddModuleToLoad(function()
 		return PL["Player name formating options."]
 	end
 
-	function module:updateAll()
+	function module:UpdateAll()
 		self.NEEDS_INIT = nil
-		self:updatePlayer()
-		self:updateFriends()
-		self:updateWho()
+		self:UpdatePlayer()
+		self:UpdateFriends()
+		self:UpdateWho()
 		if IsInGuild() then
 			C_GuildInfo.GuildRoster()
 		end
 		if GetNumBattlefieldScores() > 0 then
-			self:updateBG()
+			self:UpdateBG()
 		else
 			self:UpdateGroup()
 		end
 	end
 
-	function module:updateGF()
-		self:updateFriends()
-		self:updateWho()
+	function module:UpdateGF()
+		self:UpdateFriends()
+		self:UpdateWho()
 		if IsInGuild() then
 			C_GuildInfo.GuildRoster()
 		end
 		if GetNumBattlefieldScores() > 0 then
-			self:updateBG()
+			self:UpdateBG()
 		else
 			self:UpdateGroup()
 		end
 	end
 
-	function module:updatePlayer()
+	function module:UpdatePlayer()
 		local PlayerClass = select(2, UnitClass("player"))
 		local Name, Server = UnitName("player")
 		self:addName(Name, Server, PlayerClass, UnitLevel("player"), nil, "PLAYER")
@@ -573,7 +573,7 @@ Prat:AddModuleToLoad(function()
 		self:addName(Name, Server, PlayerClass, level, nil, "PLAYER")
 	end
 
-	function module:updateFriends()
+	function module:UpdateFriends()
 		for i = 1, C_FriendList.GetNumFriends() do
 			local info = C_FriendList.GetFriendInfoByIndex(i)
 			self:addName(info.name, nil, info.className, info.level, nil, "FRIEND")
@@ -591,7 +591,7 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:updateRaid()
+	function module:UpdateRaid()
 		for k, _ in pairs(self.Subgroups) do
 			self.Subgroups[k] = nil
 		end
@@ -603,7 +603,7 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:updateParty()
+	function module:UpdateParty()
 		for i = 1, GetNumSubgroupMembers() do
 			local Unit = "party" .. i
 			local _, Class = UnitClass(Unit)
@@ -612,15 +612,15 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:updateGroup()
+	function module:UpdateGroup()
 		if IsInRaid() then
-			self:updateRaid()
+			self:UpdateRaid()
 		elseif IsInGroup() then
-			self:updateParty()
+			self:UpdateParty()
 		end
 	end
 
-	function module:updateTarget()
+	function module:UpdateTarget()
 		if not UnitIsPlayer("target") or not UnitIsFriend("player", "target") then
 			return
 		end
@@ -629,7 +629,7 @@ Prat:AddModuleToLoad(function()
 		self:addName(Name, Server, Class, UnitLevel("target"), nil, "TARGET")
 	end
 
-	function module:updateMouseOver()
+	function module:UpdateMouseOver()
 		if not UnitIsPlayer("mouseover") or not UnitIsFriend("player", "mouseover") then
 			return
 		end
@@ -638,7 +638,7 @@ Prat:AddModuleToLoad(function()
 		self:addName(Name, Server, Class, UnitLevel("mouseover"), nil, "MOUSE")
 	end
 
-	function module:updateWho()
+	function module:UpdateWho()
 		if self.wholib then
 			return
 		end
@@ -649,7 +649,7 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:updateBG()
+	function module:UpdateBG()
 		for i = 1, GetNumBattlefieldScores() do
 			local name, _, _, _, _, _, _, _, class = GetBattlefieldScore(i);
 
@@ -659,7 +659,7 @@ Prat:AddModuleToLoad(function()
 				self:addName(plr, svr, class, nil, nil, "BATTLEFIELD")
 			end
 		end
-		self:updateGroup()
+		self:UpdateGroup()
 	end
 
 	function module:resetStoredData()
@@ -897,10 +897,10 @@ Prat:AddModuleToLoad(function()
 	-- Prat Event Implementation
 	--
 	local EVENTS_FOR_RECHECK = {
-		["CHAT_MSG_GUILD"] = module.updateGF,
-		["CHAT_MSG_INSTANCE_CHAT"] = module.updateBG,
-		["CHAT_MSG_INSTANCE_CHAT_LEADER"] = module.updateBG,
-		["CHAT_MSG_SYSTEM"] = module.updateGF,
+		["CHAT_MSG_GUILD"] = module.UpdateGF,
+		["CHAT_MSG_INSTANCE_CHAT"] = module.UpdateBG,
+		["CHAT_MSG_INSTANCE_CHAT_LEADER"] = module.UpdateBG,
+		["CHAT_MSG_SYSTEM"] = module.UpdateGF,
 	}
 
 	local EVENTS_FOR_CACHE_GUID_DATA = {
@@ -932,7 +932,7 @@ Prat:AddModuleToLoad(function()
 
 	function module:Prat_FrameMessage(_, message, frame, event)
 		if self.NEEDS_INIT then
-			self:updateAll()
+			self:UpdateAll()
 		end
 
 		-- This name is used to lookup playerdata, not for display
