@@ -462,17 +462,20 @@ function addon:ChatEdit_ParseText(editBox, send)
 
 	self:ProcessUserEnteredChat(m)
 
+	if Prat.IsRetail and InCombatLockdown() then
+		Prat.CurrentMessage = nil
+		return
+	end
+
 	editBox:SetAttribute("chatType", m.CTYPE)
 	editBox:SetAttribute("tellTarget", m.TARGET)
 	editBox:SetAttribute("channelTarget", m.CHANNEL)
 	editBox.languague = m.LANGUAGE
 
-	if not InCombatLockdown() then
-		if m.DONOTPROCESS then
-			editBox:SetText("")
-		else
-			editBox:SetText(m.MESSAGE)
-		end
+	if m.DONOTPROCESS then
+		editBox:SetText("")
+	else
+		editBox:SetText(m.MESSAGE)
 	end
 
 	Prat.CurrentMessage = nil
