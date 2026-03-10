@@ -653,7 +653,7 @@ Prat:AddModuleToLoad(function()
 		for i = 1, GetNumBattlefieldScores() do
 			local name, _, _, _, _, _, _, _, class = GetBattlefieldScore(i);
 
-			if name and (not isecretvalue or not issecretvalue(name)) then
+			if name and (not issecretvalue or not issecretvalue(name)) then
 				local plr, svr = name:match("([^%-]+)%-?(.*)")
 				self:addName(plr, nil, class, nil, nil, "BATTLEFIELD")
 				self:addName(plr, svr, class, nil, nil, "BATTLEFIELD")
