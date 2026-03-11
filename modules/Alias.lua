@@ -252,7 +252,14 @@ Prat:AddModuleToLoad(function()
 		end
 
 		if ChatFrame1EditBox and ChatFrame1EditBox.OnTextChanged then
-			self:HookScript(ChatFrame1EditBox, 'OnTextChanged', 'ChatEdit_OnTextChanged')
+			EventRegistry:RegisterCallback("ChatFrame.OnEditBoxPreSendText", function(_, editBox)
+				local success, ret = pcall(function()
+					module:ChatEdit_OnPreSendText(editBox)
+				end)
+				if not success then
+					geterrorhandler()(ret)
+				end
+			end)
 		else
 			self:RawHook('ChatEdit_HandleChatType', true)
 		end
@@ -439,7 +446,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	-- Retail logic
-	function module:ChatEdit_OnTextChanged(editBox)
+	function module:ChatEdit_OnPreSendText(editBox)
 		-- We cannot perform logic while in lockdown
 		if C_ChatInfo.InChatMessagingLockdown() then
 			return
