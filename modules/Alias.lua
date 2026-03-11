@@ -470,6 +470,8 @@ Prat:AddModuleToLoad(function()
 			return
 		end
 
+		alias = Prat:ReplaceMatches(alias, 'OUTBOUND')
+
 		local newcmd = strmatch(alias, "^/*([^%s]+)") or ""
 		local premsg = strsub(alias, strlen(newcmd) + 2) or ""
 
@@ -477,9 +479,15 @@ Prat:AddModuleToLoad(function()
 			msg = premsg .. ' ' .. msg
 		end
 
-		text = '/' ..  string.lower(newcmd)
+		text = '/' .. string.lower(newcmd)
 
 		if msg and msg ~= "" then
+			local fake = {}
+			fake.MESSAGE = msg
+
+			Prat.Addon:ProcessUserEnteredChat(fake)
+
+			msg = fake.MESSAGE
 			text = text .. ' ' .. msg
 		end
 
@@ -492,38 +500,39 @@ Prat:AddModuleToLoad(function()
 		msg = msg or ""
 		local alias = self.Aliases[string.lower(strsub(command, 2))]
 
-		if alias and alias ~= "" then
-			alias = Prat:ReplaceMatches(alias, 'OUTBOUND')
-
-			local newcmd = strmatch(alias, "^/*([^%s]+)") or ""
-			local premsg = strsub(alias, strlen(newcmd) + 2) or ""
-
-			if premsg ~= "" then
-				msg = premsg .. ' ' .. msg
-			end
-
-			command = '/' .. string.upper(newcmd) -- this needs to be upper
-			local text = string.lower(command) -- this needs to be lower
-
-			if msg and msg ~= "" then
-				local fake = {}
-				fake.MESSAGE = msg
-
-				Prat.Addon:ProcessUserEnteredChat(fake)
-
-				msg = fake.MESSAGE
-				text = text .. ' ' .. msg
-			end
-
-			if (send == 1) then
-				editBox:SetText(text)
-				ChatEdit_ParseText(editBox, send)
-			elseif (self.db.profile.inline) then
-				editBox:SetText(text .. ' ')
-			end
-			return true
+		if not alias or alias == "" then
+			return self.hooks["ChatEdit_HandleChatType"](editBox, msg, command, send)
 		end
-		return self.hooks["ChatEdit_HandleChatType"](editBox, msg, command, send)
+
+		alias = Prat:ReplaceMatches(alias, 'OUTBOUND')
+
+		local newcmd = strmatch(alias, "^/*([^%s]+)") or ""
+		local premsg = strsub(alias, strlen(newcmd) + 2) or ""
+
+		if premsg ~= "" then
+			msg = premsg .. ' ' .. msg
+		end
+
+		command = '/' .. string.upper(newcmd) -- this needs to be upper
+		local text = string.lower(command) -- this needs to be lower
+
+		if msg and msg ~= "" then
+			local fake = {}
+			fake.MESSAGE = msg
+
+			Prat.Addon:ProcessUserEnteredChat(fake)
+
+			msg = fake.MESSAGE
+			text = text .. ' ' .. msg
+		end
+
+		if (send == 1) then
+			editBox:SetText(text)
+			ChatEdit_ParseText(editBox, send)
+		elseif (self.db.profile.inline) then
+			editBox:SetText(text .. ' ')
+		end
+		return true
 	end
 
 	return
