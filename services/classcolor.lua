@@ -35,5 +35,5 @@ function private.GetClassColor(class, isLocal)
 		return C_ClassColor.GetClassColor(class) or defaultColor
 	end
 
-	return RAID_CLASS_COLORS[class] or defaultColor
+	return RAID_CLASS_COLORS and RAID_CLASS_COLORS[class] or defaultColor
 end
