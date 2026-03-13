@@ -231,6 +231,11 @@ function private.SplitChatMessage(frame, event, ...)
 			return true
 		end
 
+		-- Empty CHAT_MSG_SYSTEM hack
+		if type == "SYSTEM" and not isSecret and arg1 == "" then
+			return true
+		end
+
 		local info
 
 		local coloredName = private.GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
