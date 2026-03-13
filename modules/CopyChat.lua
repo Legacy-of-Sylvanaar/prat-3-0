@@ -281,7 +281,7 @@ Prat:AddModuleToLoad(function()
 				if visibleLine:IsMouseOver() then
 					local info = visibleLine.messageInfo
 					if info and info.message then
-						local text = _G.issecretvalue and _G.issecretvalue(info.message) and "<SECRET>" or CleanText(info.message)
+						local text = issecretvalue and issecretvalue(info.message) and "<SECRET>" or CleanText(info.message)
 						local editBox = ChatEdit_ChooseBoxForSend(frame);
 
 						if (editBox ~= ChatEdit_GetActiveWindow()) then
@@ -356,7 +356,7 @@ Prat:AddModuleToLoad(function()
 			msg = msg and msg.message
 
 			if msg then
-				scrapelines[#scrapelines + 1] = CleanText(msg)
+				scrapelines[#scrapelines + 1] = issecretvalue and issecretvalue(msg) and "<SECRET>" or CleanText(msg)
 			end
 		end
 
@@ -378,7 +378,7 @@ Prat:AddModuleToLoad(function()
 			local msg = frame:GetMessageInfo(i)
 
 			if msg then
-				if _G.issecretvalue and _G.issecretvalue(msg) then
+				if issecretvalue and issecretvalue(msg) then
 					lines[#lines + 1] = "<SECRET>"
 				else
 					lines[#lines + 1] = CleanText(msg)

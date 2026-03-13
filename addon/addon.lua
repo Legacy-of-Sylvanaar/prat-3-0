@@ -782,7 +782,9 @@ Prat.RegisterChatCommand("pratunblacklist", function(name)
 end)
 
 Prat.RegisterChatCommand("pratdebugmsg", function()
-	Prat:PrintLiteral(Prat.LastMessage, Prat.LastMessage.ORG)
+	if Prat.LastMessage then
+		Prat:PrintLiteral(Prat.LastMessage, Prat.LastMessage.ORG)
+	end
 
 	local cc = Prat:GetModule("CopyChat")
 	if cc then

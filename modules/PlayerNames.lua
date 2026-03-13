@@ -703,7 +703,7 @@ Prat:AddModuleToLoad(function()
 
 		if name then
 			if class and mode == "CLASS" then
-				local classColor = Prat.GetClassColor(class or "", true)
+				local classColor = Prat.GetClassColor(class, true)
 				if classColor then
 					return classColor:WrapTextInColorCode(text)
 				end
@@ -711,7 +711,7 @@ Prat:AddModuleToLoad(function()
 			elseif mode == "RANDOM" then
 				return self:Colorize(module:GetRandomCLR(name), text)
 			else
-				return self:Colorize(module:GetCommonCLR())
+				return self:Colorize(module:GetCommonCLR(), text)
 			end
 		end
 	end
@@ -918,23 +918,6 @@ Prat:AddModuleToLoad(function()
 		CHAT_MSG_INSTANCE_CHAT = true,
 		CHAT_MSG_INSTANCE_CHAT_LEADER = true,
 	}
-
-	function module:MakePlayer(message, name)
-		if type(name) == "string" then
-			local plr, svr = name:match("([^%-]+)%-?(.*)")
-
-			message.lL = "|Hplayer:"
-			message.PLAYERLINK = name
-			message.LL = "|h"
-			message.PLAYER = plr
-			message.Ll = "|h"
-
-			if svr and strlen(svr) > 0 then
-				message.sS = "-"
-				message.SERVER = svr
-			end
-		end
-	end
 
 	function module:Prat_FrameMessage(_, message, frame, event)
 		if self.NEEDS_INIT then
