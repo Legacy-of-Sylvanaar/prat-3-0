@@ -90,7 +90,7 @@ function private.GetDecoratedSenderName(event, ...)
 
 	if senderGUID and chatTypeInfo and GetPlayerInfoByGUID ~= nil then
 		if englishClass then
-			local classColor = private.GetClassGetColorNew(englishClass)
+			local classColor = private.GetClassColor(englishClass)
 
 			if classColor then
 				decoratedPlayerName = classColor:WrapTextInColorCode(decoratedPlayerName)

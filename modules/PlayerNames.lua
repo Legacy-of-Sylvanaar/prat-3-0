@@ -679,16 +679,8 @@ Prat:AddModuleToLoad(function()
 		return self:Colorize(module:GetBracketCLR(), text)
 	end
 
-	function CLR:Common(text)
-		return self:Colorize(module:GetCommonCLR(), text)
-	end
-
 	function CLR:Random(text, seed)
 		return self:Colorize(module:GetRandomCLR(seed), text)
-	end
-
-	function CLR:Class(text, class)
-		return self:Colorize(module:GetClassColor(class), text)
 	end
 
 	local colorFunc = GetQuestDifficultyColor or GetDifficultyColor
@@ -707,7 +699,21 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function CLR:Player(text, name, class)
-		return self:Colorize(module:GetPlayerCLR(name, class), text)
+		local mode = module.db.profile.colormode
+
+		if name then
+			if class and mode == "CLASS" then
+				local classColor = Prat.GetClassColor(class or "", true)
+				if classColor then
+					return classColor:WrapTextInColorCode(text)
+				end
+				return text
+			elseif mode == "RANDOM" then
+				return self:Colorize(module:GetRandomCLR(name), text)
+			else
+				return self:Colorize(module:GetCommonCLR())
+			end
+		end
 	end
 
 	local servernames
@@ -808,10 +814,6 @@ Prat:AddModuleToLoad(function()
 		return class, level, self:getSubgroup(player)
 	end
 
-	function module:GetClassColor(class)
-		return CLR:GetHexColor(Prat.GetClassGetColor(class))
-	end
-
 	function module:FormatPlayer(message, Name, frame, class)
 		if not Name or Name:len() == 0 then
 			return
@@ -858,7 +860,11 @@ Prat:AddModuleToLoad(function()
 						message.PREPLAYERDELIM = ":"
 					end
 				end
-				message.PLAYER = CLR:Class(message.PLAYER, toonClass or "") -- Empty string to get default gray color
+
+				local classColor = Prat.GetClassColor(toonClass, true)
+				if classColor then
+					message.PLAYER = classColor:WrapTextInColorCode(message.PLAYER)
+				end
 			elseif self.db.profile.realidcolor == "RANDOM" then
 				message.PLAYER = CLR:Random(message.PLAYER, message.PLAYER:lower())
 			end
@@ -964,20 +970,6 @@ Prat:AddModuleToLoad(function()
 		end
 
 		self:FormatPlayer(message, Name, frame, class)
-	end
-
-	function module:GetPlayerCLR(name, class, mode)
-		mode = mode or module.db.profile.colormode
-
-		if name and strlen(name) > 0 then
-			if class and mode == "CLASS" then
-				return self:GetClassColor(class)
-			elseif mode == "RANDOM" then
-				return self:GetRandomCLR(name)
-			else
-				return self:GetCommonCLR()
-			end
-		end
 	end
 
 	function module:GetBracketCLR()
