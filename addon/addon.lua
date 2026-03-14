@@ -122,11 +122,7 @@ Prat.EnableTasks = {}
 local addon = LibStub("AceAddon-3.0"):NewAddon("Prat", "AceEvent-3.0", "AceConsole-3.0", "AceTimer-3.0", "AceHook-3.0")
 Prat.Addon = addon
 
---local  callbacks
-
---[[ 1 = no load, 2 = disabled, 3 = enabled (this is temporary, a better format will be forthcoming, 4 is setdisabled, and 5 is setenabled]]
---  What I need to do is return the module's own value if the option isn't 1
--- but one problem is if the module was "no-load", and then is set to "enabled" but it thinks it should be "disabled"
+-- 2 = disabled, 3 = enabled
 local defaults = {
 	profile = {
 		modules = {
