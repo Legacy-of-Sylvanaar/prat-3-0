@@ -62,6 +62,8 @@ Prat:AddModuleToLoad(function()
 		["How long any highlights/flashes should last"] = true,
 		["Tab Font Size"] = true,
 		["Set the font size for chat tab names."] = true,
+		["keephighlightinactive_name"] = "Only keep highlighting if tab is not active",
+		["keephighlightinactive_desc"] = "If this is turned on, the highlight will only persist if the tab is not the active tab. Otherwise the timer will be used",
 	})
 	--@end-debug@
 
@@ -252,6 +254,12 @@ Prat:AddModuleToLoad(function()
 						order = 6,
 						min = 0.1,
 						max = 15,
+					},
+					keephighlightinactive = {
+						name = PL["keephighlightinactive_name"],
+						desc = PL["keephighlightinactive_desc"],
+						type = "toggle",
+						order = 7
 					},
 				},
 			},
@@ -577,7 +585,8 @@ Prat:AddModuleToLoad(function()
 
 		if #actions > 0 then
 			self.chatAlertCleanupActions[chatFrame:GetName()] = actions
-			if not self.db.profile.foreveralert then
+			local activeChatFrame = SELECTED_CHAT_FRAME
+			if not self.db.profile.foreveralert or (self.db.profile.keephighlightinactive and activeChatFrame:GetID() == chatFrame:GetID()) then
 				self.chatAlertTimers[chatFrame:GetName()] = C_Timer.NewTimer(self.db.profile.alerttimeout, function()
 					self.chatAlertTimers[chatFrame:GetName()] = nil
 					for _, a in ipairs(actions) do
