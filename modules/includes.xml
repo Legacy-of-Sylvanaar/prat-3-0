@@ -37,6 +37,7 @@
 	<Script file="ServerNames.lua"/>
 	<Script file="Scroll.lua"/>
 	<Script file="Search.lua"/>
+	<Script file="SideTabs.lua"/>
 	<Script file="Sounds.lua"/>
 	<Script file="Substitutions.lua"/>
 	<Script file="TellTarget.lua"/>

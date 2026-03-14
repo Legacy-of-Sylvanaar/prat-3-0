@@ -64,6 +64,7 @@ do
 		["Prat_ChatTabs"] = "display",
 		["Prat_Buttons"] = "display",
 		["Prat_OriginalButtons"] = "display",
+		["Prat_SideTabs"] = "display",
 
 		--formatting
 		["Prat_ChannelNames"] = "formatting",

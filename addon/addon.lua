@@ -136,6 +136,7 @@ local defaults = {
 			["KeyBindings"] = 3,
 			["OriginalEditbox"] = 2,
 			["ChatTabs"] = 2,
+			["SideTabs"] = 2,
 			["*"] = 3
 		}
 	},
