@@ -1,6 +1,8 @@
 local LSM = LibStub("LibSharedMedia-3.0")
 
-if not LSM then return end -- Oh No Mr. Nil!
+if not LSM then
+	return
+end
 
 local folder = [[Prat-3.0\fonts\]]
 

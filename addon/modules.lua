@@ -1,384 +1,301 @@
----------------------------------------------------------------------------------
---
--- Prat - A framework for World of Warcraft chat mods
---
--- Copyright (C) 2006-2018  Prat Development Team
---
--- This program is free software; you can redistribute it and/or
--- modify it under the terms of the GNU General Public License
--- as published by the Free Software Foundation; either version 2
--- of the License, or (at your option) any later version.
---
--- This program is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- GNU General Public License for more details.
---
--- You should have received a copy of the GNU General Public License
--- along with this program; if not, write to:
---
--- Free Software Foundation, Inc.,
--- 51 Franklin Street, Fifth Floor,
--- Boston, MA  02110-1301, USA.
---
---
--------------------------------------------------------------------------------
+local _, private = ...
 
-
---[[ BEGIN STANDARD HEADER ]] --
-
--- Imports
-local _G = _G
-local LibStub = LibStub
-local tonumber = tonumber
-local tostring = tostring
-local pairs, ipairs = pairs, ipairs
-local type = type
-local Prat = Prat
-local pcall = pcall
-local setmetatable = setmetatable
-local tinsert = tinsert
-
---[[ END STANDARD HEADER ]] --
-
-Prat.Addon.defaultModuleState = true
-
---[[
-
-Module system flow:
-
-1) Module code loaded by the client
-2) Module first asks if it should  be INSTALLED
-3) If no, the module code returns before creating the module
-4) If yes, the module is given the name it should register with
-5) The module code creates a new module calling NewModule
-6) Once the module has been created, we recieve OnModuleCreated, we want to
-   remember that this module is installed, so we save that info
-7) The module will have its on initalize called after Prat's.  
-8) If the module is disabled it will stop at this point
-9) If the module is enabled, it will call its OnEnable
-
-That give us the states: EXISTS, INSTALLED, INITIALIZED, ENABLED, 
-                                                         DISABLED
-
-
-]]
+local error, ipairs, pairs, pcall, setmetatable, tostring, type =
+	error, ipairs, pairs, pcall, setmetatable, tostring, type
 
 local function NOP() end
 
 do
-  Prat.Modules = {}
-  function Prat.RequestModuleName(self, name) --  <== EXISTS
-    if type(name) ~= "string" then
-      name = tostring(self)
-    end
+	local function AddLocale(self, locale, L)
+		if locale == "enUS" or GetLocale() == locale then
+			for k, v in pairs(L) do
+				if v == true then
+					self[k] = k
+				elseif type(v) ~= "table" then
+					self[k] = v
+				end
+			end
+		end
+	end
 
-    Prat.CreateModuleControlOption(name)
-
-    -- Duh, this still requires separate loader due to the saved variable
-    if Prat.db and Prat.db.profile.modules[name] == 1 then
-      Prat.Modules[name] = "EXISTS"
-    end
-
-    if not Prat.Modules[name] then
-      Prat.Modules[name] = "EXISTS"
-      return name
-    end
-  end
+	function private:GetLocalizer(name)
+		return setmetatable({
+			AddLocale = AddLocale,
+		}, {
+			__index = function(_, k)
+				error("Locale key " .. tostring(k) .. " is not provided - " .. name)
+			end
+		})
+	end
 end
 
 do
-  local module_defaults = {}
-  function Prat.SetModuleDefaults(self, module, defaults)
-    module_defaults[type(module) == "table" and module.name or module] = defaults
-  end
+	local module_defaults = {}
+	function private:SetModuleDefaults(module, defaults)
+		module_defaults[type(module) == "table" and module.name or module] = defaults
+	end
 
-  function Prat.GetModuleDefaults(self, module, defaults)
-    return module_defaults[type(module) == "table" and module.name or module]
-  end
+	function private:GetModuleDefaults(module)
+		return module_defaults[type(module) == "table" and module.name or module]
+	end
 
-  local module_init = {}
-  function Prat.SetModuleInit(self, module, init)
-    module_init[type(module) == "table" and module.name or module or "null"] = init
-  end
+	local module_init = {}
+	function private:SetModuleInit(module, init)
+		module_init[type(module) == "table" and module.name or module or "null"] = init
+	end
 
-  local function GetModuleInit(module)
-    return module_init[type(module) == "table" and module.name or module or "null"]
-  end
+	local function GetModuleInit(module)
+		return module_init[type(module) == "table" and module.name or module or "null"]
+	end
 
-  local sectionlist = {
-    --display
-    ["Prat_ChannelColorMemory"] = "display",
-    ["Prat_ChannelSticky"] = "display",
-    ["Prat_ChatFrames"] = "display",
-    ["Prat_Fading"] = "display",
-    ["Prat_History"] = "display",
-    ["Prat_Frames"] = "display",
-    ["Prat_Editbox"] = "display",
-    ["Prat_Paragraph"] = "display",
-    ["Prat_Scroll"] = "display",
-    ["Prat_Clear"] = "display",
-    ["Prat_Font"] = "display",
-    ["Prat_ChatTabs"] = "display",
-    ["Prat_Buttons"] = "display",
-    ["Prat_Original Buttons"] = "display",
+	local sectionlist = {
+		--display
+		["Prat_ChannelColorMemory"] = "display",
+		["Prat_ChannelSticky"] = "display",
+		["Prat_ChatFrames"] = "display",
+		["Prat_Fading"] = "display",
+		["Prat_History"] = "display",
+		["Prat_Frames"] = "display",
+		["Prat_Editbox"] = "display",
+		["Prat_Paragraph"] = "display",
+		["Prat_Scroll"] = "display",
+		["Prat_Clear"] = "display",
+		["Prat_Font"] = "display",
+		["Prat_ChatTabs"] = "display",
+		["Prat_Buttons"] = "display",
+		["Prat_OriginalButtons"] = "display",
+		["Prat_SideTabs"] = "display",
 
-    --formatting
-    ["Prat_ChannelNames"] = "formatting",
-    ["Prat_PlayerNames"] = "formatting",
-    ["Prat_ServerNames"] = "formatting",
-    ["Prat_Substitutions"] = "formatting",
-    ["Prat_Timestamps"] = "formatting",
-    ["Prat_UrlCopy"] = "formatting",
-    --extras
-    ["Prat_AddonMsgs"] = "extras",
-    ["Prat_EventNames"] = "extras",
-    ["Prat_PopupMessage"] = "extras",
-    ["Prat_Sounds"] = "extras",
-  }
-  setmetatable(sectionlist, {
-    __index = function(t, k, v)
-      return "extras"
-    end
-  })
+		--formatting
+		["Prat_ChannelNames"] = "formatting",
+		["Prat_PlayerNames"] = "formatting",
+		["Prat_ServerNames"] = "formatting",
+		["Prat_Substitutions"] = "formatting",
+		["Prat_Timestamps"] = "formatting",
+		["Prat_UrlCopy"] = "formatting",
 
-  local function onInit(self) --  ==> INSTALLED -> INITIALIZED
-    local defaults, opts, init
-    defaults, module_defaults[self.name] = module_defaults[self.name] or {}
-    self.db = Prat.db:RegisterNamespace(self.name, defaults)
+		--extras
+		["Prat_AddonMsgs"] = "extras",
+		["Prat_EventNames"] = "extras",
+		["Prat_PopupMessage"] = "extras",
+		["Prat_Sounds"] = "extras",
+	}
+	setmetatable(sectionlist, {
+		__index = function()
+			return "extras"
+		end
+	})
 
-    init = GetModuleInit(self)
-    if init then
-      init(self)
-      Prat.SetModuleInit(self, self, nil)
-    end
-    opts = Prat.GetModuleOptions(self.name)
-    if opts then
-      opts.handler = self
-      opts.disabled = "IsDisabled"
-      Prat.Options.args[sectionlist[self.name]].args[self.name], opts = opts
-      Prat.SetModuleOptions(self, self.name, nil)
-    end
+	local function onInit(self)
+		module_defaults[self.name] = module_defaults[self.name] or {}
+		self.db = private.db:RegisterNamespace(self.name, module_defaults[self.name])
 
-    local v = Prat.db.profile.modules[self.moduleName]
-    if v == 4 or v == 5 then
-      self.db.profile.on = (v == 5) and true or false
-      Prat.db.profile.modules[self.moduleName] = v - 2
-    else
-      Prat.db.profile.modules[self.moduleName] = self.db.profile.on and 3 or 2
-    end
-    self:SetEnabledState(self.db.profile.on)
+		local init = GetModuleInit(self)
+		if init then
+			init(self)
+			private:SetModuleInit(self, nil)
+		end
 
-    Prat.Modules[self.name] = "INITALIZED"
-  end
+		local opts = private:GetModuleOptions(self.name)
+		if opts then
+			opts.handler = self
+			opts.hidden = "IsDisabled"
+			private.Options.args[sectionlist[self.name]].args[self.name] = opts
+			private:SetModuleOptions(self, nil)
+		end
 
+		private.db.profile.modules[self.moduleName] = self.db.profile.on and 3 or 2
+		self:SetEnabledState(self.db.profile.on)
+	end
 
-  local function onEnable(self) -- ==> INITIALIZED/DISABLED -> ENABLED
-    --    Print("onEnable() "..self.name)
-    local pats = Prat.GetModulePatterns(self)
-    if pats then
-      for _, v in pairs(pats) do
-        if v then
-          Prat.RegisterPattern(v, self.name)
-        end
-      end
-    end
+	local function onEnable(self)
+		local pats = private:GetModulePatterns(self)
+		if pats then
+			for _, v in pairs(pats) do
+				if v then
+					private:RegisterPattern(v, self.name)
+				end
+			end
+		end
 
-    self:OnModuleEnable()
-    Prat.Modules[self.name] = "ENABLED"
-  end
+		self:OnModuleEnable()
+	end
 
-  local function onDisable(self) -- ==>INITIALIZED/ENABLED -> DISABLED
-    --    Print("onDisable() "..self.name)
-    Prat.UnregisterAllPatterns(self.name)
-    self:OnModuleDisable()
-    Prat.UnregisterAllChatEvents(self)
-    Prat.Modules[self.name] = "DISABLED"
-  end
+	local function onDisable(self)
+		private:UnregisterAllPatterns(self.name)
+		self:OnModuleDisable()
+		private.UnregisterAllChatEvents(self)
+	end
 
+	local function setValue(self, info, b)
+		self.db.profile[info[#info]] = b
+		self:OnValueChanged(info, b)
+	end
 
-  local function setValue(self, info, b)
-    self.db.profile[info[#info]] = b
-    self:OnValueChanged(info, b)
-  end
+	local function getValue(self, info)
+		return self.db.profile[info[#info]]
+	end
 
-  local function getValue(self, info)
-    return self.db.profile[info[#info]]
-  end
+	local function getSubValue(self, info, val)
+		return self.db.profile[info[#info]][val]
+	end
 
-  local function getSubValue(self, info, val)
-    return self.db.profile[info[#info]][val]
-  end
+	local function setSubValue(self, info, val, b)
+		self.db.profile[info[#info]][val] = b
+		self:OnSubValueChanged(info, val, b)
+	end
 
-  local function setSubValue(self, info, val, b)
-    self.db.profile[info[#info]][val] = b
-    self:OnSubValueChanged(info, val, b)
-  end
+	local defclr = {
+		r = 1,
+		b = 1,
+		g = 1,
+		a = 1
+	}
+	local function getColorValue(self, info)
+		local c = self.db.profile[info[#info]] or defclr
+		return c.r, c.g, c.b, c.a
+	end
 
-  local defclr = {
-    r = 1,
-    b = 1,
-    g = 1,
-    a = 1
-  }
-  local function getColorValue(self, info)
-    local c = self.db.profile[info[#info]] or defclr
-    return c.r, c.g, c.b, c.a
-  end
+	local function setColorValue(self, info, r, g, b, a)
+		local c = self.db.profile[info[#info]] or defclr
+		c.r, c.g, c.b, c.a = r, g, b, a
+		self:OnColorValueChanged(info, r, g, b, a)
+	end
 
-  local function setColorValue(self, info, r, g, b, a)
-    local c = self.db.profile[info[#info]] or defclr
-    c.r, c.g, c.b, c.a = r, g, b, a
-    self:OnColorValueChanged(info, r, g, b, a)
-  end
+	local function outputText(self, ...)
+		local frame, message, r, g, b = ...
 
-  local function outputText(self, ...)
-    local frame, message, r, g, b = ...
+		if type(frame) ~= "table" or type(frame.AddMessage) ~= "function" then
+			frame, message, r, g, b = DEFAULT_CHAT_FRAME, ...
+		end
 
-    if type(frame) ~= "table" or type(frame.AddMessage) ~= "function" then
-      frame, message, r, g, b =  _G.DEFAULT_CHAT_FRAME, ...
-    end
+		if not message then
+			return
+		end
 
-    if not message then return end
+		local header = "|cffffff78" .. tostring(private) .. "|r (|cff80ff80" .. self.moduleName .. "|r) : %s"
 
-    local header = "|cffffff78" .. tostring(Prat) .."|r (|cff80ff80" .. self.moduleName .. "|r) : %s"
+		frame:AddMessage(header:format(message), r, g, b)
+	end
 
-    frame:AddMessage(header:format(message), r, g, b)
-  end
+	local function isDisabled(self)
+		return not self:IsEnabled()
+	end
 
-  local function isDisabled(self)
-    return not self:IsEnabled()
-  end
+	local function getDescription(self)
+		return self.PL.module_desc
+	end
 
-  local function getDescription(self)
-    return self.PL.module_desc
-  end
+	local prototype = {
+		OnEnable = onEnable,
+		OnDisable = onDisable,
+		OnInitialize = onInit,
+		OnModuleEnable = NOP,
+		OnModuleDisable = NOP,
+		OnModuleInit = NOP,
+		OnValueChanged = NOP,
+		OnSubValueChanged = NOP,
+		OnColorValueChanged = NOP,
+		GetValue = getValue,
+		SetValue = setValue,
+		GetSubValue = getSubValue,
+		SetSubValue = setSubValue,
+		GetColorValue = getColorValue,
+		SetColorValue = setColorValue,
+		IsDisabled = isDisabled,
+		GetDescription = getDescription,
+		Output = outputText,
 
-  local prototype = {
-    OnEnable = onEnable,
-    OnDisable = onDisable,
-    OnInitialize = onInit,
-    OnModuleEnable = NOP,
-    OnModuleDisable = NOP,
-    OnModuleInit = NOP,
-    OnValueChanged = NOP,
-    OnSubValueChanged = NOP,
-    OnColorValueChanged = NOP,
-    GetValue = getValue,
-    SetValue = setValue,
-    GetSubValue = getSubValue,
-    SetSubValue = setSubValue,
-    GetColorValue = getColorValue,
-    SetColorValue = setColorValue,
-    IsDisabled = isDisabled,
-    GetDescription = getDescription,
-    Output = outputText,
+		-- Standard fields
+		section = "extras",
+	}
 
-    -- Standard fields
-    section = "extras",
-  }
+	function private:NewModule(name, ...)
+		local module = private.Addon:NewModule(name, prototype, ...)
+		module.PL = private:GetLocalizer(name)
 
-  function Prat.NewModule(self, name, ...) -- <== INSTALLED (Ace3 does the <== INITIALIZED)
-    local addon = Prat.Addon:NewModule(name, prototype, ...)
+		private:CreateModuleControlOption(name)
+		if private.db.profile.modules[module.moduleName] == 2 then
+			module:Disable()
+		end
 
-    addon.PL = Prat:GetLocalizer({})
+		return module
+	end
 
-    return addon
-  end
+	function private:GetModule(name)
+		local module = private.Addon:GetModule(name, true)
 
-  --	local locs, section
-  --	function NewModuleEx(self, name, locs, section, ...)  -- <== INSTALLED (Ace3 does the <== INITIALIZED)
-  --		return Addon:NewModule(name, prototype, ...)
-  --	end
+		if not module:IsEnabled() then
+			return
+		end
 
-  function Prat.Addon:OnModuleCreated(module) -- EXISTS -> INSTALLED
-    --@debug@
-    _G[module.moduleName:lower()] = module
-    --@end-debug@
-    Prat.Modules[module.name], Prat.Modules[module.moduleName] = "INSTALLED"
-  end
-end
-
-
---[[ 
-
-For module options, i want to use the single closure style executed from the main chunk of the module,
-such as:
-
-SetModuleOptionTable(name, function() return { ... } )
-
-This way the options can be GC'd by from the modules, before the decision is made as
-to whether we will actually load the module. they will go into a table here, and either
-free'd, given back to the module for it to execute, or possible executed on this end. 
-
-In any case there will only be 1 copy of the closure, and if executed it will create its data
-and then it can be freed leaving no code behind. Prat 2.0 used alot of memory solely because of 
-its options tables, this tries to avoid that.
-
-]]
-
-do
-  local module_options = {}
-  function Prat.SetModuleOptions(self, module, options)
-    module_options[type(module) == "table" and module.name or module or "null"] = options
-  end
-
-  function Prat.GetModuleOptions(module)
-    return module_options[type(module) == "table" and module.name or module or "null"]
-  end
+		return module
+	end
 end
 
 do
-  local module_patterns = {}
-  function Prat.SetModulePatterns(self, module, patterns)
-    module_patterns[type(module) == "table" and module.name or module or "null"] = patterns
-  end
+	local module_options = {}
 
-  function Prat.GetModulePatterns(module)
-    return module_patterns[type(module) == "table" and module.name or module or "null"]
-  end
+	function private:SetModuleOptions(module, options)
+		module_options[type(module) == "table" and module.name or module or "null"] = options
+	end
+
+	function private:GetModuleOptions(module)
+		return module_options[type(module) == "table" and module.name or module or "null"]
+	end
 end
 
 do
-  local modules_toload = {}
-  local extensions_toload = {}
-  function Prat.AddModuleToLoad(self, module_closure)
-    tinsert(modules_toload, module_closure)
-  end
+	local module_patterns = {}
 
-  function Prat.AddModuleExtension(self, extension_closure)
-    tinsert(extensions_toload, extension_closure)
-  end
+	function private:SetModulePatterns(module, patterns)
+		module_patterns[type(module) == "table" and module.name or module or "null"] = patterns
+	end
 
-  local function loadNow(self, mod)
-    local success, ret = pcall(mod)
-    if not success then
-      _G.geterrorhandler()(ret)
-    end
-  end
-
-  function Prat.LoadModules()
-    for i = 1, #modules_toload, 1 do
-      local success, ret = pcall(modules_toload[i])
-      if not success then
-        _G.geterrorhandler()(ret)
-      end
-      modules_toload[i] = nil
-    end
-    modules_toload = nil
-
-    for i = 1, #extensions_toload, 1 do
-      local success, ret = pcall(extensions_toload[i])
-      if not success then
-        _G.geterrorhandler()(ret)
-      end
-      extensions_toload[i] = nil
-    end
-    extensions_toload = nil
-
-    Prat.LoadModules = nil
-    Prat.AddModuleToLoad = loadNow
-    Prat.AddModuleExtension = loadNow
-  end
+	function private:GetModulePatterns(module)
+		return module_patterns[type(module) == "table" and module.name or module or "null"]
+	end
 end
-	
+
+do
+	local modules_toload = {}
+	local extensions_toload = {}
+
+	function private:AddModuleToLoad(module_closure)
+		modules_toload[#modules_toload + 1] = module_closure
+	end
+
+	function private:AddModuleExtension(extension_closure)
+		extensions_toload[#extensions_toload + 1] = extension_closure
+	end
+
+	local function loadNow(_, mod)
+		local success, ret = pcall(mod)
+		if not success then
+			geterrorhandler()(ret)
+		end
+	end
+
+	function private:LoadModules()
+		private.LoadModules = nil
+		private.AddModuleToLoad = loadNow
+		private.AddModuleExtension = loadNow
+
+		for _, module in ipairs(modules_toload) do
+			local success, ret = pcall(module)
+			if not success then
+				geterrorhandler()(ret)
+			end
+		end
+		modules_toload = nil
+
+		for _, extension in ipairs(extensions_toload) do
+			local success, ret = pcall(extension)
+			if not success then
+				geterrorhandler()(ret)
+			end
+		end
+		extensions_toload = nil
+	end
+end
+

@@ -17,187 +17,184 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
 -------------------------------------------------------------------------------
 
-
-
-
-
 Prat:AddModuleToLoad(function()
+	local module = Prat:NewModule("ChatLog")
+	local PL = module.PL
 
-  local PRAT_MODULE = Prat:RequestModuleName("ChatLog")
+	--@debug@
+	PL:AddLocale("enUS", {
+		["ChatLog"] = true,
+		["A module to automaticaly enable chat and combat logging."] = true,
+		["Toggle Chat Log"] = true,
+		["Toggle chat log on and off."] = true,
+		["Toggle Combat Log"] = true,
+		["Toggle combat log on and off."] = true,
+		["Combat Log: Enabled"] = true,
+		["Combat log recorded to <WoW Installation>\\Logs\\WoWCombatLog.txt only upon logout."] = true,
+		["Combat Log: Disabled"] = true,
+		["Chat Log: Enabled"] = true,
+		["Chat log recorded to <WoW Installation>\\Logs\\WoWChatLog.txt only upon logout."] = true,
+		["Chat Log: Disabled"] = true,
+		["quiet_name"] = "Suppress Feedback Messages",
+		["quiet_desc"] = "Dont display any messages when this mod is enabled, or when it changes the log settings.",
+	})
+	--@end-debug@
 
-  if PRAT_MODULE == nil then
-    return
+	-- These Localizations are auto-generated. To help with localization
+	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
+
+
+	--[===[@non-debug@
+  do
+	  local L
+
+
+  L = {}
+  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("enUS", L)
+
+
+
+  L = {}
+  --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("itIT", L)
+
+
+
+  L = {}
+  --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("ptBR", L)
+
+
+  L = {}
+  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("frFR",L)
+
+
+
+
+  L = {}
+  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("deDE", L)
+
+
+  L = {}
+  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("koKR",L)
+
+  L = {}
+  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("esMX",L)
+
+  L = {}
+  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("ruRU",L)
+
+  L = {}
+  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("zhCN",L)
+
+  L = {}
+  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("esES",L)
+
+  L = {}
+  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+  PL:AddLocale("zhTW",L)
   end
-
-  local module = Prat:NewModule(PRAT_MODULE)
-
-  local PL = module.PL
-
-  --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
-    ["ChatLog"] = true,
-    ["A module to automaticaly enable chat and combat logging."] = true,
-    ["Toggle Chat Log"] = true,
-    ["Toggle chat log on and off."] = true,
-    ["Toggle Combat Log"] = true,
-    ["Toggle combat log on and off."] = true,
-    ["Combat Log: Enabled"] = true,
-    ["Combat log recorded to <WoW Installation>\\Logs\\WoWCombatLog.txt only upon logout."] = true,
-    ["Combat Log: Disabled"] = true,
-    ["Chat Log: Enabled"] = true,
-    ["Chat log recorded to <WoW Installation>\\Logs\\WoWChatLog.txt only upon logout."] = true,
-    ["Chat Log: Disabled"] = true,
-    ["quiet_name"] = "Suppress Feedback Messages",
-    ["quiet_desc"] = "Dont display any messages when this mod is enabled, or when it changes the log settings.",
-  })
-  --@end-debug@
-
-  -- These Localizations are auto-generated. To help with localization
-  -- please go to http://www.wowace.com/projects/prat-3-0/localization/
+  --@end-non-debug@]===]
 
 
-  --[===[@non-debug@
-do
-    local L
+	Prat:SetModuleDefaults(module.name, {
+		profile = {
+			on = false,
+			chat = false,
+			combat = false,
+			quiet = true,
+		}
+	})
+
+	Prat:SetModuleOptions(module.name, {
+		name = PL["ChatLog"],
+		desc = PL["A module to automaticaly enable chat and combat logging."],
+		type = "group",
+		args = {
+			chat = {
+				name = PL["Toggle Chat Log"],
+				desc = PL["Toggle chat log on and off."],
+				type = "toggle",
+				set = "SetChatLog",
+			},
+			combat = {
+				name = PL["Toggle Combat Log"],
+				desc = PL["Toggle combat log on and off."],
+				type = "toggle",
+				set = "SetCombatLog",
+			},
+			quiet = {
+				name = PL["quiet_name"],
+				desc = PL["quiet_desc"],
+				type = "toggle",
+			}
+		}
+	})
 
 
---@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
+	--[[------------------------------------------------
+		Module Event Functions
+	------------------------------------------------]] --
 
+	-- things to do when the module is enabled
+	function module:OnModuleEnable()
+		self:SetChatLog(nil, self.db.profile.chat)
+		self:SetCombatLog(nil, self.db.profile.combat)
+	end
 
+	--[[------------------------------------------------
+		Core Functions
+	------------------------------------------------]] --
 
---@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
+	function module:GetDescription()
+		return PL["A module to automaticaly enable chat and combat logging."]
+	end
 
+	-- enable or disable the chat log
+	function module:SetChatLog(_, val)
+		self.db.profile.chat = val
+		if self.db.profile.chat then
+			self:Print(PL["Chat Log: Enabled"])
+			self:Print(PL["Chat log recorded to <WoW Installation>\\Logs\\WoWChatLog.txt only upon logout."])
+			LoggingChat(true)
+		else
+			LoggingChat(false)
+			self:Print(PL["Chat Log: Disabled"])
+		end
+	end
 
+	-- enable or disable the combat log
+	function module:SetCombatLog(_, val)
+		self.db.profile.combat = val
+		if self.db.profile.combat then
+			self:Print(PL["Combat Log: Enabled"])
+			self:Print(PL["Combat log recorded to <WoW Installation>\\Logs\\WoWCombatLog.txt only upon logout."])
+			LoggingCombat(true)
+		end
+	end
 
---@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
+	function module:Print(str)
+		if self.db.profile.quiet then
+			return
+		end
 
+		Prat:Print(str)
+	end
 
---@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "frFR",L)
-
-
-
-
---@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
-
-
---@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "koKR",L)
-
---@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "esMX",L)
-
---@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "ruRU",L)
-
---@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "zhCN",L)
-
---@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "esES",L)
-
---@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-PL:AddLocale(PRAT_MODULE, "zhTW",L)
-end
---@end-non-debug@]===]
-
-
-
-
-  Prat:SetModuleDefaults(module.name, {
-    profile = {
-      on = false,
-      chat = false,
-      combat = false,
-      quiet = true,
-    }
-  })
-
-  Prat:SetModuleOptions(module.name, {
-    name = PL["ChatLog"],
-    desc = PL["A module to automaticaly enable chat and combat logging."],
-    type = "group",
-    args = {
-      chat = {
-        name = PL["Toggle Chat Log"],
-        desc = PL["Toggle chat log on and off."],
-        type = "toggle",
-        set = "SetChatLog",
-      },
-      combat = {
-        name = PL["Toggle Combat Log"],
-        desc = PL["Toggle combat log on and off."],
-        type = "toggle",
-        set = "SetCombatLog",
-      },
-      quiet = {
-        name = PL["quiet_name"],
-        desc = PL["quiet_desc"],
-        type = "toggle",
-      }
-    }
-  })
-
-
-  --[[------------------------------------------------
-      Module Event Functions
-  ------------------------------------------------]] --
-
-  -- things to do when the module is enabled
-  function module:OnModuleEnable()
-    self:SetChatLog(nil, self.db.profile.chat)
-    self:SetCombatLog(nil, self.db.profile.combat)
-  end
-
-  --[[------------------------------------------------
-      Core Functions
-  ------------------------------------------------]] --
-
-  function module:GetDescription()
-    return PL["A module to automaticaly enable chat and combat logging."]
-  end
-
-  -- enable or disable the chat log
-  function module:SetChatLog(info, val)
-    self.db.profile.chat = val
-    if self.db.profile.chat then
-      self:Print(PL["Chat Log: Enabled"])
-      self:Print(PL["Chat log recorded to <WoW Installation>\\Logs\\WoWChatLog.txt only upon logout."])
-      LoggingChat(true)
-    else
-      LoggingChat(false)
-      self:Print(PL["Chat Log: Disabled"])
-    end
-  end
-
-  -- enable or disable the combat log
-  function module:SetCombatLog(info, val)
-    self.db.profile.combat = val
-    if self.db.profile.combat then
-      self:Print(PL["Combat Log: Enabled"])
-      self:Print(PL["Combat log recorded to <WoW Installation>\\Logs\\WoWCombatLog.txt only upon logout."])
-      LoggingCombat(true)
-    end
-  end
-
-  function module:Print(str)
-    if self.db.profile.quiet then return end
-
-    Prat:Print(str)
-  end
-
-
-
-  return
+	return
 end) -- Prat:AddModuleToLoad

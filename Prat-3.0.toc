@@ -1,6 +1,8 @@
-## Interface: 110107, 110105
-## Interface-Vanilla: 11507
-## Interface-Cata: 40402
+## Interface: 110207, 120000, 120001
+## Interface-Classic: 11508
+## Interface-BCC: 20505
+## Interface-Wrath: 30405
+## Interface-Mists: 50503
 
 ## X-Curse-Project-ID: 7473
 ## X-WoWI-ID: 10783
@@ -52,4 +54,3 @@ fonts\includes.xml
 addon\includes.xml
 services\includes.xml
 modules\includes.xml
-modules\highcpu2.xml

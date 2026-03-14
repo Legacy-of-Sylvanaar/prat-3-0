@@ -24,175 +24,170 @@
 --
 -------------------------------------------------------------------------------
 Prat:AddModuleToLoad(function()
+	local module = Prat:NewModule("Fading")
+	local PL = module.PL
 
-  local Prat = Prat
+	--@debug@
+	PL:AddLocale("enUS", {
+		["module_name"] = "Fading",
+		["module_desc"] = "Chat window text fading options.",
+		["textfade_name"] = "Enable Fading",
+		["textfade_desc"] = "Toggle enabling text fading for each chat window.",
+		["duration_name"] = "Set Fading Delay (Seconds)",
+		["duration_desc"] = "Set the number of seconds to wait before before fading text of chat windows.",
+	})
+	--@end-debug@
 
-  local PRAT_MODULE = Prat:RequestModuleName("Fading")
-
-  if PRAT_MODULE == nil then
-    return
-  end
-
-  local mod = Prat:NewModule(PRAT_MODULE)
-
-  local PL = mod.PL
-
-  --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
-    ["module_name"] = "Fading",
-    ["module_desc"] = "Chat window text fading options.",
-    ["textfade_name"] = "Enable Fading",
-    ["textfade_desc"] = "Toggle enabling text fading for each chat window.",
-    ["duration_name"] = "Set Fading Delay (Seconds)",
-    ["duration_desc"] = "Set the number of seconds to wait before before fading text of chat windows.",
-  })
-  --@end-debug@
-
-  -- These Localizations are auto-generated. To help with localization
-  -- please go to http://www.wowace.com/projects/prat-3-0/localization/
-  --[===[@non-debug@
-  do
-      local L
-
-  
---@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-
-    PL:AddLocale(PRAT_MODULE, "enUS",L)
+	-- These Localizations are auto-generated. To help with localization
+	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
+	--[===[@non-debug@
+	do
+		local L
 
 
-  
---@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
+  L = {}
+  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
 
-    PL:AddLocale(PRAT_MODULE, "frFR",L)
-
-
-  
---@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-
-    PL:AddLocale(PRAT_MODULE, "deDE",L)
-
-
-  
---@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-
-    PL:AddLocale(PRAT_MODULE, "koKR",L)
-
-
-  
---@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-
-    PL:AddLocale(PRAT_MODULE, "esMX",L)
-
-
-  
---@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-
-    PL:AddLocale(PRAT_MODULE, "ruRU",L)
-
-
-  
---@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-
-    PL:AddLocale(PRAT_MODULE, "zhCN",L)
-
-
-  
---@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-
-    PL:AddLocale(PRAT_MODULE, "esES",L)
-
-
-  
---@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-
-    PL:AddLocale(PRAT_MODULE, "zhTW",L)
-
-
-  end
-  --@end-non-debug@]===]
+	  PL:AddLocale("enUS",L)
 
 
 
-  -- define the default db values
-  Prat:SetModuleDefaults(mod.name, {
-    profile = {
-      on = true,
-      textfade = { ["*"] = true },
-      duration = 120
-    }
-  })
+  L = {}
+  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
 
-  Prat:SetModuleOptions(mod.name, {
-    name = PL["module_name"],
-    desc = PL["module_desc"],
-    type = "group",
-    args = {
-      textfade = {
-        name = PL["textfade_name"],
-        desc = PL["textfade_desc"],
-        type = "multiselect",
-        values = Prat.HookedFrameList,
-        get = "GetSubValue",
-        set = "SetSubValue"
-      },
-      duration = {
-        name = PL["duration_name"],
-        desc = PL["duration_desc"],
-        type = "range",
-        order = 190,
-        min = 1,
-        max = 240,
-        step = 1,
-      },
-    }
-  })
+	  PL:AddLocale("frFR",L)
 
 
-  --[[------------------------------------------------
-      Module Event Functions
-  ------------------------------------------------]] --
 
-  -- things to do when the module is enabled
-  function mod:OnModuleEnable()
-    self:OnValueChanged()
-    Prat.RegisterChatEvent(self, Prat.Events.FRAMES_UPDATED)
-  end
+  L = {}
+  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
 
-  -- things to do when the module is disabled
-  function mod:OnModuleDisable()
-    for k, v in pairs(Prat.HookedFrames) do
-      self:Fade(v, true)
-    end
-  end
+	  PL:AddLocale("deDE",L)
 
 
-  function mod:Prat_FramesUpdated(_, name, chatFrame)
-    self:Fade(chatFrame, self.db.profile.textfade[name])
-  end
 
-  function mod:OnValueChanged(...)
-    for k, v in pairs(Prat.HookedFrames) do
-      self:Fade(v, self.db.profile.textfade[k])
-    end
-  end
+  L = {}
+  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
 
-  mod.OnSubValueChanged = mod.OnValueChanged
+	  PL:AddLocale("koKR",L)
 
 
-  --[[------------------------------------------------
-      Core Functions
-  ------------------------------------------------]] --
 
-  -- enable/disable fading
-  function mod:Fade(cf, textfade)
-    if textfade then
-      cf:SetFading(true)
-      cf:SetTimeVisible(mod.db.profile.duration)
-    else
-      cf:SetFading(false)
-    end
-  end
+  L = {}
+  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
+
+	  PL:AddLocale("esMX",L)
 
 
-  return
+
+  L = {}
+  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
+
+	  PL:AddLocale("ruRU",L)
+
+
+
+  L = {}
+  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
+
+	  PL:AddLocale("zhCN",L)
+
+
+
+  L = {}
+  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
+
+	  PL:AddLocale("esES",L)
+
+
+
+  L = {}
+  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
+
+	  PL:AddLocale("zhTW",L)
+
+
+	end
+	--@end-non-debug@]===]
+
+	-- define the default db values
+	Prat:SetModuleDefaults(module.name, {
+		profile = {
+			on = true,
+			textfade = { ["*"] = true },
+			duration = 120
+		}
+	})
+
+	Prat:SetModuleOptions(module.name, {
+		name = PL["module_name"],
+		desc = PL["module_desc"],
+		type = "group",
+		args = {
+			textfade = {
+				name = PL["textfade_name"],
+				desc = PL["textfade_desc"],
+				type = "multiselect",
+				values = Prat.HookedFrameList,
+				get = "GetSubValue",
+				set = "SetSubValue"
+			},
+			duration = {
+				name = PL["duration_name"],
+				desc = PL["duration_desc"],
+				type = "range",
+				order = 190,
+				min = 1,
+				max = 240,
+				step = 1,
+			},
+		}
+	})
+
+
+	--[[------------------------------------------------
+		Module Event Functions
+	------------------------------------------------]] --
+
+	-- things to do when the module is enabled
+	function module:OnModuleEnable()
+		self:OnValueChanged()
+		Prat.RegisterChatEvent(self, Prat.Events.FRAMES_UPDATED)
+	end
+
+	-- things to do when the module is disabled
+	function module:OnModuleDisable()
+		for _, v in pairs(Prat.HookedFrames) do
+			self:Fade(v, true)
+		end
+	end
+
+	function module:Prat_FramesUpdated(_, name, chatFrame)
+		self:Fade(chatFrame, self.db.profile.textfade[name])
+	end
+
+	function module:OnValueChanged()
+		for k, v in pairs(Prat.HookedFrames) do
+			self:Fade(v, self.db.profile.textfade[k])
+		end
+	end
+
+	module.OnSubValueChanged = module.OnValueChanged
+
+
+	--[[------------------------------------------------
+		Core Functions
+	------------------------------------------------]] --
+
+	-- enable/disable fading
+	function module:Fade(cf, textfade)
+		if textfade then
+			cf:SetFading(true)
+			cf:SetTimeVisible(module.db.profile.duration)
+		else
+			cf:SetFading(false)
+		end
+	end
+
+	return
 end) -- Prat:AddModuleToLoad

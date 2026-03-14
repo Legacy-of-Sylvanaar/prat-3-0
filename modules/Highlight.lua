@@ -25,143 +25,141 @@
 -------------------------------------------------------------------------------
 
 Prat:AddModuleToLoad(function()
-  local function dbg(...) end
+	local module = Prat:NewModule("Highlight")
+	local PL = module.PL
 
-  --@debug@
-  function dbg(...) Prat:PrintLiteral(...) end
+	Prat:SetModuleDefaults(module.name, {
+		profile = {
+			on = true,
+			player = true,
+			guild = true
+		}
+	})
 
-  --@end-debug@
+	--@debug@
+	PL:AddLocale("enUS", {
+		["module_name"] = "Highlight",
+		["module_desc"] = "Highlight your own name, and various other text",
+		["player_name"] = "Highlight Self",
+		["player_desc"] = "Highlight you own name in a special color",
+		["guild_name"] = "Highlight Guilds",
+		["guild_desc"] = "Highlight things which looks like guild names"
+	})
+	--@end-debug@
 
-  local PRAT_MODULE = Prat:RequestModuleName("Highlight")
+	-- These Localizations are auto-generated. To help with localization
+	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
 
-  if PRAT_MODULE == nil then
-    return
+
+	--[===[@non-debug@
+  do
+	  local L
+
+
+  L = {}
+  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("enUS", L)
+
+
+
+  L = {}
+  --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("itIT", L)
+
+
+
+  L = {}
+  --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("ptBR", L)
+
+
+
+  L = {}
+  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("frFR", L)
+
+
+
+  L = {}
+  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("deDE", L)
+
+
+
+  L = {}
+  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("koKR",  L)
+
+
+  L = {}
+  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("esMX",  L)
+
+
+  L = {}
+  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("ruRU",  L)
+
+
+  L = {}
+  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("zhCN",  L)
+
+
+  L = {}
+  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("esES",  L)
+
+
+  L = {}
+  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
+  PL:AddLocale("zhTW",  L)
   end
+  --@end-non-debug@]===]
 
-  local module = Prat:NewModule(PRAT_MODULE)
+	local toggleOption = {
+		name = function(info)
+			return PL[info[#info] .. "_name"]
+		end,
+		desc = function(info)
+			return PL[info[#info] .. "_desc"]
+		end,
+		type = "toggle",
+	}
 
-  -- define localized strings
-  local PL = module.PL
+	Prat:SetModuleOptions(module.name, {
+		name = PL.module_name,
+		desc = PL.module_desc,
+		type = "group",
+		args = {
+			player = toggleOption,
+			guild = toggleOption
+		}
+	})
 
+	local CLR = Prat.CLR
+	local function guildBracket(text)
+		return CLR:Colorize("ffffff", text)
+	end
 
-  Prat:SetModuleDefaults(module.name, {
-    profile = {
-      on = true,
-      player = true,
-      guild = true
-    }
-  })
+	local function guildText(text)
+		return CLR:Colorize("00ff00", text)
+	end
 
-  --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
-    ["module_name"] = "Highlight",
-    ["module_desc"] = "Highlight your own name, and various other text",
-    ["player_name"] = "Highlight Self",
-    ["player_desc"] = "Highlight you own name in a special color",
-    ["guild_name"] = "Highlight Guilds",
-    ["guild_desc"] = "Highlight things which looks like guild names"
-  })
-  --@end-debug@
+	local function highlightPlayer(text)
+		if module.db.profile.player then
+			return Prat:RegisterMatch(CLR:Colorize("00ff00", text))
+		end
+	end
 
-  -- These Localizations are auto-generated. To help with localization
-  -- please go to http://www.wowace.com/projects/prat-3-0/localization/
+	local function highlightGuild(text)
+		if module.db.profile.guild then
+			return Prat:RegisterMatch(guildBracket("<") .. guildText(text) .. guildBracket(">"))
+		end
+	end
 
-
-  --[===[@non-debug@
-do
-    local L
-
-
---@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "enUS", L)
-
-
-
---@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "itIT", L)
-
-
-
---@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "ptBR", L)
-
-
-
---@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "frFR", L)
-
-
-
---@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "deDE", L)
-
-
-
---@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "koKR",  L)
-
-
---@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "esMX",  L)
-
-
---@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "ruRU",  L)
-
-
---@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "zhCN",  L)
-
-
---@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "esES",  L)
-
-
---@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Highlight")@
-PL:AddLocale(PRAT_MODULE, "zhTW",  L)
-end
---@end-non-debug@]===]
-
-  local toggleOption = {
-    name = function(info) return PL[info[#info] .. "_name"] end,
-    desc = function(info) return PL[info[#info] .. "_desc"] end,
-    type = "toggle",
-  }
-
-  Prat:SetModuleOptions(module.name, {
-    name = PL.module_name,
-    desc = PL.module_desc,
-    type = "group",
-    args = {
-      player = toggleOption,
-      guild = toggleOption
-    }
-  })
-
-  local CLR = Prat.CLR
-  local function guildBracket(text)
-    return CLR:Colorize("ffffff", text)
-  end
-
-  local function guildText(text)
-    return CLR:Colorize("00ff00", text)
-  end
-
-
-  local function highlightPlayer(text)
-    if module.db.profile.player then
-      return Prat:RegisterMatch(CLR:Colorize("00ff00", text))
-    end
-  end
-
-  local function highlightGuild(text)
-    if module.db.profile.guild then
-      return Prat:RegisterMatch(guildBracket("<") .. guildText(text) .. guildBracket(">"))
-    end
-  end
-
-  Prat:SetModulePatterns(module, {
-    { pattern = Prat.GetNamePattern(UnitName("player")), matchfunc = highlightPlayer, priority = 47 },
-    { pattern = "<(..-)>", matchfunc = highlightGuild, priority = 49 },
-  })
+	Prat:SetModulePatterns(module, {
+		{ pattern = Prat.GetNamePattern(UnitName("player")), matchfunc = highlightPlayer, priority = 47 },
+		{ pattern = "<(..-)>", matchfunc = highlightGuild, priority = 49 },
+	})
 end)

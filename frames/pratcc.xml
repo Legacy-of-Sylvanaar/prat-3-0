@@ -1,70 +1,71 @@
-<!-- edited with XMLSpy v2007 (http://www.altova.com) by jon (n/a) -->
-<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\..\FrameXML\UI.xsd">
-  <Frame name="PratCCFrame" parent="UIParent" movable="true" enableMouse="true" inherits="DialogBoxFrame">
-    <Size>
-      <AbsDimension x="500" y="400"/>
-    </Size>
-    <Layers>
-      <Layer level="ARTWORK">
-        <FontString name="PratCCText" inherits="GameFontHighlight">
-          <Anchors>
-            <Anchor point="TOPLEFT">
-              <Offset>
-                <AbsDimension x="5" y="-5"/>
-              </Offset>
-            </Anchor>
-          </Anchors>
-        </FontString>
-      </Layer>
-    </Layers>
-    <Frames>
-      <ScrollFrame name="PratCCFrameScroll" inherits="UIPanelScrollFrameTemplate" toplevel="true">
-        <Anchors>
-          <Anchor point="TOP">
-            <Offset>
-              <AbsDimension x="-10" y="-30"/>
-            </Offset>
-          </Anchor>
-			<Anchor point="BOTTOM" relativeTo="PratCCFrameButton" relativePoint="TOP">
-				<Offset>
-				<AbsDimension x="0" y="5"/>
-				</Offset>
-			</Anchor>          
-        </Anchors>
-        <Size>
-          <AbsDimension x="455" y="330"/>
-        </Size>
-        <ScrollChild>
-          <EditBox name="PratCCFrameScrollText" letters="999999" multiLine="true" autoFocus="true" enableMouse="true">
-            <Size>
-              <AbsDimension x="450" y="344"/>
-            </Size>
-            <FontString inherits="ChatFontNormal"/>
-          </EditBox>
-        </ScrollChild>
-      </ScrollFrame>
-    </Frames>
-    <Scripts>
-    <OnLoad>
-      if Mixin and BackdropTemplateMixin then
-        Mixin(self,BackdropTemplateMixin)
-      end
-      self:SetBackdrop({
-        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tileSize = 16,
-        edgeSize = 16,
-        insets = { left = 5, right = 5, top = 5, bottom = 5 }
-      })
-    </OnLoad>
-    <OnMouseDown>
-      if (button == "LeftButton") then
-         self:StartMoving()
-      end
-    </OnMouseDown>
-    <OnMouseUp>
-        self:StopMovingOrSizing()
-    </OnMouseUp>
-    </Scripts>
-  </Frame>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Frame name="PratCCFrame" parent="UIParent" movable="true" enableMouse="true" inherits="DialogBoxFrame">
+		<Size>
+			<AbsDimension x="500" y="400"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="PratCCText" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="5" y="-5"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<ScrollFrame name="PratCCFrameScroll" inherits="UIPanelScrollFrameTemplate" toplevel="true">
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="-10" y="-30"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="BOTTOM" relativeTo="PratCCFrameButton" relativePoint="TOP">
+						<Offset>
+							<AbsDimension x="0" y="5"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="455" y="330"/>
+				</Size>
+				<ScrollChild>
+					<EditBox name="PratCCFrameScrollText" letters="999999" multiLine="true" autoFocus="true"
+							 enableMouse="true">
+						<Size>
+							<AbsDimension x="450" y="344"/>
+						</Size>
+						<FontString inherits="ChatFontNormal"/>
+					</EditBox>
+				</ScrollChild>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				if Mixin and BackdropTemplateMixin then
+				Mixin(self,BackdropTemplateMixin)
+				end
+				self:SetBackdrop({
+				bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+				edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+				tileSize = 16,
+				edgeSize = 16,
+				insets = { left = 5, right = 5, top = 5, bottom = 5 }
+				})
+			</OnLoad>
+			<OnMouseDown>
+				if (button == "LeftButton") then
+				self:StartMoving()
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing()
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
 </Ui>

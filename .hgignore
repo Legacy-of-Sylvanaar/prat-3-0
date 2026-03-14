@@ -1,7 +1,0 @@
-glob:.idea/workspace.xml
-glob:.idea/vcs.xml
-glob:.idea/misc.xml
-glob:.idea/copyright/*
-syntax: glob
-.idea
-Prat.iml

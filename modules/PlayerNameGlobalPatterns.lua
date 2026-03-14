@@ -17,97 +17,101 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
 -------------------------------------------------------------------------------
 
-
-
-
-
 Prat:AddModuleExtension(function()
-  local module = Prat.Addon:GetModule("PlayerNames", true)
+	local module = Prat:GetModule("PlayerNames")
+	if not module then
+		return
+	end
+	LibStub("AceTimer-3.0"):Embed(module)
 
-  if not module then return end
+	local PL = module.PL
 
-  LibStub("AceTimer-3.0"):Embed(module)
+	module.pluginopts["GlobalPatterns"] = {
+		coloreverywhere = {
+			type = "toggle",
+			name = PL["coloreverywhere_name"],
+			desc = PL["coloreverywhere_desc"],
+			order = 220
+		}
+	}
 
-  local PL = module.PL
+	Prat:RegisterPattern({
+		pattern = "|c.-|H.-:.-|h.-|h|r",
+		matchfunc = function(link)
+			return Prat:RegisterMatch(link)
+		end,
+		type = "FRAME",
+		priority = 44
+	}, module.name)
 
-  module.pluginopts["GlobalPatterns"] = {
-    coloreverywhere = {
-      type = "toggle",
-      name = PL["coloreverywhere_name"],
-      desc = PL["coloreverywhere_desc"],
-      order = 220
-    }
-  }
+	Prat:RegisterPattern({
+		pattern = "|H.-:.-|h.-|h",
+		matchfunc = function(link)
+			return Prat:RegisterMatch(link)
+		end,
+		type = "FRAME",
+		priority = 45
+	}, module.name)
 
-  Prat.RegisterPattern({
-    pattern = "|c.-|H.-:.-|h.-|h|r",
-    matchfunc = function(link) return Prat:RegisterMatch(link) end,
-    type = "FRAME",
-    priority = 44
-  }, module.name)
+	Prat:RegisterPattern({
+		pattern = "|K.-|k",
+		matchfunc = function(link)
+			return Prat:RegisterMatch(link)
+		end,
+		type = "FRAME",
+		priority = 45
+	}, module.name)
 
-  Prat.RegisterPattern({
-    pattern = "|H.-:.-|h.-|h",
-    matchfunc = function(link) return Prat:RegisterMatch(link) end,
-    type = "FRAME",
-    priority = 45
-  }, module.name)
+	local ColorPlayer
+	do
+		local function Player(name, class)
+			return Prat.CLR:Player(name, name, class)
+		end
 
-  Prat.RegisterPattern({
-    pattern = "|K.-|k",
-    matchfunc = function(link) return Prat:RegisterMatch(link) end,
-    type = "FRAME",
-    priority = 45
-  }, module.name)
+		ColorPlayer = function(name)
+			return Prat:RegisterMatch(Player(name, module:GetData(name)))
+		end
+	end
 
-  local ColorPlayer
-  do
-    local function Player(name, class)
-      return Prat.CLR:Player(name, name, class)
-    end
+	local function newPattern(name)
+		return { pattern = Prat.GetNamePattern(name), matchfunc = ColorPlayer, priority = 48 }
+	end
 
-    ColorPlayer = function(name)
-      return Prat:RegisterMatch(Player(name, module:GetData(name)))
-    end
-  end
+	do
+		local namePatterns = {}
 
-  local function newPattern(name)
-    return { pattern = Prat.GetNamePattern(name), matchfunc = ColorPlayer, priority = 48 }
-  end
+		function module:OnPlayerDataChangedThrottled(Name)
+			self.timerPlayerData = nil
 
-  do
-    local namePatterns = {}
+			if self.db.profile.coloreverywhere and Name then
+				Name = Name:match("(.-)%-.+") or Name
+				Name = Name:lower()
+				if not namePatterns[Name] and not Prat.PlayerNameBlackList[Name] and Name:len() > 1 then
+					namePatterns[Name] = Prat:RegisterPattern(newPattern(Name), self.name)
+				end
+			else
+				for k, v in pairs(namePatterns) do
+					Prat:UnregisterPattern(v)
+					namePatterns[k] = nil
+				end
+			end
+		end
 
-    function module:OnPlayerDataChangedThrottled(Name)
-      self.timerPlayerData = nil
+		function module:OnPlayerDataChanged(Name)
+			if not self.db.profile.coloreverywhere then
+				return
+			end
 
-      if self.db.profile.coloreverywhere and Name then
-        Name = Name:match("(.-)%-.+") or Name
-        Name = Name:lower()
-        if not namePatterns[Name] and not Prat.PlayerNameBlackList[Name] and Name:len() > 1 then
-          namePatterns[Name] = Prat.RegisterPattern(newPattern(Name), self.name)
-        end
-      else
-        for k, v in pairs(namePatterns) do
-          Prat.UnregisterPattern(v)
-          namePatterns[k] = nil
-        end
-      end
-    end
+			self:OnPlayerDataChangedThrottled(Name)
+		end
+	end
 
-    function module:OnPlayerDataChanged(Name)
-      if not self.db.profile.coloreverywhere then return end
-
-      self:OnPlayerDataChangedThrottled(Name)
-    end
-  end
-
-  return
+	return
 end) -- Prat:AddModuleToLoad

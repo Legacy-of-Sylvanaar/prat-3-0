@@ -17,181 +17,144 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program; if not, write to:
 --
--- Free Software Foundation, Inc., 
--- 51 Franklin Street, Fifth Floor, 
+-- Free Software Foundation, Inc.,
+-- 51 Franklin Street, Fifth Floor,
 -- Boston, MA  02110-1301, USA.
 --
 --
 -------------------------------------------------------------------------------
 
-
-
-
+local ChatFrame_SendTell = _G.ChatFrame_SendTell or _G.ChatFrameUtil.SendTell
+local ChatEdit_UpdateHeader = _G.ChatEdit_UpdateHeader or _G.ChatFrameEditBoxMixin.UpdateHeader
 
 Prat:AddModuleToLoad(function()
+	local module = Prat:NewModule("TellTarget", "AceHook-3.0")
+	local PL = module.PL
 
-  local PRAT_MODULE = Prat:RequestModuleName("TellTarget")
+	--@debug@
+	PL:AddLocale("enUS", {
+		["TellTarget"] = true,
+		["Adds telltarget slash command (/tt)."] = true,
+		["Target does not exist."] = true,
+		["Target is not a player."] = true,
+		["No target selected."] = true,
+		["NoTarget"] = true,
+		["/tt"] = true,
+	})
+	--@end-debug@
 
-  if PRAT_MODULE == nil then
-    return
-  end
+	-- These Localizations are auto-generated. To help with localization
+	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
+	--[===[@non-debug@
+	do
+		local L
 
-  local module = Prat:NewModule(PRAT_MODULE, "AceHook-3.0")
+		L = {}
+--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		PL:AddLocale("enUS",L)
 
-  local PL = module.PL
+		L = {}
+--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		PL:AddLocale("frFR",L)
 
-  --@debug@
-  PL:AddLocale(PRAT_MODULE, "enUS", {
-    ["TellTarget"] = true,
-    ["Adds telltarget slash command (/tt)."] = true,
-    ["Target does not exist."] = true,
-    ["Target is not a player."] = true,
-    ["No target selected."] = true,
-    ["NoTarget"] = true,
-    ["/tt"] = true,
-  })
-  --@end-debug@
+		L = {}
+--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		PL:AddLocale("deDE",L)
 
-  -- These Localizations are auto-generated. To help with localization
-  -- please go to http://www.wowace.com/projects/prat-3-0/localization/
-  --[===[@non-debug@
- do
-     local L
+		L = {}
+--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		PL:AddLocale("koKR",L)
 
- 
---@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		L = {}
+--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		PL:AddLocale("esMX",L)
 
-   PL:AddLocale(PRAT_MODULE, "enUS",L)
+		L = {}
+--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		PL:AddLocale("ruRU",L)
 
+		L = {}
+--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		PL:AddLocale("zhCN",L)
 
- 
---@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		L = {}
+--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		PL:AddLocale("esES",L)
 
-   PL:AddLocale(PRAT_MODULE, "frFR",L)
+		L = {}
+--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		PL:AddLocale("zhTW",L)
+	end
+	--@end-non-debug@]===]
 
+	Prat:SetModuleDefaults(module.name, {
+		profile = {
+			on = true,
+		}
+	})
 
- 
---@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+	Prat:SetModuleOptions(module.name, {
+		name = PL["TellTarget"],
+		desc = PL["Adds telltarget slash command (/tt)."],
+		type = "group",
+		args = {
+			info = {
+				name = PL["Adds telltarget slash command (/tt)."],
+				type = "description",
+			}
+		}
+	})
 
-   PL:AddLocale(PRAT_MODULE, "deDE",L)
+	function module:OnModuleEnable()
+		self:SecureHookScript(_G.ChatFrame1EditBox, "OnTextChanged")
+	end
 
+	function module:OnModuleDisable()
+		self:UnhookAll()
+	end
 
- 
---@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+	--[[------------------------------------------------
+		Core Functions
+	------------------------------------------------]] --
+	function module:GetDescription()
+		return PL["Adds telltarget slash command (/tt)."]
+	end
 
-   PL:AddLocale(PRAT_MODULE, "koKR",L)
+	function module:OnTextChanged(editBox)
+		local command, msg = editBox:GetText():match("^(/%S+)%s(.*)$")
+		if command == "/tt" or command == PL["/tt"] then
+			self:SendTellToTarget(editBox.chatFrame, msg, editBox)
+		end
+	end
 
+	function module:SendTellToTarget(frame, text, editBox)
+		if frame == nil then
+			frame = DEFAULT_CHAT_FRAME
+		end
 
- 
---@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
+		local unitname, realm, fullname
+		if UnitIsPlayer("target") then
+			unitname, realm = UnitName("target")
+			if unitname then
+				if realm and UnitRealmRelationship("target") ~= LE_REALM_RELATION_SAME then
+					fullname = unitname .. "-" .. realm
+				else
+					fullname = unitname
+				end
+			end
+		end
 
-   PL:AddLocale(PRAT_MODULE, "esMX",L)
+		local target = fullname and fullname:gsub(" ", "") or PL["NoTarget"]
 
+		if editBox then
+			editBox:SetAttribute("chatType", "WHISPER")
+			editBox:SetAttribute("tellTarget", target)
+			editBox:SetText(text)
+			ChatEdit_UpdateHeader(editBox)
+		else
+			ChatFrame_SendTell(target, frame)
+		end
+	end
 
- 
---@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-
-   PL:AddLocale(PRAT_MODULE, "ruRU",L)
-
-
- 
---@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-
-   PL:AddLocale(PRAT_MODULE, "zhCN",L)
-
-
- 
---@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-
-   PL:AddLocale(PRAT_MODULE, "esES",L)
-
-
- 
---@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-
-   PL:AddLocale(PRAT_MODULE, "zhTW",L)
-
-
- end
- --@end-non-debug@]===]
-
-  -- create prat module
-
-  Prat:SetModuleDefaults(module.name, {
-    profile = {
-      on = true,
-    }
-  })
-
-  Prat:SetModuleOptions(module.name, {
-    name = PL["TellTarget"],
-    desc = PL["Adds telltarget slash command (/tt)."],
-    type = "group",
-    args = {
-      info = {
-        name = PL["Adds telltarget slash command (/tt)."],
-        type = "description",
-      }
-    }
-  })
-
-  --[[------------------------------------------------
-      Module Event Functions
-  ------------------------------------------------]] --
-  function module:OnModuleEnable()
-    self:HookScript(ChatFrame1EditBox, "OnTextChanged")
-  end
-
-  function module:OnModuleDisable()
-    self:UnhookAll()
-  end
-
-  --[[------------------------------------------------
-      Core Functions
-  ------------------------------------------------]] --
-
-  function module:GetDescription()
-    return PL["Adds telltarget slash command (/tt)."]
-  end
-
-  function module:OnTextChanged(editBox, ...)
-    local command, msg = editBox:GetText():match("^(/%S+)%s(.*)$")
-    if command == "/tt" or command == PL["/tt"] then
-      self:SendTellToTarget(editBox.chatFrame, msg, editBox)
-    end
-    self.hooks[editBox].OnTextChanged(editBox, ...)
-  end
-
-  function module:SendTellToTarget(frame, text, editBox)
-    if frame == nil then frame = DEFAULT_CHAT_FRAME end
-
-    local unitname, realm, fullname
-    if UnitIsPlayer("target") then
-      unitname, realm = UnitName("target")
-      if unitname then
-        if realm and UnitRealmRelationship("target") ~= LE_REALM_RELATION_SAME then
-          fullname = unitname .. "-" .. realm
-        else
-          fullname = unitname
-        end
-      end
-    end
-
-    local target = fullname and fullname:gsub(" ", "") or PL["NoTarget"]
-
-    if editBox then
-      editBox:SetAttribute("chatType", "WHISPER");
-      editBox:SetAttribute("tellTarget", target);
-      editBox:SetText(text)
-      ChatEdit_UpdateHeader(editBox);
-    else
-      ChatFrame_SendTell(target, frame)
-    end
-  end
-
-  local function TellTarget(msg)
-    module:SendTellToTarget(SELECTED_CHAT_FRAME, msg)
-  end
-
-  return
-end) -- Prat:AddModuleToLoad
+	return
+end)

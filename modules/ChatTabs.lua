@@ -25,27 +25,11 @@
 -------------------------------------------------------------------------------
 
 Prat:AddModuleToLoad(function()
-
-	local PRAT_MODULE = Prat:RequestModuleName("ChatTabs")
-
-	local dbg = function()
-	end
-	--@debug@
-	dbg = function(...)
-		Prat:PrintLiteral(...)
-	end
-	--@end-debug@
-
-	if PRAT_MODULE == nil then
-		return
-	end
-
-	local module = Prat:NewModule(PRAT_MODULE, "AceHook-3.0")
-
+	local module = Prat:NewModule("ChatTabs", "AceHook-3.0")
 	local PL = module.PL
 
 	--@debug@
-	PL:AddLocale(PRAT_MODULE, "enUS", {
+	PL:AddLocale("enUS", {
 		["Tabs"] = true,
 		["Chat window tab options."] = true,
 		["Set Display Mode"] = true,
@@ -76,8 +60,6 @@ Prat:AddModuleToLoad(function()
 		["foreveralert_desc"] = "With this turned off the highlight/flash will persist until the timer elapses",
 		["Chat Alert Timeout"] = true,
 		["How long any highlights/flashes should last"] = true,
-		["Tab Font Size"] = true,
-		["Set the font size for chat tab names."] = true,
 	})
 	--@end-debug@
 
@@ -88,51 +70,62 @@ Prat:AddModuleToLoad(function()
 	--[===[@non-debug@
   do
 	  local L
-  
-  
-  --@localization(locale="enUS", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "enUS", L)
-  
-  
-  
-  --@localization(locale="itIT", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "itIT", L)
-  
-  
-  
-  --@localization(locale="ptBR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "ptBR", L)
-  
-  
-  --@localization(locale="frFR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "frFR",L)
-  
-  
-  
-  
-  --@localization(locale="deDE", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "deDE", L)
-  
-  
-  --@localization(locale="koKR", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "koKR",L)
-  
-  --@localization(locale="esMX", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "esMX",L)
-  
-  --@localization(locale="ruRU", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "ruRU",L)
-  
-  --@localization(locale="zhCN", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "zhCN",L)
-  
-  --@localization(locale="esES", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "esES",L)
-  
-  --@localization(locale="zhTW", format="lua_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
-  PL:AddLocale(PRAT_MODULE, "zhTW",L)
+
+  L = {}
+  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("enUS", L)
+
+
+
+  L = {}
+  --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("itIT", L)
+
+
+
+  L = {}
+  --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("ptBR", L)
+
+
+  L = {}
+  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("frFR",L)
+
+
+
+
+  L = {}
+  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("deDE", L)
+
+
+  L = {}
+  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("koKR",L)
+
+  L = {}
+  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("esMX",L)
+
+  L = {}
+  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("ruRU",L)
+
+  L = {}
+  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("zhCN",L)
+
+  L = {}
+  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("esES",L)
+
+  L = {}
+  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatTabs")@
+  PL:AddLocale("zhTW",L)
   end
   --@end-non-debug@]===]
+
 	module.HighlightTabsPlugin = {}
 
 	Prat:SetModuleDefaults(module.name, {
@@ -291,14 +284,14 @@ Prat:AddModuleToLoad(function()
 		self:RemoveHooks()
 	end
 
-	function module:Prat_FramesUpdated(info, name, chatFrame, ...)
+	function module:Prat_FramesUpdated()
 		self:UpdateHighlightTabsConfig()
-		for k, v in pairs(Prat.Frames) do
+		for _, v in pairs(Prat.Frames) do
 			self:ShowHideTabTextures(v)
 		end
 	end
 
-	function module:Prat_FramesRemoved(info, name, chatFrame)
+	function module:Prat_FramesRemoved()
 		self:UpdateHighlightTabsConfig()
 	end
 	--[[------------------------------------------------
@@ -408,7 +401,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:RemoveHooks()
-		for k, v in pairs(Prat.Frames) do
+		for k, _ in pairs(Prat.Frames) do
 			local cftab = _G[k .. "Tab"]
 			cftab:SetScript("OnShow", function()
 				return
@@ -421,16 +414,11 @@ Prat:AddModuleToLoad(function()
 		self:UnhookAll()
 	end
 
-	function module:OnValueChanged(info, b)
-		--	if info[#info]:find("alpha") then
-		--
-		--		return
-		--	end
-
+	function module:OnValueChanged()
 		self:UpdateAllTabs()
 	end
 
-	function module:OnSubValueChanged(info, b)
+	function module:OnSubValueChanged()
 		self:UpdateAllTabs()
 	end
 
@@ -454,7 +442,7 @@ Prat:AddModuleToLoad(function()
 	function module:ShowHideTabTextures(tab)
 		local tabButton = _G[tab:GetName() .. "Tab"]
 		local alpha = self.db.profile.showtabtextures and 1 or 0
-		if not Prat.IsClassic then
+		if Prat.IsRetail then
 			for _, field in ipairs(ChatTabTexturesRetail) do
 				tabButton[field]:SetShown(self.db.profile.showtabtextures)
 			end
@@ -486,7 +474,7 @@ Prat:AddModuleToLoad(function()
 		self:UpdateTabFontSizes()
 	end
 
-	function module:OnTabShow(tab, ...)
+	function module:OnTabShow(tab)
 		if needToHook[tab] then
 			self:HookScript(tab, "OnHide", "OnTabHide")
 			needToHook[tab] = nil
@@ -497,10 +485,7 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:OnTabHide(tab, ...)
-		local p = self.db.profile
-		local i = tab:GetID()
-
+	function module:OnTabHide(tab)
 		if self.db.profile.displaymode["ChatFrame" .. tab:GetID()] == true then
 			tab:Show()
 		end
@@ -601,11 +586,10 @@ Prat:AddModuleToLoad(function()
 			else
 				local tabButton = _G[chatFrame:GetName() .. "Tab"]
 				if not self:IsHooked(tabButton, "OnClick") then
-					self:HookScript(tabButton, "OnClick", function(tabButton)
-						local frameName = "ChatFrame" .. tabButton:GetID()
+					self:HookScript(tabButton, "OnClick", function(tabButtonSelf)
+						local frameName = "ChatFrame" .. tabButtonSelf:GetID()
 						if self.chatAlertCleanupActions[frameName] then
-							local actions = self.chatAlertCleanupActions[frameName]
-							for _, a in ipairs(actions) do
+							for _, a in ipairs(self.chatAlertCleanupActions[frameName]) do
 								a()
 							end
 							self.chatAlertCleanupActions[frameName] = nil
@@ -691,7 +675,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:UpdateTabFontSizes()
-		for k, v in pairs(Prat.Frames) do
+		for k, _ in pairs(Prat.Frames) do
 			local tabButton = _G[k .. "Tab"]
 			if tabButton and tabButton:GetFontString() then
 				local fontString = tabButton:GetFontString()

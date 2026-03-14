@@ -1,33 +1,39 @@
---[[ BEGIN STANDARD HEADER ]] --
+local _, private = ...
 
--- Imports
-local _G = _G
-local LibStub = LibStub
+local defaultColor = CreateColor(0.63, 0.63, 0.63)
 
--- Isolate the environment
-setfenv(1, select(2, ...))
+function private.GetClassColor(class, isLocal)
+	if not class then
+		return defaultColor
+	end
 
---[[ END STANDARD HEADER ]] --
+	if isLocal then
+		local found
+		for k, v in next, LOCALIZED_CLASS_NAMES_FEMALE do
+			if v == class then
+				class = k
+				found = true
+				break
+			end
+		end
+		if not found then
+			for k, v in next, LOCALIZED_CLASS_NAMES_MALE do
+				if v == class then
+					class = k
+					break
+				end
+			end
+		end
+	end
 
-function GetClassGetColor(class)
-  if GetGenderNeutralClass then
-    class = GetGenderNeutralClass(class)
-  end
+	if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] then
+		local color = CUSTOM_CLASS_COLORS[class]
+		return CreateColor(color.r, color.g, color.b)
+	end
 
-  if class then
-    class = class:upper()
+	if C_ClassColor then
+		return C_ClassColor.GetClassColor(class) or defaultColor
+	end
 
-    if _G.CUSTOM_CLASS_COLORS and _G.CUSTOM_CLASS_COLORS[class] then
-      return _G.CUSTOM_CLASS_COLORS[class].r, _G.CUSTOM_CLASS_COLORS[class].g, _G.CUSTOM_CLASS_COLORS[class].b
-    end
-
-    if _G.Prat.IsClassic and class == "SHAMAN" then
-      return 0.00, 0.44, 0.87
-    end
-
-    if _G.RAID_CLASS_COLORS and _G.RAID_CLASS_COLORS[class] then
-      return _G.RAID_CLASS_COLORS[class].r, _G.RAID_CLASS_COLORS[class].g, _G.RAID_CLASS_COLORS[class].b
-    end
-  end
-  return 0.63, 0.63, 0.63
+	return RAID_CLASS_COLORS and RAID_CLASS_COLORS[class] or defaultColor
 end
