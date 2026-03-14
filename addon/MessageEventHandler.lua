@@ -188,7 +188,7 @@ function private.MessageEventHandler(self, event, ...)
 					if (type == "EMOTE") then
 						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type) .. message, pflag .. playerLink)
 					elseif (type == "TEXT_EMOTE") then
-						outMsg = string.gsub(message, arg2, pflag .. playerLink, 1)
+						outMsg = message
 					elseif (type == "GUILD_ITEM_LOOTED") then
 						outMsg = string.gsub(message, "$s", private.GetPlayerLink(arg2, playerLinkDisplayText))
 					else
