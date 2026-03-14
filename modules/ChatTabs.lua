@@ -60,6 +60,8 @@ Prat:AddModuleToLoad(function()
 		["foreveralert_desc"] = "With this turned off the highlight/flash will persist until the timer elapses",
 		["Chat Alert Timeout"] = true,
 		["How long any highlights/flashes should last"] = true,
+		["Tab Font Size"] = true,
+		["Set the font size for chat tab names."] = true,
 	})
 	--@end-debug@
 
