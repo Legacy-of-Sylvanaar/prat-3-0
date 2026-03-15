@@ -61,7 +61,7 @@ Prat:AddModuleToLoad(function()
 		["Chat Alert Timeout"] = true,
 		["How long any highlights/flashes should last"] = true,
 		["Tab Font Size"] = true,
-		["Set the font size for chat tab names."] = true,
+		["Set the font size for chat tab names"] = true,
 		["keephighlightinactive_name"] = "Only keep highlighting if tab is not active",
 		["keephighlightinactive_desc"] = "If this is turned on, the highlight will only persist if the tab is not the active tab. Otherwise the timer will be used",
 	})
