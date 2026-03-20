@@ -251,7 +251,7 @@ Prat:AddModuleToLoad(function()
 			self.WontAlias[string.lower(naughtyalias)] = 1
 		end
 
-		if ChatFrame1EditBox and ChatFrame1EditBox.OnTextChanged then
+		if ChatFrame1EditBox and ChatFrame1EditBox.OnPreSendText then
 			EventRegistry:RegisterCallback("ChatFrame.OnEditBoxPreSendText", function(_, editBox)
 				local success, ret = pcall(function()
 					module:ChatEdit_OnPreSendText(editBox)

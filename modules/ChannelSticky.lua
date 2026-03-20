@@ -277,7 +277,7 @@ Prat:AddModuleToLoad(function()
 	function module:RegisterSmartGroup(on)
 		if not self.smart_group and on then
 			Prat.RegisterChatEvent(self, Prat.Events.OUTBOUND)
-			if ChatFrame1EditBox and ChatFrame1EditBox.OnTextChanged then
+			if ChatFrame1EditBox and ChatFrame1EditBox.OnPreSendText then
 				EventRegistry:RegisterCallback("ChatFrame.OnEditBoxPreSendText", function(_, editBox)
 					local success, ret = pcall(function()
 						module:ChatEdit_SendTextRetail(editBox)

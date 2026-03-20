@@ -376,7 +376,7 @@ function addon:PostEnable()
 	end
 
 	-- Outbound hooking
-	if Prat.IsRetail then
+	if ChatFrame1EditBox and ChatFrame1EditBox.OnPreSendText then
 		EventRegistry:RegisterCallback("ChatFrame.OnEditBoxPreSendText", function(_, editBox)
 			local success, ret = pcall(function()
 				addon:ChatEdit_ParseText(editBox)
