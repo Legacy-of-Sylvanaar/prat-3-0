@@ -471,8 +471,8 @@ Prat:AddModuleToLoad(function()
 
 			message.TYPEPREFIX = message.TYPEPREFIX .. space
 
-			if message.PLAYERLINK:len() > 0 or message.TYPEPREFIX:len() > 0 then
-				message.TYPEPOSTFIX = colon
+			if message.PLAYERLINK:len() > 0 then
+				message.TYPEPOSTFIX = colon .. "\32"
 			else
 				message.TYPEPOSTFIX = ""
 			end
