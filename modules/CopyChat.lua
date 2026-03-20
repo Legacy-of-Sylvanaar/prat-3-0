@@ -278,7 +278,8 @@ Prat:AddModuleToLoad(function()
 	function module:CopyLink(_, frame)
 		if frame and self.db.profile.on and self.db.profile.copytimestamps then
 			for _, visibleLine in ipairs(frame.visibleLines) do
-				if visibleLine:IsMouseOver() then
+				local isMouseOver = visibleLine:IsMouseOver()
+				if (not issecretvalue or not issecretvalue(isMouseOver)) and isMouseOver then
 					local info = visibleLine.messageInfo
 					if info and info.message then
 						local text = issecretvalue and issecretvalue(info.message) and "<SECRET>" or CleanText(info.message)

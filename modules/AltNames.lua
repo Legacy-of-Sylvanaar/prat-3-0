@@ -907,7 +907,12 @@ Prat:AddModuleToLoad(function()
 					if charname and playernames then
 						local class = playernames:GetData(charname)
 						if class then
-							hexcolour = playernames:GetClassColor(class)
+							local classColor = Prat.GetClassColor(class, true)
+							if classColor then
+								self.ALTNAMES = string.format(padfmt, classColor:WrapTextInColorCode(altname:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1)))
+								message.ALTNAMES = self.ALTNAMES
+								return
+							end
 						end
 					end
 				else
