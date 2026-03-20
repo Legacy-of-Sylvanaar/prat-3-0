@@ -177,7 +177,6 @@ Prat:AddModuleToLoad(function()
 		CHAT_MSG_CHANNEL7 = "channel7",
 		CHAT_MSG_CHANNEL8 = "channel8",
 		CHAT_MSG_CHANNEL9 = "channel9",
-		--    CHAT_MSG_CHANNEL10 = "channel10",
 		CHAT_MSG_SAY = "say",
 		CHAT_MSG_GUILD = "guild",
 		CHAT_MSG_WHISPER = "whisperincome",
@@ -232,8 +231,7 @@ Prat:AddModuleToLoad(function()
 				channel10 = true,
 			},
 			chanSave = {},
-			shortnames = -- zhCN
-			GetLocale() == "zhCN" and {
+			shortnames = GetLocale() == "zhCN" and {
 				say = "[说]",
 				whisper = "[密]",
 				whisperincome = "[收]",
@@ -256,9 +254,7 @@ Prat:AddModuleToLoad(function()
 				channel8 = "[8]",
 				channel9 = "[9]",
 				channel10 = "[10]",
-			}
-				--zhTW
-				or GetLocale() == "zhTW" and {
+			} or GetLocale() == "zhTW" and {
 				say = "[說]",
 				whisper = "[密]",
 				whisperincome = "[聽]",
@@ -281,9 +277,7 @@ Prat:AddModuleToLoad(function()
 				channel8 = "[8]",
 				channel9 = "[9]",
 				channel10 = "[10]",
-			}
-				--koKR
-				or GetLocale() == "koKR" and {
+			} or GetLocale() == "koKR" and {
 				say = "[대화]",
 				whisper = "[귓말]",
 				whisperincome = "[받은귓말]",
@@ -306,9 +300,7 @@ Prat:AddModuleToLoad(function()
 				channel8 = "[8]",
 				channel9 = "[9]",
 				channel10 = "[10]",
-			}
-				--Other
-				or {
+			} or {
 				say = "[S]",
 				whisper = "[W To]",
 				whisperincome = "[W From]",
@@ -353,7 +345,6 @@ Prat:AddModuleToLoad(function()
 				name = PL["ChannelNames"],
 				desc = PL["Channel name abbreviation options."],
 				type = "group",
-				--			inline = true,
 				order = 1,
 				plugins = eventPlugins,
 				args = {}
@@ -362,7 +353,6 @@ Prat:AddModuleToLoad(function()
 				name = PL["channelnick_name"],
 				desc = PL["channelnick_desc"],
 				order = 2,
-				--			inline = true,
 				type = "group",
 				plugins = nickPlugins,
 				args = {}
@@ -373,10 +363,6 @@ Prat:AddModuleToLoad(function()
 				order = 3,
 				type = "group",
 				args = {
-					--				chanlink = {
-					--					name = PL["chanlink_name"],
-					--					desc = PL["chanlink_desc"],
-					--					type = "toggle",				},
 					space = {
 						name = PL["space_name"],
 						desc = PL["space_desc"],
@@ -395,9 +381,6 @@ Prat:AddModuleToLoad(function()
 	--[[------------------------------------------------
 		Module Event Functions
 	------------------------------------------------]] --
-
-
-
 	function module:OnModuleEnable()
 		self:BuildChannelOptions()
 		self:RegisterEvent("UPDATE_CHAT_COLOR", "RefreshOptions")
@@ -405,7 +388,6 @@ Prat:AddModuleToLoad(function()
 
 		Prat.RegisterChatEvent(self, "Prat_FrameMessage")
 
-		--  Possible fix for channel messages not getting formatted
 		Prat.EnableProcessingForEvent("CHAT_MSG_CHANNEL_NOTICE")
 		Prat.EnableProcessingForEvent("CHAT_MSG_CHANNEL_NOTICE_USER")
 		Prat.EnableProcessingForEvent("CHAT_MSG_CHANNEL_LEAVE")
@@ -424,8 +406,6 @@ Prat:AddModuleToLoad(function()
 	--[[------------------------------------------------
 		Core Functions
 	------------------------------------------------]] --
-
-	-- rebuild menu if chat colors change
 	function module:CHAT_MSG_CHANNEL_NOTICE()
 		self:BuildChannelOptions()
 		self:RefreshOptions()
@@ -455,8 +435,6 @@ Prat:AddModuleToLoad(function()
 
 	-- replace text using prat event implementation
 	function module:Prat_FrameMessage(_, message, _, event)
-		--    if message.TYPEPREFIX:len()>0 and message.TYPEPOSTFIX:len()>0 then
-
 		if event == "CHAT_MSG_CHANNEL_JOIN" or event == "CHAT_MSG_CHANNEL_LEAVE" then
 			message.MESSAGE = message.ORG.TYPEPOSTFIX:trim()
 			message.ORG.TYPEPOSTFIX = " "
@@ -493,19 +471,17 @@ Prat:AddModuleToLoad(function()
 
 			message.TYPEPREFIX = message.TYPEPREFIX .. space
 
-			if (message.PLAYERLINK:len() > 0) or (message.TYPEPREFIX:len() > 0) then
-				message.TYPEPOSTFIX = colon .. "\32"
+			if message.PLAYERLINK:len() > 0 or message.TYPEPREFIX:len() > 0 then
+				message.TYPEPOSTFIX = colon
 			else
 				message.TYPEPOSTFIX = ""
 			end
 		end
-		--    end
 	end
 
 	--[[------------------------------------------------
 		Menu Builder Functions
 	------------------------------------------------]] --
-
 	function module:BuildChannelOptions()
 		for _, v in ipairs(orderMap) do
 			self:CreateTypeOption(eventPlugins["types"], v)
@@ -665,4 +641,4 @@ Prat:AddModuleToLoad(function()
 	end
 
 	return
-end) -- Prat:AddModuleToLoad
+end)
