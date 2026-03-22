@@ -389,7 +389,7 @@ Prat:AddModuleToLoad(function()
 
 	local function OnArrowPressed(self, key)
 		-- We cannot call SetText while in lockdown
-		if C_ChatInfo and C_ChatInfo.InChatMessagingLockdown() then
+		if C_ChatInfo and C_ChatInfo.InChatMessagingLockdown and C_ChatInfo.InChatMessagingLockdown() then
 			return
 		end
 		if #self.history_lines == 0 then
