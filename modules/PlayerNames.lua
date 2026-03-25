@@ -59,6 +59,8 @@ Prat:AddModuleToLoad(function()
 		["Toggle raid group showing."] = true,
 		["Show Raid Target Icon"] = true,
 		["Toggle showing the raid target icon which is currently on the player."] = true,
+		["Show Guild"] = true,
+		["Toggle guild member showing."] = true,
 		["Use toon name for RealID"] = true,
 
 		-- In the high-cpu pullout
@@ -166,6 +168,7 @@ Prat:AddModuleToLoad(function()
 	module.Classes = {}
 	module.Levels = {}
 	module.Subgroups = {}
+	module.GuildMembers = {}
 
 	local NOP = function()
 		return
@@ -187,6 +190,7 @@ Prat:AddModuleToLoad(function()
 			levelcolor = "DIFFICULTY",
 			subgroup = true,
 			showtargeticon = false,
+			showguild = false,
 			keep = false,
 			keeplots = false,
 			colormode = "CLASS",
@@ -323,6 +327,12 @@ Prat:AddModuleToLoad(function()
 				order = 142,
 				hidden = Prat.IsRetail,
 			},
+			showguild = {
+				name = PL["Show Guild"],
+				desc = PL["Toggle guild member showing."],
+				type = "toggle",
+				order = 143,
+			},
 			tabcomplete = {
 				name = PL["Enable TabComplete"],
 				desc = PL["Toggle tab completion of player names."],
@@ -403,6 +413,8 @@ Prat:AddModuleToLoad(function()
 		Prat.RegisterMessageItem("PLAYERLEVEL", "PREPLAYERDELIM", "before")
 		Prat.RegisterMessageItem("PLAYERGROUP", "POSTPLAYERDELIM", "after")
 		Prat.RegisterMessageItem("PLAYERCLIENTICON", "PLAYERLEVEL", "before")
+		Prat.RegisterMessageItem("PLAYERGUILD", "PREPLAYERDELIM", "before")
+		Prat.RegisterMessageItem("PLAYERGUILDDELIM", "PLAYERGUILD", "before")
 
 		Prat.EnableProcessingForEvent("CHAT_MSG_GUILD_ACHIEVEMENT")
 		Prat.EnableProcessingForEvent("CHAT_MSG_ACHIEVEMENT")
@@ -449,7 +461,8 @@ Prat:AddModuleToLoad(function()
 	local cache = {
 		module.Levels,
 		module.Classes,
-		module.Subgroups
+		module.Subgroups,
+		module.GuildMembers
 	}
 
 	function module:EmptyDataCache()
@@ -581,10 +594,15 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:GUILD_ROSTER_UPDATE()
+		wipe(self.GuildMembers)
 		for i = 1, GetNumGuildMembers() do
 			local Name, _, _, Level, _, _, _, _, _, _, Class = GetGuildRosterInfo(i)
 			if Name then
 				local plr, svr = Name:match("([^%-]+)%-?(.*)")
+				self.GuildMembers[plr:lower()] = true
+				if svr and svr:len() > 0 then
+					self.GuildMembers[(plr .. "-" .. svr):lower()] = true
+				end
 				self:addName(plr, nil, Class, Level, nil, "GUILD")
 				self:addName(plr, svr, Class, Level, nil, "GUILD")
 			end
@@ -828,6 +846,15 @@ Prat:AddModuleToLoad(function()
 		if level and self.db.profile.level then
 			message.PLAYERLEVEL = CLR:Level(tostring(level), level, Name, class)
 			message.PREPLAYERDELIM = ":"
+		end
+
+		-- Add guild indicator if needed
+		if self.db.profile.showguild and self.GuildMembers[Name:lower()] then
+			message.PLAYERGUILD = CLR:Colorize("40ff40", "G")
+			message.PREPLAYERDELIM = ":"
+			if level and self.db.profile.level then
+				message.PLAYERGUILDDELIM = ":"
+			end
 		end
 
 		-- Add raid subgroup information if needed

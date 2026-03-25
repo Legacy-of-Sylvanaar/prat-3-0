@@ -40,6 +40,8 @@ Prat:AddModuleToLoad(function()
 		["showCompletedDate_desc"] = "Show the date you completed the achievement next to the link",
 		["showGratsLink_name"] = "Show grats link",
 		["showGratsLink_desc"] = "Show a clickable link which sends a grats message",
+		["gratsGuildOnly_name"] = "Only show grats link for guild members",
+		["gratsGuildOnly_desc"] = "Only show the grats link for guild member achievements",
 		["dontShowAchievements_name"] = "Don't show achievements",
 		["dontShowAchievements_desc"] = "Hide all achievement messages",
 		["customGrats_defualt"] = "Grats %s",
@@ -142,6 +144,7 @@ Prat:AddModuleToLoad(function()
 			dontShowAchievements = false,
 			showCompletedDate = true,
 			showGratsLink = false,
+			gratsGuildOnly = false,
 			customGrats = true,
 			customGratsText = PL.customGrats_defualt
 		}
@@ -169,6 +172,15 @@ Prat:AddModuleToLoad(function()
 				desc = PL.showGratsLink_desc,
 				type = "toggle",
 				order = 110
+			},
+			gratsGuildOnly = {
+				name = PL.gratsGuildOnly_name,
+				desc = PL.gratsGuildOnly_desc,
+				type = "toggle",
+				order = 111,
+				disabled = function()
+					return not module.db.profile.showGratsLink
+				end
 			},
 			customGrats = {
 				name = PL.customGrats_name,
@@ -272,6 +284,9 @@ Prat:AddModuleToLoad(function()
 
 	function module:addGrats(name, group, channel, achievementId)
 		if self.db.profile.showGratsLink then
+			if self.db.profile.gratsGuildOnly and Prat.CurrentMessage.CHATTYPE ~= "GUILD_ACHIEVEMENT" then
+				return ""
+			end
 			return " " .. buildGratsLink(name, group, channel, achievementId)
 		end
 
