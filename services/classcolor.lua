@@ -26,13 +26,13 @@ function private.GetClassColor(class, isLocal)
 		end
 	end
 
+	if C_ClassColor then
+		return C_ClassColor.GetClassColor(class) or defaultColor
+	end
+
 	if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] then
 		local color = CUSTOM_CLASS_COLORS[class]
 		return CreateColor(color.r, color.g, color.b)
-	end
-
-	if C_ClassColor then
-		return C_ClassColor.GetClassColor(class) or defaultColor
 	end
 
 	return RAID_CLASS_COLORS and RAID_CLASS_COLORS[class] or defaultColor
