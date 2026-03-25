@@ -59,8 +59,8 @@ Prat:AddModuleToLoad(function()
 		["Toggle raid group showing."] = true,
 		["Show Raid Target Icon"] = true,
 		["Toggle showing the raid target icon which is currently on the player."] = true,
-		["Show Guild"] = true,
-		["Toggle guild member showing."] = true,
+		["Mark Guildies"] = true,
+		["Toggle showing an indicator for your guild members."] = true,
 		["Use toon name for RealID"] = true,
 
 		-- In the high-cpu pullout
@@ -328,8 +328,8 @@ Prat:AddModuleToLoad(function()
 				hidden = Prat.IsRetail,
 			},
 			showguild = {
-				name = PL["Show Guild"],
-				desc = PL["Toggle guild member showing."],
+				name = PL["Mark Guildies"],
+				desc = PL["Toggle showing an indicator for your guild members."],
 				type = "toggle",
 				order = 143,
 			},
