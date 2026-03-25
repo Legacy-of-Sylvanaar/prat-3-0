@@ -40,7 +40,7 @@ Prat:AddModuleToLoad(function()
 		["showCompletedDate_desc"] = "Show the date you completed the achievement next to the link",
 		["showGratsLink_name"] = "Show grats link",
 		["showGratsLink_desc"] = "Show a clickable link which sends a grats message",
-		["gratsGuildOnly_name"] = "Only show grats link for guild members",
+		["gratsGuildOnly_name"] = "Guild only grats",
 		["gratsGuildOnly_desc"] = "Only show the grats link for guild member achievements",
 		["dontShowAchievements_name"] = "Don't show achievements",
 		["dontShowAchievements_desc"] = "Hide all achievement messages",
