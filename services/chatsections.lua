@@ -293,7 +293,7 @@ function private.SplitChatMessage(frame, event, ...)
 
 		local chatTarget
 		if (chatGroup == "CHANNEL" or chatGroup == "BN_CONVERSATION") then
-			chatTarget = tostring(arg8)
+			chatTarget = issecretvalue(arg8) and arg8 or tostring(arg8)
 		elseif (chatGroup == "WHISPER" or chatGroup == "BN_WHISPER") then
 			if (not issecretvalue(arg2)) and strsub(arg2, 1, 2) ~= "|K" then
 				chatTarget = strupper(arg2)
@@ -309,13 +309,13 @@ function private.SplitChatMessage(frame, event, ...)
 			s.DONOTPROCESS = true
 		end
 
-		if (chatGroup == "WHISPER" or chatGroup == "BN_WHISPER") then
+		if not issecretvalue(arg2) and (chatGroup == "WHISPER" or chatGroup == "BN_WHISPER") then
 			if (frame.privateMessageList and not frame.privateMessageList[strlower(arg2)]) then
 				s.DONOTPROCESS = true
 			elseif (frame.excludePrivateMessageList and frame.excludePrivateMessageList[strlower(arg2)]) then
 				s.DONOTPROCESS = true
 			end
-		elseif (chatGroup == "BN_CONVERSATION") then
+		elseif not issecretvalue(arg8) and (chatGroup == "BN_CONVERSATION") then
 			if (frame.bnConversationList and not frame.bnConversationList[arg8]) then
 				s.DONOTPROCESS = true
 			elseif (frame.excludeBNConversationList and frame.excludeBNConversationList[arg8]) then
