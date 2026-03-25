@@ -462,7 +462,7 @@ Prat:AddModuleToLoad(function()
 		elseif self.db.profile.replace[cfg] then
 			message.cC, message.CHANNELNUM, message.CC, message.CHANNEL, message.Cc = "", "", "", "", ""
 			local space = self.db.profile.space and self.db.profile.shortnames[cfg] and self.db.profile.shortnames[cfg] ~= "" and " " or ""
-			local colon = self.db.profile.colon and (message.PLAYERLINK:len() > 0 and message.MESSAGE:len() > 0) and ":" or ""
+			local colon = self.db.profile.colon and ((message.PLAYERLINK:len() > 0 or message.PLAYER) and message.MESSAGE:len() > 0) and ":" or ""
 			message.TYPEPREFIX = self.db.profile.shortnames[cfg] or ""
 
 			if message.TYPEPREFIX:len() == 0 then
@@ -471,7 +471,7 @@ Prat:AddModuleToLoad(function()
 
 			message.TYPEPREFIX = message.TYPEPREFIX .. space
 
-			if message.PLAYERLINK:len() > 0 then
+			if message.PLAYERLINK:len() > 0 or message.PLAYER then
 				message.TYPEPOSTFIX = colon .. "\32"
 			else
 				message.TYPEPOSTFIX = ""
