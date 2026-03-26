@@ -49,68 +49,55 @@ Prat:AddModuleToLoad(function()
 
 	-- These Localizations are auto-generated. To help with localization
 	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
-
-
 	--[===[@non-debug@
-  do
-	  local L
+	do
+		local L
 
+		L = {}
+		--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("enUS", L)
 
-  L = {}
-  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("enUS", L)
+		L = {}
+		--@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("itIT", L)
 
+		L = {}
+		--@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("ptBR", L)
 
+		L = {}
+		--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("frFR",L)
 
-  L = {}
-  --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("itIT", L)
+		L = {}
+		--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("deDE", L)
 
+		L = {}
+		--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("koKR",L)
 
+		L = {}
+		--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("esMX",L)
 
-  L = {}
-  --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("ptBR", L)
+		L = {}
+		--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("ruRU",L)
 
+		L = {}
+		--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("zhCN",L)
 
-  L = {}
-  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("frFR",L)
+		L = {}
+		--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("esES",L)
 
-
-
-
-  L = {}
-  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("deDE", L)
-
-
-  L = {}
-  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("koKR",L)
-
-  L = {}
-  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("esMX",L)
-
-  L = {}
-  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("ruRU",L)
-
-  L = {}
-  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("zhCN",L)
-
-  L = {}
-  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("esES",L)
-
-  L = {}
-  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
-  PL:AddLocale("zhTW",L)
-  end
-  --@end-non-debug@]===]
-
+		L = {}
+		--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChatLog")@
+		PL:AddLocale("zhTW",L)
+	end
+	--@end-non-debug@]===]
 
 	Prat:SetModuleDefaults(module.name, {
 		profile = {
@@ -146,12 +133,6 @@ Prat:AddModuleToLoad(function()
 		}
 	})
 
-
-	--[[------------------------------------------------
-		Module Event Functions
-	------------------------------------------------]] --
-
-	-- things to do when the module is enabled
 	function module:OnModuleEnable()
 		self:SetChatLog(nil, self.db.profile.chat)
 		self:SetCombatLog(nil, self.db.profile.combat)
@@ -160,12 +141,10 @@ Prat:AddModuleToLoad(function()
 	--[[------------------------------------------------
 		Core Functions
 	------------------------------------------------]] --
-
 	function module:GetDescription()
 		return PL["A module to automaticaly enable chat and combat logging."]
 	end
 
-	-- enable or disable the chat log
 	function module:SetChatLog(_, val)
 		self.db.profile.chat = val
 		if self.db.profile.chat then
@@ -178,7 +157,6 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	-- enable or disable the combat log
 	function module:SetCombatLog(_, val)
 		self.db.profile.combat = val
 		if self.db.profile.combat then
@@ -195,6 +173,4 @@ Prat:AddModuleToLoad(function()
 
 		Prat:Print(str)
 	end
-
-	return
-end) -- Prat:AddModuleToLoad
+end)

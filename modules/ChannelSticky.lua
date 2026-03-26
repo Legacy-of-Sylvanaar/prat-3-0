@@ -51,39 +51,39 @@ Prat:AddModuleToLoad(function()
 		local L
 
 		L = {}
---@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
+		--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
 		PL:AddLocale("enUS",L)
 
 		L = {}
---@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
+		--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
 		PL:AddLocale("frFR",L)
 
 		L = {}
---@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
+		--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
 		PL:AddLocale("deDE",L)
 
 		L = {}
---@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
+		--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
 		PL:AddLocale("koKR",L)
 
 		L = {}
---@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
+		--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
 		PL:AddLocale("esMX",L)
 
 		L = {}
---@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
+		--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
 		PL:AddLocale("ruRU",L)
 
 		L = {}
---@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
+		--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
 		PL:AddLocale("zhCN",L)
 
 		L = {}
---@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
+		--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
 		PL:AddLocale("esES",L)
 
 		L = {}
---@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
+		--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="ChannelSticky")@
 		PL:AddLocale("zhTW",L)
 	end
 	--@end-non-debug@]===]
