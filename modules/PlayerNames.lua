@@ -623,13 +623,17 @@ Prat:AddModuleToLoad(function()
 		end
 
 		-- Fetch faction data via Club API
+		-- GetClubMembers and GetMemberInfo are SecretInChatMessagingLockdown,
+		-- and ClubMemberInfo fields (name, race) may also be secret
 		local clubId = C_Club and C_Club.GetGuildClubId and C_Club.GetGuildClubId()
 		if clubId and not (issecretvalue and issecretvalue(clubId)) then
 			local members = C_Club.GetClubMembers(clubId)
 			if members and not (issecretvalue and issecretvalue(members)) then
 				for _, memberId in ipairs(members) do
 					local info = C_Club.GetMemberInfo(clubId, memberId)
-					if info and info.name and info.race and not (issecretvalue and issecretvalue(info.name)) then
+					if info and not (issecretvalue and issecretvalue(info))
+						and info.name and not issecretvalue(info.name)
+						and info.race and not issecretvalue(info.race) then
 						local factionInfo = C_CreatureInfo.GetFactionInfo(info.race)
 						if factionInfo then
 							local name = Ambiguate(info.name, "all"):lower()
