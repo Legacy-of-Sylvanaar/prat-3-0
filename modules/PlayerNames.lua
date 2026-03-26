@@ -624,12 +624,12 @@ Prat:AddModuleToLoad(function()
 
 		-- Fetch faction data via Club API
 		local clubId = C_Club and C_Club.GetGuildClubId and C_Club.GetGuildClubId()
-		if clubId then
+		if clubId and not (issecretvalue and issecretvalue(clubId)) then
 			local members = C_Club.GetClubMembers(clubId)
-			if members then
+			if members and not (issecretvalue and issecretvalue(members)) then
 				for _, memberId in ipairs(members) do
 					local info = C_Club.GetMemberInfo(clubId, memberId)
-					if info and info.name and info.race then
+					if info and info.name and info.race and not (issecretvalue and issecretvalue(info.name)) then
 						local factionInfo = C_CreatureInfo.GetFactionInfo(info.race)
 						if factionInfo then
 							local name = Ambiguate(info.name, "all"):lower()
