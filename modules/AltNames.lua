@@ -1267,7 +1267,6 @@ Prat:AddModuleToLoad(function()
 				end
 			end
 
-			local width = GameTooltip:GetWidth()
 			-- check if the user wants a list of alts shown on mains' tooltips
 			if self.db.profile.tooltip_showalts then
 				local alts = self:getAlts(charname)
@@ -1286,7 +1285,6 @@ Prat:AddModuleToLoad(function()
 			end
 
 			if tooltipaltered then
-				GameTooltip:SetWidth(width)
 				GameTooltip:Show()
 			end
 
