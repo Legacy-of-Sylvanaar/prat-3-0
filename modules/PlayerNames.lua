@@ -650,13 +650,25 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:UpdateBG()
-		for i = 1, GetNumBattlefieldScores() do
-			local name, _, _, _, _, _, _, _, class = GetBattlefieldScore(i);
+		if C_PvP and C_PvP.GetScoreInfo then
+			for i = 1, GetNumBattlefieldScores() do
+				local score = C_PvP.GetScoreInfo(i);
 
-			if (not issecretvalue or not issecretvalue(name)) and name then
-				local plr, svr = name:match("([^%-]+)%-?(.*)")
-				self:addName(plr, nil, class, nil, nil, "BATTLEFIELD")
-				self:addName(plr, svr, class, nil, nil, "BATTLEFIELD")
+				if (not issecretvalue or not issecretvalue(score.name)) and score.name then
+					local plr, svr = score.name:match("([^%-]+)%-?(.*)")
+					self:addName(plr, nil, score.className, nil, nil, "BATTLEFIELD")
+					self:addName(plr, svr, score.className, nil, nil, "BATTLEFIELD")
+				end
+			end
+		else
+			for i = 1, GetNumBattlefieldScores() do
+				local name, _, _, _, _, _, _, _, class = GetBattlefieldScore(i);
+
+				if (not issecretvalue or not issecretvalue(name)) and name then
+					local plr, svr = name:match("([^%-]+)%-?(.*)")
+					self:addName(plr, nil, class, nil, nil, "BATTLEFIELD")
+					self:addName(plr, svr, class, nil, nil, "BATTLEFIELD")
+				end
 			end
 		end
 		self:UpdateGroup()

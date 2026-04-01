@@ -273,6 +273,7 @@ globals = {
 	"C_PlayerInfo.GetClass",
 	"C_PlayerInfo.GetRace",
 	"C_PlayerMentorship.IsActivePlayerConsideredNewcomer",
+	"C_PvP.GetScoreInfo",
 	"C_Spell.GetSpellInfo",
 	"C_Spell.GetSpellName",
 	"C_StringUtil.EscapeLuaFormatString",
