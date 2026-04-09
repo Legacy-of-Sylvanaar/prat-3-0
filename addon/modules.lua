@@ -23,6 +23,9 @@ do
 			AddLocale = AddLocale,
 		}, {
 			__index = function(_, k)
+				if k == 'GetDebugName' or k == 'ToDebugString' then -- Called via WoW's debuglocals
+					return
+				end
 				error("Locale key " .. tostring(k) .. " is not provided - " .. name)
 			end
 		})
