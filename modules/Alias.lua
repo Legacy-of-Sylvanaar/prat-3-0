@@ -252,15 +252,9 @@ Prat:AddModuleToLoad(function()
 			self.WontAlias[string.lower(naughtyalias)] = 1
 		end
 
-		if ChatFrame1EditBox and ChatFrame1EditBox.OnPreSendText then
-			EventRegistry:RegisterCallback("ChatFrame.OnEditBoxPreSendText", function(_, editBox)
-				local success, ret = pcall(function()
-					module:ChatEdit_OnPreSendText(editBox)
-				end)
-				if not success then
-					geterrorhandler()(ret)
-				end
-			end)
+		if Prat.IsRetail then
+			self.RegisteredAliasCommands = {}
+			self:RegisterAllAliasCommands()
 		else
 			self:RawHook('ChatEdit_HandleChatType', true)
 		end
@@ -284,6 +278,37 @@ Prat:AddModuleToLoad(function()
 	--[[------------------------------------------------
 		Core Functions
 	------------------------------------------------]] --
+	function module:GetAliasCommandKey(alias)
+		return "PRATALIAS_" .. string.upper(alias)
+	end
+
+	function module:RegisterAliasCommand(alias)
+		alias = string.lower(alias)
+
+		if self.RegisteredAliasCommands[alias] then
+			return
+		end
+
+		local key = self:GetAliasCommandKey(alias)
+
+		_G["SLASH_" .. key .. "1"] = "/" .. alias
+		SlashCmdList[key] = function(msg)
+			module:ExecuteAlias(alias, msg or "")
+		end
+
+		self.RegisteredAliasCommands[alias] = true
+	end
+
+	function module:RegisterAllAliasCommands()
+		if not self.RegisteredAliasCommands then
+			self.RegisteredAliasCommands = {}
+		end
+
+		for alias in pairs(self.Aliases) do
+			self:RegisterAliasCommand(alias)
+		end
+	end
+
 	function module:splitAliasArgs(str)
 		local args = {
 			name = "",
@@ -356,6 +381,9 @@ Prat:AddModuleToLoad(function()
 			LibStub("AceConfigRegistry-3.0"):NotifyChange("Prat")
 
 			self:warnUser(string.format(PL["/%s aliased to: /%s"], clralias(alias['name']), clrexpansion(alias['value'])))
+		end
+		if Prat.IsRetail then
+			self:RegisterAliasCommand(alias['name'])
 		end
 	end
 
@@ -447,40 +475,28 @@ Prat:AddModuleToLoad(function()
 	end
 
 	-- Retail logic
-	function module:ChatEdit_OnPreSendText(editBox)
+	function module:ExecuteAlias(aliasName, msg)
 		-- We cannot perform logic while in lockdown
 		if C_ChatInfo.InChatMessagingLockdown() then
 			return
 		end
 
-		local text = editBox:GetText()
-		-- If the string is in the format "/cmd blah", command will be "/cmd"
-		local command = strmatch(text, "^(/[^%s]+)") or ""
-		local msg = ""
-
-		if command ~= text then
-			msg = strsub(text, strlen(command) + 2)
-			msg = strmatch(msg, "^%s*(.*)$") or msg
-		end
-
-		command = command or ""
-		msg = msg or ""
-		local alias = self.Aliases[string.lower(strsub(command, 2))]
-
+		local alias = self.Aliases[string.lower(aliasName)]
 		if not alias or alias == "" then
+			self:reportUndefinedAlias(aliasName)
 			return
 		end
 
 		alias = Prat:ReplaceMatches(alias, 'OUTBOUND')
+		msg = msg or ""
 
+		-- Extract target command
 		local newcmd = strmatch(alias, "^/*([^%s]+)") or ""
 		local premsg = strsub(alias, strlen(newcmd) + 2) or ""
 
 		if premsg ~= "" then
-			msg = premsg .. ' ' .. msg
+			msg = premsg .. (msg ~= "" and (" " .. msg) or "")
 		end
-
-		text = '/' .. string.lower(newcmd)
 
 		if msg and msg ~= "" then
 			local fake = {}
@@ -489,10 +505,52 @@ Prat:AddModuleToLoad(function()
 			Prat.Addon:ProcessUserEnteredChat(fake)
 
 			msg = fake.MESSAGE
-			text = text .. ' ' .. msg
 		end
 
-		editBox:SetText(text)
+		local cmd = newcmd:upper()
+
+		-- Slash command
+		local slashCmd = SlashCmdList[cmd]
+		if slashCmd then
+			slashCmd(msg)
+			return
+		end
+		-- Chat Type
+		local chatCmd = hash_ChatTypeInfoList and hash_ChatTypeInfoList['/'..cmd]
+		if chatCmd then
+			local editBox = ChatEdit_ChooseBoxForSend()
+			if editBox:ProcessChatType(msg, chatCmd, 1) then
+				local type = editBox:GetChatType();
+				local text = editBox:GetText();
+				if strfind(text, "%s*[^%s]+") then
+					text = ChatFrameUtil.SubstituteChatMessageBeforeSend(text)
+					if type == "WHISPER" then
+						local target = editBox:GetTellTarget()
+						ChatFrameUtil.SetLastToldTarget(target, type)
+						C_ChatInfo.SendChatMessage(text, type, editBox.languageID, target)
+					elseif type == "BN_WHISPER" then
+						local target = editBox:GetTellTarget();
+						local bnetIDAccount = BNet_GetBNetIDAccount(target)
+						if bnetIDAccount then
+							ChatFrameUtil.SetLastToldTarget(target, type)
+							C_BattleNet.SendWhisper(bnetIDAccount, text)
+						else
+							ChatFrameUtil.DisplaySystemMessageInPrimary(format(BN_UNABLE_TO_RESOLVE_NAME, target))
+						end
+					elseif type == "CHANNEL" then
+						C_ChatInfo.SendChatMessage(text, type, editBox.languageID, editBox:GetChannelTarget())
+					else
+						C_ChatInfo.SendChatMessage(text, type, editBox.languageID)
+					end
+				end
+				return
+			end
+		end
+		-- Emote
+		local emoteCmd = hash_EmoteTokenList and hash_EmoteTokenList['/'..cmd]
+		if emoteCmd then
+			C_ChatInfo.PerformEmote(emoteCmd, msg)
+		end
 	end
 
 	-- Classic logic
@@ -535,6 +593,4 @@ Prat:AddModuleToLoad(function()
 		end
 		return true
 	end
-
-	return
 end)
