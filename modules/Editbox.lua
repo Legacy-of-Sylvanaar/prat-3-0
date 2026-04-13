@@ -523,7 +523,7 @@ Prat:AddModuleToLoad(function()
 				self:SecureHook("ChatEdit_UpdateHeader", "SetBorderByChannel", true)
 			end
 		end
-		self:SecureHook("FCF_Tab_OnClick")
+		self:SecureHook("FCF_FadeInChatFrame")
 
 		Prat.RegisterChatEvent(self, Prat.Events.FRAMES_UPDATED)
 	end
@@ -536,7 +536,7 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:FCF_Tab_OnClick(frame)
+	function module:FCF_FadeInChatFrame(frame)
 		if self.db.profile.attach == "TOP" and GetCVar("chatStyle") ~= "classic" then
 			local chatFrame = _G["ChatFrame" .. frame:GetID()];
 			ChatEdit_DeactivateChat(chatFrame.editBox)
