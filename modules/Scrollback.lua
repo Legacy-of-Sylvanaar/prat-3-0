@@ -158,7 +158,7 @@ Prat:AddModuleExtension(function()
 	end
 
 	local function isRealChatMessage(message)
-		return message.extraData and message.extraData.n == #message.extraData
+		return message.extraData and message.extraData.n >= #message.extraData
 	end
 
 	local function getBattlettagLookupTable()
