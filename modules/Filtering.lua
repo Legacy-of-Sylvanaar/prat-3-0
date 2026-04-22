@@ -24,6 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
+local issecretvalue = issecretvalue or function() return false end
+
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Filtering", "AceEvent-3.0")
 	local PL = module.PL
@@ -344,7 +346,7 @@ Prat:AddModuleToLoad(function()
 	}
 
 	function module:Prat_FrameMessage(_, message, _, event)
-		if self.db.profile.useai and eventsToHandle[event] and message.GUID ~= UnitGUID("player") then
+		if self.db.profile.useai and not issecretvalue(message.GUID) and eventsToHandle[event] and message.GUID ~= UnitGUID("player") then
 			local msg = tokenize(message.ORG.MESSAGE)
 			local prob = self.classifier.getprob(msg)
 			local isSpam = prob >= SPAM_CUTOFF
