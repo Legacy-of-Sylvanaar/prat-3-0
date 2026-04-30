@@ -51,6 +51,58 @@ Prat:AddModuleToLoad(function()
 	})
 	--@end-debug@
 
+	-- These Localizations are auto-generated. To help with localization
+	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
+	--[===[@non-debug@
+	do
+		local L
+
+		L = {}
+		--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("enUS", L)
+
+		L = {}
+		--@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("itIT", L)
+
+		L = {}
+		--@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("ptBR", L)
+
+		L = {}
+		--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("frFR", L)
+
+		L = {}
+		--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("deDE", L)
+
+		L = {}
+		--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("koKR", L)
+
+		L = {}
+		--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("esMX", L)
+
+		L = {}
+		--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("ruRU", L)
+
+		L = {}
+		--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("zhCN", L)
+
+		L = {}
+		--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("esES", L)
+
+		L = {}
+		--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="SideTabs")@
+		PL:AddLocale("zhTW", L)
+	end
+	--@end-non-debug@]===]
+
 	Prat:SetModuleDefaults(module, {
 		profile = {
 			on = false,
@@ -380,6 +432,10 @@ Prat:AddModuleToLoad(function()
 			},
 		}
 	})
+
+	function module:GetDescription()
+		return PL["Move chat tabs to the side of the chat frame and stack them vertically."]
+	end
 
 	local function IsTabHovered(tab)
 		if not tab or not tab:IsShown() then
