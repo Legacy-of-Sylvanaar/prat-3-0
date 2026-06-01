@@ -5,7 +5,7 @@ local ChatFrame_GetMentorChannelStatus = ChatFrame_GetMentorChannelStatus or Cha
 local ChatFrame_GetMobileEmbeddedTexture = ChatFrame_GetMobileEmbeddedTexture or ChatFrameUtil.GetMobileEmbeddedTexture
 local MAX_WOW_CHAT_CHANNELS = MAX_WOW_CHAT_CHANNELS or Constants.ChatFrameConstants.MaxChatChannels
 
-local issecretvalue = issecretvalue or function () return false end
+local issecretvalue = issecretvalue or function() return false end
 
 local string = string
 local setmetatable = setmetatable
