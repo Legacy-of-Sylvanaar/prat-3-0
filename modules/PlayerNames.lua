@@ -59,6 +59,10 @@ Prat:AddModuleToLoad(function()
 		["Toggle raid group showing."] = true,
 		["Show Raid Target Icon"] = true,
 		["Toggle showing the raid target icon which is currently on the player."] = true,
+		["Mark Guildies"] = true,
+		["Toggle showing an indicator for your guild members."] = true,
+		["Show Faction"] = true,
+		["Toggle showing a faction indicator for your guild members."] = true,
 		["Use toon name for RealID"] = true,
 
 		-- In the high-cpu pullout
@@ -166,6 +170,8 @@ Prat:AddModuleToLoad(function()
 	module.Classes = {}
 	module.Levels = {}
 	module.Subgroups = {}
+	module.GuildMembers = {}
+	module.GuildFactions = {}
 
 	local NOP = function()
 		return
@@ -187,6 +193,8 @@ Prat:AddModuleToLoad(function()
 			levelcolor = "DIFFICULTY",
 			subgroup = true,
 			showtargeticon = false,
+			showguild = false,
+			showfaction = false,
 			keep = false,
 			keeplots = false,
 			colormode = "CLASS",
@@ -323,6 +331,18 @@ Prat:AddModuleToLoad(function()
 				order = 142,
 				hidden = Prat.IsRetail,
 			},
+			showguild = {
+				name = PL["Mark Guildies"],
+				desc = PL["Toggle showing an indicator for your guild members."],
+				type = "toggle",
+				order = 143,
+			},
+			showfaction = {
+				name = PL["Show Faction"],
+				desc = PL["Toggle showing a faction indicator for your guild members."],
+				type = "toggle",
+				order = 144,
+			},
 			tabcomplete = {
 				name = PL["Enable TabComplete"],
 				desc = PL["Toggle tab completion of player names."],
@@ -403,6 +423,10 @@ Prat:AddModuleToLoad(function()
 		Prat.RegisterMessageItem("PLAYERLEVEL", "PREPLAYERDELIM", "before")
 		Prat.RegisterMessageItem("PLAYERGROUP", "POSTPLAYERDELIM", "after")
 		Prat.RegisterMessageItem("PLAYERCLIENTICON", "PLAYERLEVEL", "before")
+		Prat.RegisterMessageItem("PLAYERFACTION", "PREPLAYERDELIM", "before")
+		Prat.RegisterMessageItem("PLAYERFACTIONDELIM", "PLAYERFACTION", "before")
+		Prat.RegisterMessageItem("PLAYERGUILD", "PLAYERFACTIONDELIM", "before")
+		Prat.RegisterMessageItem("PLAYERGUILDDELIM", "PLAYERGUILD", "before")
 
 		Prat.EnableProcessingForEvent("CHAT_MSG_GUILD_ACHIEVEMENT")
 		Prat.EnableProcessingForEvent("CHAT_MSG_ACHIEVEMENT")
@@ -449,7 +473,9 @@ Prat:AddModuleToLoad(function()
 	local cache = {
 		module.Levels,
 		module.Classes,
-		module.Subgroups
+		module.Subgroups,
+		module.GuildMembers,
+		module.GuildFactions
 	}
 
 	function module:EmptyDataCache()
@@ -581,12 +607,40 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:GUILD_ROSTER_UPDATE()
+		wipe(self.GuildMembers)
+		wipe(self.GuildFactions)
 		for i = 1, GetNumGuildMembers() do
 			local Name, _, _, Level, _, _, _, _, _, _, Class = GetGuildRosterInfo(i)
 			if Name then
 				local plr, svr = Name:match("([^%-]+)%-?(.*)")
+				self.GuildMembers[plr:lower()] = true
+				if svr and svr:len() > 0 then
+					self.GuildMembers[(plr .. "-" .. svr):lower()] = true
+				end
 				self:addName(plr, nil, Class, Level, nil, "GUILD")
 				self:addName(plr, svr, Class, Level, nil, "GUILD")
+			end
+		end
+
+		-- Fetch faction data via Club API
+		-- GetClubMembers and GetMemberInfo are SecretInChatMessagingLockdown,
+		-- and ClubMemberInfo fields (name, race) may also be secret
+		local clubId = C_Club and C_Club.GetGuildClubId and C_Club.GetGuildClubId()
+		if clubId and not (issecretvalue and issecretvalue(clubId)) then
+			local members = C_Club.GetClubMembers(clubId)
+			if members and not (issecretvalue and issecretvalue(members)) then
+				for _, memberId in ipairs(members) do
+					local info = C_Club.GetMemberInfo(clubId, memberId)
+					if info and not (issecretvalue and issecretvalue(info))
+						and info.name and not issecretvalue(info.name)
+						and info.race and not issecretvalue(info.race) then
+						local factionInfo = C_CreatureInfo.GetFactionInfo(info.race)
+						if factionInfo then
+							local name = Ambiguate(info.name, "all"):lower()
+							self.GuildFactions[name] = factionInfo.groupTag
+						end
+					end
+				end
 			end
 		end
 	end
@@ -840,6 +894,33 @@ Prat:AddModuleToLoad(function()
 		if level and self.db.profile.level then
 			message.PLAYERLEVEL = CLR:Level(tostring(level), level, Name, class)
 			message.PREPLAYERDELIM = ":"
+		end
+
+		-- Add guild and faction indicators if needed
+		-- Message item order: LEVEL : GUILDDELIM : GUILD : FACTIONDELIM : FACTION : PREDELIM : PLAYER
+		local nameLower = Name:lower()
+		local hasLevel = level and self.db.profile.level
+		local isGuildie = self.db.profile.showguild and self.GuildMembers[nameLower]
+		local faction = self.db.profile.showfaction and self.GuildFactions[nameLower]
+
+		if isGuildie then
+			message.PLAYERGUILD = CLR:Colorize("40ff40", "G")
+			message.PREPLAYERDELIM = ":"
+			if hasLevel then
+				message.PLAYERGUILDDELIM = ":"
+			end
+		end
+
+		if faction then
+			local color = GetFactionColor(faction)
+			local letter = faction:sub(1, 1) -- "A" or "H"
+			message.PLAYERFACTION = color and color:WrapTextInColorCode(letter) or letter
+			message.PREPLAYERDELIM = ":"
+			if isGuildie then
+				message.PLAYERFACTIONDELIM = ":"
+			elseif hasLevel then
+				message.PLAYERGUILDDELIM = ":"
+			end
 		end
 
 		-- Add raid subgroup information if needed
