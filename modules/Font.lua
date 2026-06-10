@@ -366,7 +366,7 @@ Prat:AddModuleToLoad(function()
 			local f, s, _ = cf:GetFont()
 			cf:SetFont(f, s, mode)
 
-			if self.profile.db.monochrome then
+			if self.db.profile.monochrome then
 				local c = self.db.profile.shadowcolor
 				cf:SetShadowColor(c.r, c.g, c.b, c.a)
 			end
