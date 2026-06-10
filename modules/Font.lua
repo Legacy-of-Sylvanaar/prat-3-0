@@ -53,6 +53,8 @@ Prat:AddModuleToLoad(function()
 		["Thick Outline"] = true,
 		["monochrome_name"] = "Toggle Monochrome",
 		["monochrome_desc"] = "Toggles monochrome coloring of the font.",
+		["slug_name"] = "Toggle Slug",
+		["slug_desc"] = "Toggles slug rendering of the font.",
 		["shadowcolor_name"] = "Set Shadow Color",
 		["shadowcolor_desc"] = "Set the color of the shadow effect.",
 		["whisper_tabs"] = "Whisper Tabs",
@@ -121,6 +123,7 @@ Prat:AddModuleToLoad(function()
 			autorestore = false,
 			outlinemode = "",
 			monochrome = false,
+			slug = false,
 			shadowcolor = {
 				r = 0,
 				g = 0,
@@ -218,11 +221,17 @@ Prat:AddModuleToLoad(function()
 				desc = PL["monochrome_desc"],
 				order = 160,
 			},
+			slug = {
+				type = "toggle",
+				name = PL["slug_name"],
+				desc = PL["slug_desc"],
+				order = 170,
+			},
 			shadowcolor = {
 				name = PL["shadowcolor_name"],
 				desc = PL["shadowcolor_desc"],
 				type = "color",
-				order = 170,
+				order = 180,
 				get = "GetColorValue",
 				set = "SetColorValue",
 			},
@@ -326,11 +335,14 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 
-		if not db.monochrome then
-			self:SetFontMode(db.outlinemode)
-		else
-			self:SetFontMode(db.outlinemode .. ", MONOCHROME")
+		local mode = db.outlinemode
+		if db.monochrome then
+			mode = mode .. ", MONOCHROME"
 		end
+		if db.slug then
+			mode = mode .. ", SLUG"
+		end
+		self:SetFontMode(mode)
 	end
 
 	function module:SetFontSize(cf, size)
@@ -349,12 +361,12 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:SetFontMode(mode, monochrome)
+	function module:SetFontMode(mode)
 		for _, cf in pairs(Prat.Frames) do
 			local f, s, _ = cf:GetFont()
 			cf:SetFont(f, s, mode)
 
-			if monochrome then
+			if self.profile.db.monochrome then
 				local c = self.db.profile.shadowcolor
 				cf:SetShadowColor(c.r, c.g, c.b, c.a)
 			end
