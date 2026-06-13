@@ -189,10 +189,9 @@ Prat:AddModuleToLoad(function()
 		blockChannelInvites = "CVarBool"
 	}
 
-	Prat:SetModuleInit(module.name,
-		function(self)
-			self:RegisterEvent("PLAYER_ENTERING_WORLD")
-		end)
+	Prat:SetModuleInit(module.name, function(self)
+		self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	end)
 
 	function module:PLAYER_ENTERING_WORLD()
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -430,6 +429,11 @@ Prat:AddModuleToLoad(function()
 				end
 				if GetChannelName(index) == 0 then
 					JoinChannelByName(name)
+					-- Hide password request when we just joined
+					local staticPopup = _G[StaticPopup_Visible("CHAT_CHANNEL_PASSWORD") or ""]
+					if staticPopup then
+						StaticPopup_Hide("CHAT_CHANNEL_PASSWORD")
+					end
 				end
 				index = index + 1
 			end
@@ -455,6 +459,11 @@ Prat:AddModuleToLoad(function()
 						JoinChannelByName(name)
 					else
 						ChatFrame_AddNewCommunitiesChannel(1, clubId, streamId)
+					end
+					-- Hide password request when we just joined
+					local staticPopup = _G[StaticPopup_Visible("CHAT_CHANNEL_PASSWORD") or ""]
+					if staticPopup then
+						StaticPopup_Hide("CHAT_CHANNEL_PASSWORD")
 					end
 				end
 				index = index + 1
