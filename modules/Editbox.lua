@@ -1,5 +1,3 @@
--- This is the editbox module from Chatter by Antiarc
-
 local GetCVar = _G.GetCVar or _G.C_CVar.GetCVar
 
 local ChatEdit_ChooseBoxForSend = _G.ChatEdit_ChooseBoxForSend or _G.ChatFrameUtil.ChooseBoxForSend
@@ -8,7 +6,6 @@ local ChatEdit_DeactivateChat = _G.ChatEdit_DeactivateChat or _G.ChatFrameUtil.D
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Editbox", "AceHook-3.0")
 	local PL = module.PL
-
 
 	--@debug@
 	PL:AddLocale("enUS", {
@@ -41,80 +38,49 @@ Prat:AddModuleToLoad(function()
 	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
 
 	--[===[@non-debug@
-  do
-	local L
+	do
+		local L
 
+		L = {}
+		--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		PL:AddLocale("enUS",L)
 
-  L = {}
-  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		L = {}
+		--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		PL:AddLocale("frFR",L)
 
-  PL:AddLocale("enUS",L)
+		L = {}
+		--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		PL:AddLocale("deDE",L)
 
+		L = {}
+		--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		PL:AddLocale("koKR",L)
 
+		L = {}
+		--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		PL:AddLocale("esMX",L)
 
-  L = {}
-  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		L = {}
+		--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		PL:AddLocale("ruRU",L)
 
-  PL:AddLocale("frFR",L)
+		L = {}
+		--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		PL:AddLocale("zhCN",L)
 
+		L = {}
+		--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		PL:AddLocale("esES",L)
 
-
-  L = {}
-  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
-
-  PL:AddLocale("deDE",L)
-
-
-
-  L = {}
-  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
-
-  PL:AddLocale("koKR",L)
-
-
-
-  L = {}
-  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
-
-  PL:AddLocale("esMX",L)
-
-
-
-  L = {}
-  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
-
-  PL:AddLocale("ruRU",L)
-
-
-
-  L = {}
-  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
-
-  PL:AddLocale("zhCN",L)
-
-
-
-  L = {}
-  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
-
-  PL:AddLocale("esES",L)
-
-
-
-  L = {}
-  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
-
-  PL:AddLocale("zhTW",L)
-
-
-  end
-  --@end-non-debug@]===]
+		L = {}
+		--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Editbox")@
+		PL:AddLocale("zhTW",L)
+	end
+	--@end-non-debug@]===]
 
 	local Media = Prat.Media
 	local backgrounds, borders, fonts = {}, {}, {}
-	local CreateFrame = _G.CreateFrame
-	local max = _G.max
-	local pairs = _G.pairs
 
 	local VALID_ATTACH_POINTS = {
 		TOP = PL["Top"],
@@ -374,18 +340,16 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	Prat:SetModuleInit(module,
-		function(self)
+	Prat:SetModuleInit(module, function(self)
+		Media.RegisterCallback(module, "LibSharedMedia_Registered")
+		self.frames = {}
 
-			Media.RegisterCallback(module, "LibSharedMedia_Registered")
-			self.frames = {}
+		self:LibSharedMedia_Registered()
 
-			self:LibSharedMedia_Registered()
-
-			for i = 1, #CHAT_FRAMES do
-				MakePratEditbox(self, i)
-			end
-		end)
+		for i = 1, #CHAT_FRAMES do
+			MakePratEditbox(self, i)
+		end
+	end)
 
 	local function OnArrowPressed(self, key)
 		-- We cannot call SetText while in lockdown
@@ -393,6 +357,9 @@ Prat:AddModuleToLoad(function()
 			return
 		end
 		if #self.history_lines == 0 then
+			return
+		end
+		if key ~= "DOWN" and key ~= "UP" then
 			return
 		end
 
@@ -408,8 +375,6 @@ Prat:AddModuleToLoad(function()
 			if self.history_index > #self.history_lines then
 				self.history_index = 1
 			end
-		else
-			return -- We don't want to interfere with LEFT/RIGHT because the tab-complete stuff might use it; we're already killing the other two.
 		end
 
 		self:SetText(self.history_lines[self.history_index])
@@ -449,7 +414,7 @@ Prat:AddModuleToLoad(function()
 		header:SetFont(Media:Fetch("font", self.db.profile.font), s2, m2)
 
 		f:SetAltArrowKeyMode(module.db.profile.useAltKey and 1 or nil)
-		if (not module.db.profile.useAltKey) then
+		if not module.db.profile.useAltKey then
 			enableArrowKeys(f)
 		end
 		self:SetBackdrop()
@@ -489,7 +454,7 @@ Prat:AddModuleToLoad(function()
 			header:SetFont(Media:Fetch("font", self.db.profile.font), s2, m2)
 
 			f:SetAltArrowKeyMode(module.db.profile.useAltKey and 1 or nil)
-			if (not module.db.profile.useAltKey) then
+			if not module.db.profile.useAltKey then
 				enableArrowKeys(f)
 			end
 		end
@@ -499,18 +464,10 @@ Prat:AddModuleToLoad(function()
 		self:SetAttach(nil, self.db.profile.editX, self.db.profile.editY, self.db.profile.editW)
 
 		if _G.ChatFrameUtil then
-			if _G.ChatFrameUtil.DeactivateChat then
-				self:SecureHook(_G.ChatFrameUtil, "DeactivateChat", "ChatEdit_DeactivateChat")
-			end
-			if _G.ChatFrameUtil.SetLastActiveWindow then
-				self:SecureHook(_G.ChatFrameUtil, "SetLastActiveWindow", "ChatEdit_SetLastActiveWindow")
-			end
 			if _G.ChatFrameUtil.OpenChat then
 				self:SecureHook(_G.ChatFrameUtil, "OpenChat", "ChatFrame_OpenChat")
 			end
 		else
-			self:SecureHook("ChatEdit_DeactivateChat")
-			self:SecureHook("ChatEdit_SetLastActiveWindow")
 			self:SecureHook("ChatFrame_OpenChat")
 		end
 
@@ -577,24 +534,6 @@ Prat:AddModuleToLoad(function()
 
 	function module:GetDescription()
 		return PL["Editbox options."]
-	end
-
-	-- changed the Hide to SetAlpha(0), the new ChatSystem OnHide handlers go though some looping
-	-- when in IM style and Classic style, cause heavy delays on the chat edit box.
-	function module:ChatEdit_SetLastActiveWindow(frame)
-		if frame:IsShown() then
-			frame:SetAlpha(0)
-		else
-			frame:SetAlpha(1)
-		end
-		frame:EnableMouse(true)
-	end
-
-	function module:ChatEdit_DeactivateChat(frame)
-		if frame:IsShown() then
-			frame:SetAlpha(0)
-			frame:EnableMouse(false)
-		end
 	end
 
 	function module:SetBackdrop()
@@ -680,7 +619,7 @@ Prat:AddModuleToLoad(function()
 					if self.db.profile.editX and self.db.profile.editY then
 						x, y, w = self.db.profile.editX, self.db.profile.editY, self.db.profile.editW
 					else
-						x, y, w = frame:GetLeft(), frame:GetTop(), max(frame:GetWidth(), (frame:GetRight() or 0) - (frame:GetLeft() or 0))
+						x, y, w = frame:GetLeft(), frame:GetTop(), math.max(frame:GetWidth(), (frame:GetRight() or 0) - (frame:GetLeft() or 0))
 					end
 				end
 				if not w or w < 10 then
@@ -747,4 +686,4 @@ Prat:AddModuleToLoad(function()
 	end
 
 	return
-end) -- Prat:AddModuleToLoad
+end)
