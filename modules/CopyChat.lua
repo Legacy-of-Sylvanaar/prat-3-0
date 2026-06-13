@@ -24,6 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
+local issecretvalue = issecretvalue or function() return false end
+
 local ChatEdit_GetActiveWindow = _G.ChatEdit_GetActiveWindow or _G.ChatFrameUtil.GetActiveWindow
 local ChatEdit_ChooseBoxForSend = _G.ChatEdit_ChooseBoxForSend or _G.ChatFrameUtil.ChooseBoxForSend
 
@@ -161,7 +163,9 @@ Prat:AddModuleToLoad(function()
 				desc = PL["Copy all of the text in the selected chat frame into an edit box"],
 				type = "execute",
 				order = 190,
-				func = "MenuScrape"
+				func = function()
+					module:DoCopyChat(SELECTED_CHAT_FRAME)
+				end
 			},
 			copyformat = {
 				name = PL["Copy Text Format"],
@@ -197,7 +201,10 @@ Prat:AddModuleToLoad(function()
 		}
 	})
 
+	local PratCCFrame, PratCCText, PratCCFrameScrollText
 	Prat:SetModuleInit(module.name, function(self)
+		self:CreateCopyFrame()
+
 		PratCCFrameScrollText:SetScript("OnTextChanged", function(this)
 			self:OnTextChanged(this)
 		end)
@@ -209,14 +216,7 @@ Prat:AddModuleToLoad(function()
 		Prat.RegisterChatCommand("copychat", function()
 			local frame = SELECTED_CHAT_FRAME
 			if frame then
-				self:ScrapeChatFrame(frame)
-			end
-		end)
-
-		Prat.RegisterChatCommand("copychatfull", function()
-			local frame = SELECTED_CHAT_FRAME
-			if frame then
-				self:ScrapeFullChatFrame(frame)
+				self:DoCopyChat(frame)
 			end
 		end)
 
@@ -255,18 +255,6 @@ Prat:AddModuleToLoad(function()
 		PratCCFrame:Hide()
 	end
 
-	function module:EnterSelectMode(frame)
-		frame = frame or SELECTED_CHAT_FRAME
-
-		frame:SetTextCopyable(true)
-		frame:EnableMouse(true)
-		frame:SetOnTextCopiedCallback(function(this)
-			this:SetTextCopyable(false)
-			this:EnableMouse(false)
-			this:SetOnTextCopiedCallback(nil)
-		end)
-	end
-
 	local function CleanText(text)
 		text = text:gsub("|K.-|k", "???")
 		return StripHyperlinks(text, false, true)
@@ -279,13 +267,13 @@ Prat:AddModuleToLoad(function()
 		if frame and self.db.profile.on and self.db.profile.copytimestamps then
 			for _, visibleLine in ipairs(frame.visibleLines) do
 				local isMouseOver = visibleLine:IsMouseOver()
-				if (not issecretvalue or not issecretvalue(isMouseOver)) and isMouseOver then
+				if not issecretvalue(isMouseOver) and isMouseOver then
 					local info = visibleLine.messageInfo
 					if info and info.message then
-						local text = issecretvalue and issecretvalue(info.message) and "<SECRET>" or CleanText(info.message)
+						local text = issecretvalue(info.message) and "<SECRET>" or CleanText(info.message)
 						local editBox = ChatEdit_ChooseBoxForSend(frame);
 
-						if (editBox ~= ChatEdit_GetActiveWindow()) then
+						if editBox ~= ChatEdit_GetActiveWindow() then
 							ChatFrame_OpenChat(text, frame);
 						else
 							editBox:SetText(text);
@@ -308,11 +296,10 @@ Prat:AddModuleToLoad(function()
 		return stamp
 	end
 
-	module.lines = {}
 	module.str = nil
 
 	function module:GetFormattedLine(line, r, g, b)
-		local fmt = self.copyformat or self.db.profile.copyformat
+		local fmt = self.db.profile.copyformat
 		local CLR = Prat.CLR
 
 		line = line:gsub("|c00000000|r", "")
@@ -332,54 +319,13 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:ScrapeChatFrame(frame, noshow)
-		self:DoCopyChat(frame, noshow)
-	end
-
-	function module:ScrapeFullChatFrame(frame)
-		self:DoCopyChatScroll(frame)
-	end
-
-	function module:MenuScrape()
-		self:ScrapeChatFrame(SELECTED_CHAT_FRAME)
-	end
-
-	function module:DoCopyChatScroll(frame)
-		local scrapelines = {}
-		local str
-
-		if frame:GetNumMessages() == 0 then
-			return
-		end
-
-		for i = frame:GetNumMessages(), 1, -1 do
-			local msg = frame.historyBuffer:GetEntryAtIndex(i)
-			msg = msg and msg.message
-
-			if msg then
-				scrapelines[#scrapelines + 1] = issecretvalue and issecretvalue(msg) and "<SECRET>" or CleanText(msg)
-			end
-		end
-
-		str = table.concat(scrapelines, "\n")
-
-		PratCCFrameScrollText:SetText(str or "")
-		PratCCText:SetText(PL["ChatFrame"] .. frame:GetName():gsub("ChatFrame", "") .. PL[" Text"])
-		PratCCFrame:Show()
-	end
-
-	function module:DoCopyChatArg(arg)
-		self:DoCopyChat(unpack(arg))
-	end
-
-	function module:DoCopyChat(frame, noshow)
+	function module:DoCopyChat(frame)
 		local lines = {}
-
 		for i = 1, frame:GetNumMessages() do
 			local msg = frame:GetMessageInfo(i)
 
 			if msg then
-				if issecretvalue and issecretvalue(msg) then
+				if issecretvalue(msg) then
 					lines[#lines + 1] = "<SECRET>"
 				else
 					lines[#lines + 1] = CleanText(msg)
@@ -388,33 +334,28 @@ Prat:AddModuleToLoad(function()
 		end
 
 		local str = table.concat(lines, "\n")
-
-		if not noshow then
-			if (self.copyformat and self.copyformat == "wowace") or self.db.profile.copyformat == "wowace" then
-				str = "[bgcolor=black]" .. str .. "[/bgcolor]"
-			end
-
-			PratCCFrameScrollText:SetText(str or "")
-			PratCCText:SetText(PL["ChatFrame"] .. frame:GetName():gsub("ChatFrame", "") .. PL[" Text"])
-			PratCCFrame:Show()
+		if self.db.profile.copyformat == "wowace" then
+			str = "[bgcolor=black]" .. str .. "[/bgcolor]"
 		end
+		self.str = str
+		PratCCFrameScrollText:SetText(str or "")
+		PratCCText:SetText(PL["ChatFrame"] .. frame:GetName():gsub("ChatFrame", "") .. PL[" Text"])
+		PratCCFrame:Show()
 	end
 
-	function module:CopyChat()
-		module:ScrapeChatFrame(SELECTED_CHAT_FRAME)
+	function module:CopyChat() -- Used by bindings
+		module:DoCopyChat(SELECTED_CHAT_FRAME)
 	end
 
 	function module:OnTextChanged(this)
 		if self.str and this:GetText() ~= self.str then
 			this:SetText(self.str)
-			self.str = nil
 		end
-		local s = PratCCFrameScrollScrollBar
 		this:GetParent():UpdateScrollChildRect()
-		local _, m = s:GetMinMaxValues()
+		local _, m = PratCCFrameScrollScrollBar:GetMinMaxValues()
 		if m > 0 and this.max ~= m then
 			this.max = m
-			s:SetValue(m)
+			PratCCFrameScrollScrollBar:SetValue(m)
 		end
 	end
 
@@ -434,21 +375,9 @@ Prat:AddModuleToLoad(function()
 	end
 
 	do
-		local function reminderOnClick(self, button)
+		local function reminderOnClick(self)
 			PlaySound(SOUNDKIT.IG_CHAT_BOTTOM);
-			if button == "RightButton" then
-				module:EnterSelectMode(self:GetParent())
-			else
-				if (IsShiftKeyDown()) then
-					module:EnterSelectMode(self:GetParent())
-				elseif (IsControlKeyDown()) then
-					module:ScrapeFullChatFrame(self:GetParent())
-				else
-					module:ScrapeChatFrame(self:GetParent())
-				end
-			end
-
-			module.copyformat = nil
+			module:DoCopyChat(self:GetParent())
 		end
 
 		local function reminderOnEnter(self)
@@ -494,5 +423,44 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	return
+	function module:CreateCopyFrame()
+		PratCCFrame = CreateFrame("Frame", "PratCCFrame", UIParent, "DialogBoxFrame,BackdropTemplate")
+		PratCCFrame:SetSize(500, 400)
+		PratCCFrame:SetMovable(true)
+		PratCCFrame:EnableMouse(true)
+		PratCCFrame:SetClampedToScreen(true)
+		PratCCFrame:RegisterForDrag("LeftButton")
+		PratCCFrame:SetBackdrop({
+			bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+			edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+			tileSize = 16,
+			edgeSize = 16,
+			insets = { left = 5, right = 5, top = 5, bottom = 5 },
+		})
+		PratCCFrame:SetScript("OnDragStart", function(frame)
+			frame:StartMoving()
+		end)
+		PratCCFrame:SetScript("OnDragStop", function(frame)
+			frame:StopMovingOrSizing()
+		end)
+
+		PratCCText = PratCCFrame:CreateFontString("PratCCText", "ARTWORK", "GameFontHighlight")
+		PratCCText:SetPoint("TOPLEFT", PratCCFrame, "TOPLEFT", 5, -5)
+
+		local PratCCFrameScroll = CreateFrame("ScrollFrame", "PratCCFrameScroll", PratCCFrame, "UIPanelScrollFrameTemplate")
+		PratCCFrameScroll:SetToplevel(true)
+		PratCCFrameScroll:SetSize(455, 330)
+		PratCCFrameScroll:SetPoint("TOP", PratCCFrame, "TOP", -10, -30)
+		PratCCFrameScroll:SetPoint("BOTTOM", _G["PratCCFrameButton"], "TOP", 0, 5)
+
+		PratCCFrameScrollText = CreateFrame("EditBox", "PratCCFrameScrollText", PratCCFrameScroll)
+		PratCCFrameScrollText:SetSize(450, 344)
+		PratCCFrameScrollText:SetMultiLine(true)
+		PratCCFrameScrollText:SetAutoFocus(true)
+		PratCCFrameScrollText:EnableMouse(true)
+		PratCCFrameScrollText:SetMaxLetters(999999)
+		PratCCFrameScrollText:SetFontObject("ChatFontNormal")
+
+		PratCCFrameScroll:SetScrollChild(PratCCFrameScrollText)
+	end
 end)
