@@ -543,7 +543,6 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:ChatEdit_ActivateChat(frame)
-		print(frame:IsShown() and "true" or "false")
 		if frame:IsShown() then
 			frame:SetAlpha(1)
 			frame:EnableMouse(true)
