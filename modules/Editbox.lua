@@ -464,6 +464,12 @@ Prat:AddModuleToLoad(function()
 		self:SetAttach(nil, self.db.profile.editX, self.db.profile.editY, self.db.profile.editW)
 
 		if _G.ChatFrameUtil then
+			if _G.ChatFrameUtil.DeactivateChat then
+				self:SecureHook(_G.ChatFrameUtil, "DeactivateChat", "ChatEdit_DeactivateChat")
+			end
+			if _G.ChatFrameUtil.SetLastActiveWindow then
+				self:SecureHook(_G.ChatFrameUtil, "ActivateChat", "ChatEdit_ActivateChat")
+			end
 			if _G.ChatFrameUtil.OpenChat then
 				self:SecureHook(_G.ChatFrameUtil, "OpenChat", "ChatFrame_OpenChat")
 			end
@@ -534,6 +540,21 @@ Prat:AddModuleToLoad(function()
 
 	function module:GetDescription()
 		return PL["Editbox options."]
+	end
+
+	function module:ChatEdit_ActivateChat(frame)
+		print(frame:IsShown() and "true" or "false")
+		if frame:IsShown() then
+			frame:SetAlpha(1)
+			frame:EnableMouse(true)
+		end
+	end
+
+	function module:ChatEdit_DeactivateChat(frame)
+		if frame:IsShown() then
+			frame:SetAlpha(0)
+			frame:EnableMouse(false)
+		end
 	end
 
 	function module:SetBackdrop()
