@@ -2,12 +2,18 @@ std = "lua51"
 max_line_length = false
 exclude_files = {
 	"**/Libs/**/*.lua",
+	"**/.release/**/*.lua",
 	".luacheckrc",
 }
 ignore = {
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
 	"11./BINDING_.*", -- Setting an undefined (Keybinding header) global variable
 	"212/self", -- Unused argument 'self'
+}
+files["locales/**/*.lua"] = {
+    ignore = {
+        "211/L",
+    }
 }
 globals = {
 	-- Saved Variables
@@ -17,6 +23,7 @@ globals = {
 
 	-- Prat
 	"Prat",
+	"PRAT_L",
 	"Prat_PopupFrame",
 	"Prat_PopupFrameText",
 	"Prat_ToggleOptionsWindow",

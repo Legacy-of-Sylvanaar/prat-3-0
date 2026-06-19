@@ -38,7 +38,6 @@ local ChatFrame_ReceiveAllPrivateMessages = _G.ChatFrame_ReceiveAllPrivateMessag
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Memory", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
-	-- define localized strings
 	local PL = module.PL
 
 	Prat:SetModuleDefaults(module.name, {
@@ -50,95 +49,6 @@ Prat:AddModuleToLoad(function()
 			autoload = false
 		}
 	})
-
-	--@debug@
-	PL:AddLocale("enUS", {
-		["module_name"] = "Memory",
-		["module_desc"] = "Support saving the Blizzard chat settings to your profile so they can be synced across all your characters",
-		module_info = "|cffff8888THIS MODULE IS EXPERIMENTAL|r \n\n This module allows you to load/save all your chat settings and frame layout. These settings can be loaded on any of your characters",
-		autoload_name = "Load Settings Automatically",
-		autoload_desc = "Automatically load the saved settings when you log in",
-		load_name = "Load Settings",
-		load_desc = "Load the chat frame/tabs from the last save",
-		save_name = "Save Settings",
-		save_desc = "Save the current chat frame/tab configuration",
-		msg_nosettings = "No stored settings",
-		msg_settingsloaded = "Settings Loaded",
-		command_header_name = "Commands",
-		options_header_name = "Options",
-		msg_loadfailed = "Could not fully restore the chat settings"
-	})
-	--@end-debug@
-
-	-- These Localizations are auto-generated. To help with localization
-	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
-
-
-	--[===[@non-debug@
-  do
-	  local L
-
-
-  L = {}
-  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("enUS", L)
-
-
-
-  L = {}
-  --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("itIT", L)
-
-
-
-  L = {}
-  --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("ptBR", L)
-
-
-
-  L = {}
-  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("frFR", L)
-
-
-
-  L = {}
-  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("deDE", L)
-
-
-
-  L = {}
-  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("koKR",  L)
-
-
-  L = {}
-  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("esMX",  L)
-
-
-  L = {}
-  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("ruRU",  L)
-
-
-  L = {}
-  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("zhCN",  L)
-
-
-  L = {}
-  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("esES",  L)
-
-
-  L = {}
-  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Memory")@
-  PL:AddLocale("zhTW",  L)
-  end
-  --@end-non-debug@]===]
 
 	Prat:SetModuleOptions(module.name, {
 		name = PL.module_name,

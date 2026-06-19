@@ -31,62 +31,6 @@ Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("TellTarget", "AceHook-3.0")
 	local PL = module.PL
 
-	--@debug@
-	PL:AddLocale("enUS", {
-		["TellTarget"] = true,
-		["Adds telltarget slash command (/tt)."] = true,
-		["Target does not exist."] = true,
-		["Target is not a player."] = true,
-		["No target selected."] = true,
-		["NoTarget"] = true,
-		["/tt"] = true,
-	})
-	--@end-debug@
-
-	-- These Localizations are auto-generated. To help with localization
-	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
-	--[===[@non-debug@
-	do
-		local L
-
-		L = {}
-		--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-		PL:AddLocale("enUS",L)
-
-		L = {}
-		--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-		PL:AddLocale("frFR",L)
-
-		L = {}
-		--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-		PL:AddLocale("deDE",L)
-
-		L = {}
-		--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-		PL:AddLocale("koKR",L)
-
-		L = {}
-		--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-		PL:AddLocale("esMX",L)
-
-		L = {}
-		--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-		PL:AddLocale("ruRU",L)
-
-		L = {}
-		--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-		PL:AddLocale("zhCN",L)
-
-		L = {}
-		--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-		PL:AddLocale("esES",L)
-
-		L = {}
-		--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="TellTarget")@
-		PL:AddLocale("zhTW",L)
-	end
-	--@end-non-debug@]===]
-
 	Prat:SetModuleDefaults(module.name, {
 		profile = {
 			on = true,

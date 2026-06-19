@@ -26,7 +26,20 @@ do
 				if k == 'GetDebugName' or k == 'ToDebugString' then -- Called via WoW's debuglocals
 					return
 				end
-				error("Locale key " .. tostring(k) .. " is not provided - " .. name)
+				-- Check global locale table
+				local key = tostring(k)
+				if name then
+					key = name .. '/' .. key
+				end
+				local value = PRAT_L[key]
+				if value == true then
+					return tostring(k)
+				end
+				if value ~= nil then
+					return value
+				end
+				-- Locale missing, error
+				error('Locale key ' .. key .. ' is not provided.')
 			end
 		})
 	end
@@ -66,7 +79,6 @@ do
 		["Prat_Font"] = "display",
 		["Prat_ChatTabs"] = "display",
 		["Prat_Buttons"] = "display",
-		["Prat_OriginalButtons"] = "display",
 		["Prat_SideTabs"] = "display",
 
 		--formatting

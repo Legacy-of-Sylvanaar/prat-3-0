@@ -28,61 +28,6 @@ Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Fading")
 	local PL = module.PL
 
-	--@debug@
-	PL:AddLocale("enUS", {
-		["module_name"] = "Fading",
-		["module_desc"] = "Chat window text fading options.",
-		["textfade_name"] = "Enable Fading",
-		["textfade_desc"] = "Toggle enabling text fading for each chat window.",
-		["duration_name"] = "Set Fading Delay (Seconds)",
-		["duration_desc"] = "Set the number of seconds to wait before before fading text of chat windows.",
-	})
-	--@end-debug@
-
-	-- These Localizations are auto-generated. To help with localization
-	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
-	--[===[@non-debug@
-	do
-		local L
-
-		L = {}
-		--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-		PL:AddLocale("enUS",L)
-
-		L = {}
-		--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-		PL:AddLocale("frFR",L)
-
-		L = {}
-		--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-		PL:AddLocale("deDE",L)
-
-		L = {}
-		--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-		PL:AddLocale("koKR",L)
-
-		L = {}
-		--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-		PL:AddLocale("esMX",L)
-
-		L = {}
-		--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-		PL:AddLocale("ruRU",L)
-
-		L = {}
-		--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-		PL:AddLocale("zhCN",L)
-
-		L = {}
-		--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-		PL:AddLocale("esES",L)
-
-		L = {}
-		--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Fading")@
-		PL:AddLocale("zhTW",L)
-	end
-	--@end-non-debug@]===]
-
 	Prat:SetModuleDefaults(module.name, {
 		profile = {
 			on = true,

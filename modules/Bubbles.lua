@@ -27,102 +27,6 @@
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Bubbles")
 	local PL = module.PL
-	module._classic_era = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
-
-	--@debug@
-	PL:AddLocale("enUS", {
-		module_name = "Bubbles",
-		module_desc = "Chat bubble related customizations",
-		shorten_name = "Shorten Bubbles",
-		shorten_desc = "Shorten the chat bubbles down to a single line each. Mouse over the bubble to expand the text.",
-		color_name = "Color Bubbles",
-		color_desc = "Color the chat bubble border the same as the chat type.",
-		format_name = "Format Text",
-		format_desc = "Apply Prat's formatting to the chat bubble text.",
-		icons_name = "Show Raid Icons",
-		icons_desc = "Show raid icons in the chat bubbles.",
-		font_name = "Use Chat Font",
-		font_desc = "Use the same font you are using on the chatframe",
-		fontsize_name = "Font Size",
-		fontsize_desc = "Set the chat bubble font size",
-		transparent_name = "Transparent Bubbles",
-		transparent_desc = "Hide background and border textures from chat bubbles. (/reload required to undo this option)",
-	})
-	--@end-debug@
-
-	-- These Localizations are auto-generated. To help with localization
-	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
-
-	--[===[@non-debug@
-  do
-	  local L
-
-
-  L = {}
-  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Bubbles")@
-
-	PL:AddLocale("enUS",L)
-
-
-
-  L = {}
-  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Bubbles")@
-
-	PL:AddLocale("frFR",L)
-
-
-
-  L = {}
-  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Bubbles")@
-
-	PL:AddLocale("deDE",L)
-
-
-
-  L = {}
-  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Bubbles")@
-
-	PL:AddLocale("koKR",L)
-
-
-
-  L = {}
-  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Bubbles")@
-
-	PL:AddLocale("esMX",L)
-
-
-
-  L = {}
-  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Bubbles")@
-
-	PL:AddLocale("ruRU",L)
-
-
-
-  L = {}
-  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Bubbles")@
-
-	PL:AddLocale("zhCN",L)
-
-
-
-  L = {}
-  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Bubbles")@
-
-	PL:AddLocale("esES",L)
-
-
-
-  L = {}
-  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Bubbles")@
-
-	PL:AddLocale("zhTW",L)
-
-
-  end
-  --@end-non-debug@]===]
-
 
 	Prat:SetModuleDefaults(module.name, {
 		profile = {
@@ -319,7 +223,7 @@ Prat:AddModuleToLoad(function()
 		-- includeForbidden is false by default but in case default changes at some point
 		for _, chatBubbleObj in pairs(C_ChatBubbles.GetAllChatBubbles(false)) do
 			local chatBubble
-			if self._classic_era then
+			if Prat.IsClassic then
 				-- yeye, hardcoded's bad, but whole client is hardco-dead
 				chatBubble = chatBubbleObj
 				chatBubble.Center, chatBubble.TopLeftCorner, chatBubble.TopRightCorner, chatBubble.BottomLeftCorner, chatBubble.BottomRightCorner,

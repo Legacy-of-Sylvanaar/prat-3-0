@@ -24,105 +24,9 @@
 --
 -------------------------------------------------------------------------------
 
-
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("PopupMessage", "LibSink-2.0")
 	local PL = module.PL
-
-	--@debug@
-	PL:AddLocale("enUS", {
-		["PopupMessage"] = true,
-		["Shows messages with your name in a popup."] = true,
-		["Set Separately"] = true,
-		["Toggle setting options separately for each chat window."] = true,
-		["show_name"] = "Show Popups",
-		["show_desc"] = "Show Popups for each window.",
-		["Show Popups"] = true,
-		["Show Popups for each window."] = true,
-		["show_perframename"] = "Show ChatFrame%d Popups",
-		["show_perframedesc"] = "Toggles showing popups on and off.",
-		["showall_name"] = "Show All Popups",
-		["showall_desc"] = "Show Popups for all chat windows.",
-		["Show All Popups"] = true,
-		["Show Popups for all chat windows."] = true,
-		["Add Nickname"] = true,
-		["Adds an alternate name to show in popups."] = true,
-		["Remove Nickname"] = true,
-		["Removes an alternate name to show in popups."] = true,
-		["Clear Nickname"] = true,
-		["Clears alternate name to show in popups."] = true,
-		["framealpha_name"] = "Popup Frame Alpha",
-		["framealpha_desc"] = "Set the alpha value of the popup frame when fully faded in.",
-		["Popup"] = true,
-		["Shows messages in a popup window."] = true,
-		-- 	["Use SCT Message"] = true,
-		--	["Show the text as an SCT message instead of in its own frame"] = true,
-	})
-	--@end-debug@
-
-	-- These Localizations are auto-generated. To help with localization
-	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
-
-
-	--[===[@non-debug@
-  do
-	  local L
-
-
-  L = {}
-  --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("enUS", L)
-
-
-
-  L = {}
-  --@localization(locale="itIT", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("itIT", L)
-
-
-
-  L = {}
-  --@localization(locale="ptBR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("ptBR", L)
-
-
-  L = {}
-  --@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("frFR",L)
-
-
-
-
-  L = {}
-  --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("deDE", L)
-
-
-  L = {}
-  --@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("koKR",L)
-
-  L = {}
-  --@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("esMX",L)
-
-  L = {}
-  --@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("ruRU",L)
-
-  L = {}
-  --@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("zhCN",L)
-
-  L = {}
-  --@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("esES",L)
-
-  L = {}
-  --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="PopupMessage")@
-  PL:AddLocale("zhTW",L)
-  end
-  --@end-non-debug@]===]
 
 	local EVENTS_EMOTES = {
 		["CHAT_MSG_BG_SYSTEM_ALLIANCE"] = true,
@@ -299,11 +203,6 @@ Prat:AddModuleToLoad(function()
 		Prat_PopupFrame.anim:Play()
 	end
 
-	local DEBUG
-	--@debug@
-	DEBUG = true
-	--@end-debug@
-
 	function module:Prat_PostAddMessage(_, message, frame, event, _, r, g, b)
 		if self.pouring then
 			return
@@ -316,7 +215,7 @@ Prat:AddModuleToLoad(function()
 
 		if not (EVENTS_EMOTES[event] or EVENTS_IGNORE[event]) then
 			if self.db.profile.showall or self.db.profile.show[frame:GetName()] then
-				if DEBUG or not (message.ORG.PLAYER and self.playerName and message.ORG.PLAYER:match(self.playerName)) then
+				if not (message.ORG.PLAYER and self.playerName and message.ORG.PLAYER:match(self.playerName)) then
 					self:CheckText(message.ORG.MESSAGE, message.OUTPUT, event, r, g, b, message.LINE_ID)
 				end
 			end

@@ -51,6 +51,7 @@
 
 Libs.xml
 
+locales\includes.xml
 fonts\includes.xml
 addon\includes.xml
 services\includes.xml

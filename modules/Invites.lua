@@ -33,61 +33,6 @@ Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Invites", "AceHook-3.0")
 	local PL = module.PL
 
-	--@debug@
-	PL:AddLocale("enUS", {
-		module_name = "Invites",
-		module_desc = "Options for easy inviting of players to groups",
-		["Enable Alt-Invite"] = true,
-		["Toggle group invites by alt-clicking on player name."] = true,
-		["Enable Invite Links"] = true,
-		["Toggle group invites by alt-clicking hyperlinked keywords like 'invite'."] = true,
-	})
-	--@end-debug@
-
-	-- These Localizations are auto-generated. To help with localization
-	-- please go to http://www.wowace.com/projects/prat-3-0/localization/
-	--[===[@non-debug@
-	do
-		local L
-
-		L = {}
-		--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Invites")@
-		PL:AddLocale("enUS",L)
-
-		L = {}
-		--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Invites")@
-		PL:AddLocale("frFR",L)
-
-		L = {}
-		--@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Invites")@
-		PL:AddLocale("deDE",L)
-
-		L = {}
-		--@localization(locale="koKR", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Invites")@
-		PL:AddLocale("koKR",L)
-
-		L = {}
-		--@localization(locale="esMX", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Invites")@
-		PL:AddLocale("esMX",L)
-
-		L = {}
-		--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Invites")@
-		PL:AddLocale("ruRU",L)
-
-		L = {}
-		--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Invites")@
-		PL:AddLocale("zhCN",L)
-
-		L = {}
-		--@localization(locale="esES", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Invites")@
-		PL:AddLocale("esES",L)
-
-		L = {}
-		--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", same-key-is-true=true, namespace="Invites")@
-		PL:AddLocale("zhTW",L)
-	end
-	--@end-non-debug@]===]
-
 	Prat:SetModuleOptions(module, {
 		name = PL.module_name,
 		desc = PL.module_desc,
