@@ -352,6 +352,12 @@ function addon:FCF_CopyChatSettings(chatFrame)
 
 		if not IsCombatLog(chatFrame) then
 			Prat.HookedFrames[name] = chatFrame
+
+			if ChatFrameMixin and ChatFrameMixin.MessageEventHandler then
+				chatFrame.MessageEventHandler = function(frame, event, ...)
+					return addon:ChatFrame_MessageEventHandler(frame, event, ...)
+				end
+			end
 		end
 
 		Prat.callbacks:Fire(Prat.Events.FRAMES_UPDATED, name, chatFrame)
