@@ -1,5 +1,5 @@
 ## Interface: 120007, 120100
-## Interface-Classic: 11508, 11509
+## Interface-Classic: 11509
 ## Interface-BCC: 20506
 ## Interface-Wrath: 30405
 ## Interface-Titan: 38001

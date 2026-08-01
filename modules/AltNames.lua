@@ -426,9 +426,16 @@ Prat:AddModuleToLoad(function()
 
 	function module:HookTooltip()
 		if self.altertooltip then
-
-
-			if Prat.IsClassic then
+			if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall then
+				TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip, data)
+					if tooltip == GameTooltip and self.altertooltip then
+						local unitid = UnitTokenFromGUID(data.guid)
+						if (not issecretvalue or not issecretvalue(unitid)) and UnitIsPlayer(unitid) then
+							self:ModifyUnitTooltip(unitid)
+						end
+					end
+				end)
+			else
 				self:SecureHookScript(GameTooltip, 'OnTooltipSetUnit', function()
 					if self.altertooltip and not self.showingtooltip then
 						-- check who / what the tooltip's being displayed for
@@ -439,15 +446,6 @@ Prat:AddModuleToLoad(function()
 				self:SecureHookScript(GameTooltip, 'OnTooltipCleared', function()
 					-- got to reset the flag so we know when to readd the lines
 					self.showingtooltip = false
-				end)
-			else
-				TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip, data)
-					if tooltip == GameTooltip and self.altertooltip then
-						local unitid = UnitTokenFromGUID(data.guid)
-						if (not issecretvalue or not issecretvalue(unitid)) and UnitIsPlayer(unitid) then
-							self:ModifyUnitTooltip(unitid)
-						end
-					end
 				end)
 			end
 

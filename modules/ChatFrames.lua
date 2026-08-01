@@ -128,18 +128,16 @@ Prat:AddModuleToLoad(function()
 		self:SecureHook("FCF_SetWindowAlpha")
 		self:SecureHook("FCF_SetWindowColor")
 
-		if not Prat.IsClassic then
-			local prevClamp = ChatFrame1.SetClampRectInsets
-			self:SecureHook(ChatFrame1, "SetClampRectInsets", function(frame)
-				-- If in combat, SetClampRectInsets is protected... This should likely never happen, but to be safe.
-				if _G.InCombatLockdown() then
-					return
-				end
-				if self.db.profile.on and self.db.profile.removeclamp then
-					prevClamp(frame, 0, 0, 0, 0)
-				end
-			end)
-		end
+		local prevClamp = ChatFrame1.SetClampRectInsets
+		self:SecureHook(ChatFrame1, "SetClampRectInsets", function(frame)
+			-- If in combat, SetClampRectInsets is protected... This should likely never happen, but to be safe.
+			if _G.InCombatLockdown() then
+				return
+			end
+			if self.db.profile.on and self.db.profile.removeclamp then
+				prevClamp(frame, 0, 0, 0, 0)
+			end
+		end)
 	end
 
 	function module:OnModuleDisable()
@@ -160,6 +158,7 @@ Prat:AddModuleToLoad(function()
 		if m then
 			m:ConfigureAllChatFrames()
 		end
+
 	end
 	function module:FCF_DockFrame(frame)
 		if self.db.profile.removeclamp then
@@ -301,16 +300,12 @@ Prat:AddModuleToLoad(function()
 			maxWidth, maxHeight = prof.maxchatwidth, prof.maxchatheight
 
 			if prof.removeclamp then
-				if not Prat.IsClassic then
-					cf:SetClampedToScreen(false)
-				end
+				cf:SetClampedToScreen(false)
 				cf:SetClampRectInsets(0, 0, 0, 0)
-				if not Prat.IsClassic then
-					EventRegistry:RegisterCallback("EditMode.Enter", function()
-						cf:SetClampedToScreen(true)
-						EventRegistry:UnregisterCallback("EditMode.Enter", cf)
-					end, cf)
-				end
+				EventRegistry:RegisterCallback("EditMode.Enter", function()
+					cf:SetClampedToScreen(true)
+					EventRegistry:UnregisterCallback("EditMode.Enter", cf)
+				end, cf)
 			end
 
 			if cf.ScrollBar then

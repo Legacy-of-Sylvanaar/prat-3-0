@@ -311,11 +311,7 @@ Prat:AddModuleToLoad(function()
 					-- we check if the channel is joined and was joined in the past before
 					-- doing anything (avoids nil reference error on some new characters)
 					if curnum ~= nil and snum ~= nil and snum ~= curnum then
-						if Prat.IsClassic then
-							SwapChatChannelByLocalID(snum, curnum)
-						else
-							C_ChatInfo.SwapChatChannelsByChannelIndex(snum, curnum)
-						end
+						C_ChatInfo.SwapChatChannelsByChannelIndex(snum, curnum)
 					end
 				end
 
@@ -326,63 +322,36 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	if Prat.IsClassic then
-		function module:RestoreChannels(...)
-			local index = 1
-			for i = 1, select("#", ...), 3 do
-				local num, name = select(i, ...);
-				while index < num do
-					if GetChannelName(index) == 0 then
-						JoinTemporaryChannel("LeaveMe" .. index)
-					end
-					index = index + 1
-				end
+	function module:RestoreChannels(...)
+		local index = 1
+		for i = 1, select("#", ...), 3 do
+			local num, name = select(i, ...);
+			while index < num do
 				if GetChannelName(index) == 0 then
+					JoinTemporaryChannel("LeaveMe" .. index)
+				end
+				index = index + 1
+			end
+			if GetChannelName(index) == 0 then
+				local clubId, streamId = Prat.GetCommunityAndStreamFromChannel(name);
+				if not clubId or not streamId then
 					JoinChannelByName(name)
-					-- Hide password request when we just joined
-					local staticPopup = _G[StaticPopup_Visible("CHAT_CHANNEL_PASSWORD") or ""]
-					if staticPopup then
-						StaticPopup_Hide("CHAT_CHANNEL_PASSWORD")
-					end
+				else
+					ChatFrame_AddNewCommunitiesChannel(1, clubId, streamId)
 				end
-				index = index + 1
+				-- Hide password request when we just joined
+				local staticPopup = _G[StaticPopup_Visible("CHAT_CHANNEL_PASSWORD") or ""]
+				if staticPopup then
+					StaticPopup_Hide("CHAT_CHANNEL_PASSWORD")
+				end
 			end
-
-			self:ScheduleTimer(function()
-				module:LeavePlaceholderChannels(GetChannelList())
-			end, getDelay())
+			index = index + 1
 		end
-	else
-		function module:RestoreChannels(...)
-			local index = 1
-			for i = 1, select("#", ...), 3 do
-				local num, name = select(i, ...);
-				while index < num do
-					if GetChannelName(index) == 0 then
-						JoinTemporaryChannel("LeaveMe" .. index)
-					end
-					index = index + 1
-				end
-				if GetChannelName(index) == 0 then
-					local clubId, streamId = Prat.GetCommunityAndStreamFromChannel(name);
-					if not clubId or not streamId then
-						JoinChannelByName(name)
-					else
-						ChatFrame_AddNewCommunitiesChannel(1, clubId, streamId)
-					end
-					-- Hide password request when we just joined
-					local staticPopup = _G[StaticPopup_Visible("CHAT_CHANNEL_PASSWORD") or ""]
-					if staticPopup then
-						StaticPopup_Hide("CHAT_CHANNEL_PASSWORD")
-					end
-				end
-				index = index + 1
-			end
-			self:ScheduleTimer(function()
-				module:LeavePlaceholderChannels(GetChannelList())
-			end, getDelay())
-		end
+		self:ScheduleTimer(function()
+			module:LeavePlaceholderChannels(GetChannelList())
+		end, getDelay())
 	end
+
 	function module:LoadSettings()
 		local db = self.db.profile
 		local success = true

@@ -156,20 +156,9 @@ Prat:AddModuleToLoad(function()
 
 	Prat:SetModuleInit(module, function(self)
 		-- Disable blizz timestamps if possible
-		local proxy = {}
-		if Prat.IsClassic then
-			proxy.CHAT_TIMESTAMP_FORMAT = false -- nil would defer to __index
-		else
-			proxy.GetChatTimestampFormat = function()
-			end
-		end
-		local CF_MEH_env = setmetatable(proxy, { __index = _G, __newindex = _G })
-		if _G.ChatFrameMixin and _G.ChatFrameMixin.MessageEventHandler then
-			setfenv(_G.ChatFrameMixin.MessageEventHandler, CF_MEH_env)
-		elseif _G["ChatFrame_MessageEventHandler"] and issecurevariable("ChatFrame_MessageEventHandler") then
-			setfenv(_G.ChatFrame_MessageEventHandler, CF_MEH_env)
-		else
-			self:Output("Could not install hook")
+		if GetCVar("showTimestamps") ~= "none" then
+			SetCVar("showTimestamps", "none")
+			CHAT_TIMESTAMP_FORMAT = nil
 		end
 
 		for _, v in pairs(Prat.HookedFrames) do

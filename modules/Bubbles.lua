@@ -78,30 +78,24 @@ Prat:AddModuleToLoad(function()
 		}
 	})
 
-	--[[------------------------------------------------
-	  Module Event Functions
-	------------------------------------------------]] --
-
-	local BUBBLE_SCAN_THROTTLE = 0.1
-
 	-- things to do when the module is enabled
 	function module:OnModuleEnable()
-		self.update = self.update or CreateFrame('Frame');
-		self.throttle = BUBBLE_SCAN_THROTTLE
+		self.update = self.update or CreateFrame('Frame')
+		self.throttle = 0.1
 
 		self.update:SetScript("OnUpdate", function(frame, elapsed)
 			self.throttle = self.throttle - elapsed
 			if frame:IsShown() and self.throttle < 0 then
-				self.throttle = BUBBLE_SCAN_THROTTLE
+				self.throttle = 0.1
 				self:FormatBubbles()
 			end
 		end)
 
 		self:RestoreDefaults()
-		self:APLyOptions()
+		self:ApplyOptions()
 	end
 
-	function module:APLyOptions()
+	function module:ApplyOptions()
 		self.shorten = self.db.profile.shorten
 		self.color = self.db.profile.color
 		self.format = self.db.profile.format
@@ -119,8 +113,7 @@ Prat:AddModuleToLoad(function()
 
 	function module:OnValueChanged()
 		self:RestoreDefaults()
-
-		self:APLyOptions()
+		self:ApplyOptions()
 	end
 
 	function module:OnModuleDisable()
@@ -133,7 +126,6 @@ Prat:AddModuleToLoad(function()
 
 	function module:RestoreDefaults()
 		self.update:Hide()
-
 		self:IterateChatBubbles("RestoreDefaultsCallback")
 	end
 
@@ -143,6 +135,7 @@ Prat:AddModuleToLoad(function()
 		"TopEdge", "BottomEdge",
 		"LeftEdge", "RightEdge"
 	}
+
 	-- Called for each chatbubble, passed the bubble's frame and its fontstring
 	function module:FormatCallback(frame, fontstring)
 		if not frame:IsShown() then
@@ -171,7 +164,6 @@ Prat:AddModuleToLoad(function()
 
 		if self.font then
 			local _, _, c = fontstring:GetFont()
-
 			fontstring:SetFont(ChatFrame1:GetFont(), self.fontsize, c)
 		end
 
@@ -186,19 +178,19 @@ Prat:AddModuleToLoad(function()
 		local text = fontstring:GetText() or ""
 
 		if self.icons then
-			if (not fontstring.lastText) or (text ~= fontstring.lastText) then
-				local term;
+			if not fontstring.lastText or text ~= fontstring.lastText then
+				local term
 				for tag in string.gmatch(text, "%b{}") do
-					term = strlower(string.gsub(tag, "[{}]", ""));
-					if (ICON_TAG_LIST[term] and ICON_LIST[ICON_TAG_LIST[term]]) then
-						text = string.gsub(text, tag, ICON_LIST[ICON_TAG_LIST[term]] .. "0|t");
+					term = strlower(string.gsub(tag, "[{}]", ""))
+					if ICON_TAG_LIST[term] and ICON_LIST[ICON_TAG_LIST[term]] then
+						text = string.gsub(text, tag, ICON_LIST[ICON_TAG_LIST[term]] .. "0|t")
 					end
 				end
 			end
 		end
 
 		if self.format then
-			if (not fontstring.lastText) or (text ~= fontstring.lastText) then
+			if not fontstring.lastText or text ~= fontstring.lastText then
 				text = Prat:MatchPatterns(text)
 				text = Prat:ReplaceMatches(text)
 			end
@@ -220,18 +212,8 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:IterateChatBubbles(funcToCall)
-		-- includeForbidden is false by default but in case default changes at some point
 		for _, chatBubbleObj in pairs(C_ChatBubbles.GetAllChatBubbles(false)) do
-			local chatBubble
-			if Prat.IsClassic then
-				-- yeye, hardcoded's bad, but whole client is hardco-dead
-				chatBubble = chatBubbleObj
-				chatBubble.Center, chatBubble.TopLeftCorner, chatBubble.TopRightCorner, chatBubble.BottomLeftCorner, chatBubble.BottomRightCorner,
-				chatBubble.TopEdge, chatBubble.BottomEdge, chatBubble.LeftEdge, chatBubble.RightEdge,
-				chatBubble.Tail, chatBubble.String = chatBubble:GetRegions()
-			else
-				chatBubble = chatBubbleObj:GetChildren()
-			end
+			local chatBubble = chatBubbleObj:GetChildren()
 			if chatBubble and chatBubble.String and chatBubble.String:GetObjectType() == "FontString" then
 				if type(funcToCall) == "function" then
 					funcToCall(chatBubble, chatBubble.String)
@@ -241,6 +223,4 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 	end
-
-	return
-end) -- Prat:AddModuleToLoad
+end)

@@ -24,8 +24,6 @@
 --
 -------------------------------------------------------------------------------
 
-local GetCVar = _G.GetCVar or _G.C_CVar.GetCVar
-
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Font", "AceHook-3.0", "AceEvent-3.0")
 	local PL = module.PL
