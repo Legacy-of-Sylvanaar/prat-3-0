@@ -328,6 +328,7 @@ globals = {
 	"GetChatWindowSavedDimensions",
 	"GetChatWindowSavedPosition",
 	"GetClassAtlas",
+	"GetCVar",
 	"GetCVarBool",
 	"GetDefaultLanguage",
 	"GetDifficultyColor",
