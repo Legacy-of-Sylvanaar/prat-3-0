@@ -1,6 +1,7 @@
 local _, private = ...
 
 local defaultColor = CreateColor(0.63, 0.63, 0.63)
+local issecretvalue = issecretvalue or function() return false end
 
 function private.GetClassColor(class, isLocal)
 	if not class then
@@ -26,7 +27,7 @@ function private.GetClassColor(class, isLocal)
 		end
 	end
 
-	if CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] then
+	if not issecretvalue(clas) and CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] then
 		local color = CUSTOM_CLASS_COLORS[class]
 		return CreateColor(color.r, color.g, color.b)
 	end
