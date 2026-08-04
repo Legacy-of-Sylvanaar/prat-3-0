@@ -27,7 +27,7 @@ function private.GetClassColor(class, isLocal)
 		end
 	end
 
-	if not issecretvalue(clas) and CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] then
+	if not issecretvalue(class) and CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] then
 		local color = CUSTOM_CLASS_COLORS[class]
 		return CreateColor(color.r, color.g, color.b)
 	end
