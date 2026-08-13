@@ -74,7 +74,7 @@ function private.GetDecoratedSenderName(event, ...)
 		decoratedPlayerName = Ambiguate(decoratedPlayerName, "none")
 	end
 
-	if (discordInfo and not issecretvalue(discordInfo) and discordInfo.userID ~= 0) then
+	if (discordInfo and not issecretvalue(discordInfo.userID) and discordInfo.userID ~= 0) then
 		local shouldShowGlobalName = discordInfo.type == Enum.DiscordDisplayNameType.GlobalName
 		if discordInfo.globalName and shouldShowGlobalName then
 			-- Names of user from Discord have a fixed color
