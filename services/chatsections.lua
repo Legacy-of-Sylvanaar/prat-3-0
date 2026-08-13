@@ -220,7 +220,7 @@ function private.RegisterMessageItem(itemname, anchorvar, relativepos)
 end
 
 function private.SplitChatMessage(frame, event, ...)
-	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17 = ...
+	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17, arg18 = ...
 	local isSecret = issecretvalue(arg1)
 
 	if (strsub((event or ""), 1, 8) == "CHAT_MSG") then
@@ -237,8 +237,10 @@ function private.SplitChatMessage(frame, event, ...)
 		end
 
 		local info
+		local discordInfo = arg18
+		local isFromDiscord = discordInfo.userID and not issecretvalue(discordInfo.userID) and discordInfo.userID ~= 0
 
-		local coloredName = private.GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
+		local coloredName = private.GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, discordInfo)
 		local channelLength = arg4 and strlen(arg4) or 0
 		local infoType = type
 		if ((type == "COMMUNITIES_CHANNEL") or ((strsub(type, 1, 7) == "CHANNEL") and (type ~= "CHANNEL_LIST") and ((not isSecret and arg1 ~= "INVITE") or (type ~= "CHANNEL_NOTICE_USER")))) then
@@ -367,6 +369,8 @@ function private.SplitChatMessage(frame, event, ...)
 				end
 			elseif type == "BN_WHISPER" or type == "BN_WHISPER_INFORM" then
 				s.PLAYER = private.GetBNPlayerLink(arg2, coloredName, arg13, arg11, chatGroup, chatTarget)
+			elseif (type == "GUILD_DISCORD" or type == "GUILD") and isFromDiscord then
+				s.PLAYER = private.GetDiscordUserLink(coloredName, arg13, discordInfo.userID, arg11, chatGroup, chatTarget)
 			else
 				s.PLAYER = private.GetPlayerLink(arg2, coloredName, arg11, chatGroup, chatTarget)
 			end

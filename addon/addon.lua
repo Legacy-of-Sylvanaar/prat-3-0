@@ -545,7 +545,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 	local FRAME_MESSAGE = "Prat_FrameMessage"
 	local POST_ADDMESSAGE_BLOCKED = "Prat_PostAddMessageBlocked"
 
-	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 = ...
+	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18 = ...
 	local isSecret = issecretvalue(arg1)
 
 	Prat.loading = nil -- clear any batch message loading that may be happening
@@ -571,7 +571,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
 	-- Create a message table. This table contains the chat message in a non-concatenated form
 	-- so that it can be modified easily without lots of complex gsub's
-	message, info = Prat.SplitChatMessage(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15)
+	message, info = Prat.SplitChatMessage(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18)
 
 	-- Handle Default-UI filtering: Since the default UI now provides filtering functions
 	-- similar to the way Prat's pattern registry works, we need to be sure not to call the

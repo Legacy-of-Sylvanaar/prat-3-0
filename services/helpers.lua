@@ -53,7 +53,7 @@ function private.ResolvePrefixedChannelName(communityChannelArg)
 end
 
 function private.GetDecoratedSenderName(event, ...)
-	local _, senderName, _, _, _, _, _, channelIndex, _, _, _, senderGUID = ...
+	local _, senderName, _, _, _, _, _, channelIndex, _, _, _, senderGUID, _, _, discordInfo = ...
 	local chatType = string.sub(event, 10)
 
 	if string.find(chatType, "^WHISPER") then
@@ -67,20 +67,21 @@ function private.GetDecoratedSenderName(event, ...)
 	local chatTypeInfo = ChatTypeInfo[chatType]
 	local decoratedPlayerName = senderName
 
-	local _, englishClass, firstName
-	if senderGUID then
-		_, englishClass, _, _, _, firstName = GetPlayerInfoByGUID(senderGUID)
+	-- Ambiguate guild chat names
+	if chatType == "GUILD" then
+		decoratedPlayerName = Ambiguate(decoratedPlayerName, "guild")
+	else
+		decoratedPlayerName = Ambiguate(decoratedPlayerName, "none")
 	end
 
-	-- Ambiguate guild chat names
-	if Ambiguate and not issecretvalue(senderName) then
-		if chatType == "GUILD" then
-			decoratedPlayerName = Ambiguate(decoratedPlayerName, "guild")
-		else
-			decoratedPlayerName = Ambiguate(decoratedPlayerName, "none")
+	if (discordInfo and not issecretvalue(discordInfo) and discordInfo.userID ~= 0) then
+		local shouldShowGlobalName = discordInfo.type == Enum.DiscordDisplayNameType.GlobalName
+		if discordInfo.globalName and shouldShowGlobalName then
+			-- Names of user from Discord have a fixed color
+			return ChatFrameUtil.DiscordNameColorize(discordInfo.globalName)
 		end
-	elseif firstName then
-		decoratedPlayerName = firstName
+		senderGUID = discordInfo.lastOnlineGUID
+		decoratedPlayerName = discordInfo.lastOnlineName
 	end
 
 	-- Add timerunning icon when necessary based on player guid
@@ -89,6 +90,7 @@ function private.GetDecoratedSenderName(event, ...)
 	end
 
 	if senderGUID and chatTypeInfo and GetPlayerInfoByGUID ~= nil then
+		local _, englishClass = GetPlayerInfoByGUID(senderGUID)
 		if englishClass then
 			local classColor = private.GetClassColor(englishClass)
 
@@ -138,4 +140,8 @@ end
 
 function private.GetBNPlayerLink(name, linkDisplayText, bnetIDAccount, lineID, chatType, chatTarget)
 	return string.format("|HBNplayer:%s:%s:%s:%s:%s|h%s|h", name, bnetIDAccount, lineID, chatType, chatTarget, linkDisplayText)
+end
+
+function private.GetDiscordUserLink(linkDisplayText, bnetIDAccount, discordUserID, lineID, chatGroup, chatTarget)
+	return string.format("|Hdiscorduser:%s:%s:%s:%s:%s|h%s|h", bnetIDAccount, discordUserID, type(lineID) == "number" and lineID or 0, chatGroup, chatTarget or "", linkDisplayText)
 end

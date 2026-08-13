@@ -1,5 +1,7 @@
 local _, private = ...
 
+local issecretvalue = issecretvalue or function() return false end
+
 -- Custom hacks
 local function GetChatTarget(chatGroup, arg2, arg8)
 	local chatTarget
@@ -7,7 +9,7 @@ local function GetChatTarget(chatGroup, arg2, arg8)
 		chatTarget = tostring(arg8)
 	elseif chatGroup == "WHISPER" or chatGroup == "BN_WHISPER" then
 		chatTarget = arg2
-		if (not issecretvalue or not issecretvalue(arg2)) and strsub(arg2, 1, 2) ~= "|K" then
+		if (not issecretvalue(arg2)) and strsub(arg2, 1, 2) ~= "|K" then
 			chatTarget = strupper(arg2)
 		end
 	end
@@ -20,7 +22,7 @@ function private.MessageEventHandler(self, event, ...)
 	if strsub(event, 1, 8) ~= "CHAT_MSG" then
 		return
 	end
-	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17 = ...
+	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17, arg18 = ...
 	if (arg16) then
 		-- hiding sender in letterbox: do NOT even show in chat window (only shows in cinematic frame)
 		return true
@@ -28,6 +30,9 @@ function private.MessageEventHandler(self, event, ...)
 
 	local type = strsub(event, 10)
 	local info = ChatTypeInfo[type]
+
+	local discordInfo = arg18
+	local isFromDiscord = discordInfo.userID and not issecretvalue(discordInfo.userID) and discordInfo.userID ~= 0
 
 	--If it was a GM whisper, dispatch it to the GMChat addon.
 	if arg6 == "GM" and type == "WHISPER" then
@@ -42,7 +47,7 @@ function private.MessageEventHandler(self, event, ...)
 		return true
 	end
 
-	local coloredName = private.GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14)
+	local coloredName = private.GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, discordInfo)
 
 	local channelLength = strlen(arg4)
 
@@ -158,6 +163,8 @@ function private.MessageEventHandler(self, event, ...)
 			else
 				if (type == "BN_WHISPER" or type == "BN_WHISPER_INFORM") then
 					playerLink = private.GetBNPlayerLink(playerName, playerLinkDisplayText, bnetIDAccount, lineID, chatGroup, chatTarget)
+				elseif ( (type == "GUILD_DISCORD" or type == "GUILD") and isFromDiscord ) then
+					playerLink = private.GetDiscordUserLink(playerLinkDisplayText, bnetIDAccount, discordInfo.userID, lineID, chatGroup, chatTarget)
 				else
 					playerLink = private.GetPlayerLink(playerName, playerLinkDisplayText, lineID, chatGroup, chatTarget)
 				end
@@ -167,6 +174,10 @@ function private.MessageEventHandler(self, event, ...)
 			-- isMobile
 			if arg14 then
 				message = ChatFrameUtil.GetMobileEmbeddedTexture(info.r, info.g, info.b) .. message
+			end
+
+			if isFromDiscord and not issecretvalue(discordInfo.fromDiscord) then
+				message = ChatFrameUtil.FormatDiscordMessage(discordInfo, message)
 			end
 
 			local outMsg
@@ -191,6 +202,8 @@ function private.MessageEventHandler(self, event, ...)
 						outMsg = message
 					elseif (type == "GUILD_ITEM_LOOTED") then
 						outMsg = string.gsub(message, "$s", private.GetPlayerLink(arg2, playerLinkDisplayText))
+					elseif (type == "GUILD_DISCORD" and isFromDiscord) then
+						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type) .. message, pflag .. " " .. playerLink)
 					else
 						outMsg = string.format(ChatFrameUtil.GetOutMessageFormatKey(type) .. message, pflag .. playerLink)
 					end
