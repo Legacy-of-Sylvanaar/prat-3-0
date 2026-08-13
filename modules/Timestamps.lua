@@ -155,12 +155,6 @@ Prat:AddModuleToLoad(function()
 	})
 
 	Prat:SetModuleInit(module, function(self)
-		-- Disable blizz timestamps if possible
-		if GetCVar("showTimestamps") ~= "none" then
-			SetCVar("showTimestamps", "none")
-			_G.CHAT_TIMESTAMP_FORMAT = nil
-		end
-
 		for _, v in pairs(Prat.HookedFrames) do
 			self:SecureHook(v, "AddMessage")
 		end
