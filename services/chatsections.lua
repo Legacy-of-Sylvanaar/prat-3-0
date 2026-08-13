@@ -482,8 +482,11 @@ function private.SplitChatMessage(frame, event, ...)
 					-- Add murloc icon for messages from new players in the newcomer chat
 					s.FLAG = NPEV2_CHAT_USER_TAG_NEWCOMER
 				end
+			elseif arg6 == "DISCORD" then
+				-- Add Discord Icon if  this was sent by DISCORD
+				s.FLAG = CreateAtlasMarkup("UI-ChatIcon-Discord") .. " "
 			else
-				s.FLAG = _G["CHAT_FLAG_" .. arg6]
+				s.FLAG = _G["CHAT_FLAG_" .. arg6] or ""
 			end
 
 			s.Ff = ""
