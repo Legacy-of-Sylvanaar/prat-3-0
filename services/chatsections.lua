@@ -220,7 +220,7 @@ function private.RegisterMessageItem(itemname, anchorvar, relativepos)
 end
 
 function private.SplitChatMessage(frame, event, ...)
-	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17, arg18 = ...
+	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17, discordInfo = ...
 	local isSecret = issecretvalue(arg1)
 
 	if (strsub((event or ""), 1, 8) == "CHAT_MSG") then
@@ -237,8 +237,7 @@ function private.SplitChatMessage(frame, event, ...)
 		end
 
 		local info
-		local discordInfo = arg18
-		local isFromDiscord = discordInfo.userID and not issecretvalue(discordInfo.userID) and discordInfo.userID ~= 0
+		local isFromDiscord = discordInfo and not issecretvalue(discordInfo.userID) and discordInfo.userID and discordInfo.userID ~= 0
 
 		local coloredName = private.GetDecoratedSenderName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, discordInfo)
 		local channelLength = arg4 and strlen(arg4) or 0

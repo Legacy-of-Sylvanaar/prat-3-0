@@ -22,7 +22,7 @@ function private.MessageEventHandler(self, event, ...)
 	if strsub(event, 1, 8) ~= "CHAT_MSG" then
 		return
 	end
-	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17, arg18 = ...
+	local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, _, arg16, arg17, discordInfo = ...
 	if (arg16) then
 		-- hiding sender in letterbox: do NOT even show in chat window (only shows in cinematic frame)
 		return true
@@ -31,8 +31,7 @@ function private.MessageEventHandler(self, event, ...)
 	local type = strsub(event, 10)
 	local info = ChatTypeInfo[type]
 
-	local discordInfo = arg18
-	local isFromDiscord = discordInfo.userID and not issecretvalue(discordInfo.userID) and discordInfo.userID ~= 0
+	local isFromDiscord = discordInfo and not issecretvalue(discordInfo.userID) and discordInfo.userID and discordInfo.userID ~= 0
 
 	--If it was a GM whisper, dispatch it to the GMChat addon.
 	if arg6 == "GM" and type == "WHISPER" then
