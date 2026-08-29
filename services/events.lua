@@ -27,6 +27,8 @@ local eventMap = {
 	CHAT_MSG_BN_WHISPER_INFORM = private.EventProcessingType.Full,
 	CHAT_MSG_BN_CONVERSATION = private.EventProcessingType.Full,
 	CHAT_MSG_COMMUNITIES_CHANNEL = private.EventProcessingType.Full,
+	CHAT_MSG_EMOTE = private.EventProcessingType.Full,
+	CHAT_MSG_TEXT_EMOTE = private.EventProcessingType.Full,
 	CHAT_MSG_LOOT = private.EventProcessingType.PatternsOnly,
 }
 

@@ -559,10 +559,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 		end
 	end
 
-	local message, info
 	local process = Prat.EventIsProcessed(event)
-
-	local CMEResult
 
 	if not isSecret and type(arg1) == "string" and (arg1):find("\r") then
 		-- Stupid exploit. Protect our users.
@@ -571,7 +568,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
 	-- Create a message table. This table contains the chat message in a non-concatenated form
 	-- so that it can be modified easily without lots of complex gsub's
-	message, info = Prat.SplitChatMessage(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18)
+	local message, info = Prat.SplitChatMessage(this, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18)
 
 	-- Handle Default-UI filtering: Since the default UI now provides filtering functions
 	-- similar to the way Prat's pattern registry works, we need to be sure not to call the
@@ -613,6 +610,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 	-- normally this would result in the OnEvent returning
 	-- for that chatframe
 	local proxy = Prat.CreateProxy(this)
+	local CMEResult
 	m.CAPTUREOUTPUT = proxy
 	if isSecret or issecretvalue(this.chatTarget) then
 		Prat.MessageEventHandler(proxy, event, ...)
@@ -656,13 +654,13 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 		if m.DONOTPROCESS then
 			Prat.callbacks:Fire(POST_ADDMESSAGE_BLOCKED, m, this, message.EVENT, m.OUTPUT, r, g, b, id)
 		elseif isSecret then
-			this:AddMessage(m.OUTPUT, r, g, b, id, m.ACCESSID, m.TYPEID);
+			this:AddMessage(m.OUTPUT, r, g, b, id, m.ACCESSID, m.TYPEID)
 		elseif m.OUTPUT:len() > 0 then
 			-- Hack to get the censored message display working with Prat
 			local isChatLineCensored = arg11 and C_ChatInfo.IsChatLineCensored(arg11);
 			local msg = isChatLineCensored and arg1 or m.OUTPUT
 
-			local eventArgs = SafePack(...);
+			local eventArgs = SafePack(...)
 			this:AddMessage(msg, r, g, b, id, m.ACCESSID, m.TYPEID, event, eventArgs, function(text)
 				return text
 			end)

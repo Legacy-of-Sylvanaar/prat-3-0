@@ -251,4 +251,4 @@ Prat:AddModuleToLoad(function()
 	end
 
 	return
-end) -- Prat:AddModuleToLoad
+end)

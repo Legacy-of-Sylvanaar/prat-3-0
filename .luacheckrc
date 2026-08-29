@@ -178,6 +178,7 @@ globals = {
 	"hash_ChatTypeInfoList",
 	"hash_EmoteTokenList",
 	"ItemRefTooltip",
+	"LoadAddOnWithErrorHandling",
 	"Mixin",
 	"PanelTemplates_TabResize",
 	"PlayerLocation.CreateFromGUID",
