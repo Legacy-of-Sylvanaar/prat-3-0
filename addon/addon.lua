@@ -786,7 +786,7 @@ Prat.RegisterChatCommand("pratdebugmsg", function()
 
 	local cc = Prat:GetModule("CopyChat")
 	if cc then
-		cc:ScrapeFullChatFrame(DEFAULT_CHAT_FRAME, true)
+		cc:DoCopyChat(DEFAULT_CHAT_FRAME, true)
 	end
 end)
 

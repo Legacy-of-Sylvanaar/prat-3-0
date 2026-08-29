@@ -353,25 +353,25 @@ function private.SplitChatMessage(frame, event, ...)
 		elseif isSecret and coloredName then
 			local isCommunityType = type == "COMMUNITIES_CHANNEL"
 			if strsub(type, 1, 11) == 'ACHIEVEMENT' or strsub(type, 1, 18) == 'GUILD_ACHIEVEMENT' then
-				s.PLAYER = string.format("|Hplayer:%s|h%s|h", arg2, coloredName)
+				s.PLAYER = string.format("|Hplayer:%s|h%s|h", arg2, ("[%s]"):format(coloredName))
 			elseif isCommunityType then
 				local isBattleNetCommunity = arg13 ~= nil and (issecretvalue(arg13) or arg13 ~= 0)
 				local messageInfo, clubId, streamId, _ = C_Club.GetInfoFromLastCommunityChatLine()
 				if messageInfo ~= nil then
 					if isBattleNetCommunity then
-						s.PLAYER = private.GetBNPlayerCommunityLink(arg2, coloredName, arg13, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
+						s.PLAYER = private.GetBNPlayerCommunityLink(arg2, ("[%s]"):format(coloredName), arg13, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
 					else
-						s.PLAYER = private.GetPlayerCommunityLink(arg2, coloredName, clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
+						s.PLAYER = private.GetPlayerCommunityLink(arg2, ("[%s]"):format(coloredName), clubId, streamId, messageInfo.messageId.epoch, messageInfo.messageId.position)
 					end
 				else
-					s.PLAYER = coloredName
+					s.PLAYER = ("[%s]"):format(coloredName)
 				end
 			elseif type == "BN_WHISPER" or type == "BN_WHISPER_INFORM" then
-				s.PLAYER = private.GetBNPlayerLink(arg2, coloredName, arg13, arg11, chatGroup, chatTarget)
+				s.PLAYER = private.GetBNPlayerLink(arg2, ("[%s]"):format(coloredName), arg13, arg11, chatGroup, chatTarget)
 			elseif (type == "GUILD_DISCORD" or type == "GUILD") and isFromDiscord then
-				s.PLAYER = private.GetDiscordUserLink(coloredName, arg13, discordInfo.userID, arg11, chatGroup, chatTarget)
+				s.PLAYER = private.GetDiscordUserLink(("[%s]"):format(coloredName), arg13, discordInfo.userID, arg11, chatGroup, chatTarget)
 			else
-				s.PLAYER = private.GetPlayerLink(arg2, coloredName, arg11, chatGroup, chatTarget)
+				s.PLAYER = private.GetPlayerLink(arg2, ("[%s]"):format(coloredName), arg11, chatGroup, chatTarget)
 			end
 		elseif not isSecret and strlen(arg2) > 0 then
 			if type == "EMOTE" then

@@ -79,7 +79,7 @@ function private.MessageEventHandler(self, event, ...)
 		local message = arg1:format(private.GetPlayerLink(arg2, ("[%s]"):format(coloredName)))
 		self:AddMessage(message, info.r, info.g, info.b, info.id)
 	elseif (type == "PING") then
-		self:AddMessage(arg1, info.r, info.g, info.b, info.id)
+		self:AddMessage(string.format('%s: %s', coloredName, arg1), info.r, info.g, info.b, info.id)
 	elseif (type == "IGNORED") then
 		self:AddMessage(string.format(CHAT_IGNORED, arg2), info.r, info.g, info.b, info.id)
 	elseif (type == "FILTERED") then

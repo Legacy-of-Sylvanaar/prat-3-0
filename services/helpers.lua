@@ -107,7 +107,7 @@ function private.GetDecoratedSenderName(event, ...)
 		if not issecretvalue(decoratedPlayerName) and decoratedPlayerName == "" then
 			return decoratedPlayerName
 		end
-		return "[" .. decoratedPlayerName .. "]"
+		return decoratedPlayerName
 	end
 end
 
