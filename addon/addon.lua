@@ -613,7 +613,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 	local CMEResult
 	m.CAPTUREOUTPUT = proxy
 	if isSecret or issecretvalue(this.chatTarget) then
-		Prat.MessageEventHandler(proxy, event, ...)
+		CMEResult = Prat.MessageEventHandler(proxy, event, ...)
 	elseif ChatFrame_MessageEventHandler then
 		CMEResult = self.hooks["ChatFrame_MessageEventHandler"](proxy, event, ...)
 	else
