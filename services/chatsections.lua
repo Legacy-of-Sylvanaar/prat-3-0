@@ -59,6 +59,7 @@ local SplitMessageSrc = {
 	pP = "",
 	lL = "", -- link start
 	PLAYERLINK = "",
+	PLAYERLINKRAW = "",
 	PLAYERLINKDATA = "",
 	LL = "", -- link text start
 	PLAYER = "",
