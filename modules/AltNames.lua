@@ -725,7 +725,7 @@ Prat:AddModuleToLoad(function()
 	function module:Prat_PreAddMessage(_, message)
 		local hexcolour = CLR.NONE
 
-		local mainname = message.PLAYERLINK
+		local mainname = message.PLAYERLINKRAW or ""
 
 		local altname = isAlt(mainname) or isAlt(Ambiguate(mainname, "all"))
 

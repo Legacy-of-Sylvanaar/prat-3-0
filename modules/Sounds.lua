@@ -226,7 +226,7 @@ Prat:AddModuleToLoad(function()
 		end
 
 		local msgtype = string.sub(event, 10)
-		local plr = message.PLAYERLINK:match("([^%-]+)%-?.*")
+		local plr = message.PLAYERLINKRAW:match("([^%-]+)%-?.*")
 		local outgoing = (plr == UnitName("player")) and true or false
 		local sndprof = outgoing and self.db.profile.outgoing or self.db.profile.incoming
 

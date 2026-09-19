@@ -375,9 +375,14 @@ function private.SplitChatMessage(frame, event, ...)
 			end
 		elseif not isSecret and strlen(arg2) > 0 then
 			if type == "EMOTE" then
+				s.lL = "|Hplayer:"
+				s.PLAYERLINK = arg2
+				s.LL = "|h"
 				s.PLAYER = Ambiguate(arg2, "none"):match("([^%-]+)%-?(.*)")
+				s.Ll = "|h"
 			elseif type ~= "TEXT_EMOTE" then
 				s.PLAYERLINK = arg2
+				s.PLAYERLINKRAW = arg2
 
 				--ambiguate guild chat names
 				if (type == "GUILD") then
@@ -601,6 +606,7 @@ function private.SplitChatMessage(frame, event, ...)
 				s.pP = "["
 				s.lL = "|Hplayer:"
 				s.PLAYERLINK = pl
+				s.PLAYERLINKRAW = pl
 				s.LL = "|h"
 				s.PLAYER = plr
 				s.Ll = "|h"

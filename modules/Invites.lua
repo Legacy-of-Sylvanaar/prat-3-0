@@ -98,7 +98,7 @@ Prat:AddModuleToLoad(function()
 
 	local function Invite(text)
 		if module.db.profile.linkinvite then
-			return module:ScanForLinks(text, Prat.SplitMessage.PLAYERLINK)
+			return module:ScanForLinks(text, Prat.SplitMessage.PLAYERLINKRAW)
 		end
 	end
 

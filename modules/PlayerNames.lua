@@ -802,7 +802,7 @@ Prat:AddModuleToLoad(function()
 		end
 
 		-- This name is used to lookup playerdata, not for display
-		local Name = message.PLAYERLINK or ""
+		local Name = message.PLAYERLINKRAW or ""
 		message.Pp = ""
 		message.pP = ""
 
