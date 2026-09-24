@@ -249,12 +249,14 @@ globals = {
 	"ChatFrameUtil.GetOutMessageFormatKey",
 	"ChatFrameUtil.GetMobileEmbeddedTexture",
 	"ChatFrameUtil.GetPFlag",
+	"ChatFrameUtil.GetTimestampFormat",
 	"ChatFrameUtil.ProcessMessageEventFilters",
 	"ChatFrameUtil.ProcessSenderNameFilters",
 	"ChatFrameUtil.SetLastToldTarget",
 	"ChatFrameUtil.SubstituteChatMessageBeforeSend",
 	"ChatFrameUtil.TruncateToMaxLength",
 	--
+	"TimeUtil.BetterDate",
 	"TimerunningUtil.AddSmallIcon",
 
 	-- Lua API
