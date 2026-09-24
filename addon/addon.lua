@@ -660,6 +660,12 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 			local isChatLineCensored = arg11 and C_ChatInfo.IsChatLineCensored(arg11);
 			local msg = isChatLineCensored and arg1 or m.OUTPUT
 
+			-- Hack to strip out timestamps if injected
+			local chatTimestampFmt = ChatFrameUtil and ChatFrameUtil.GetTimestampFormat and ChatFrameUtil.GetTimestampFormat()
+			if chatTimestampFmt then
+				msg = msg:gsub(TimeUtil.BetterDate(chatTimestampFmt, time()), '')
+			end
+
 			local eventArgs = SafePack(...)
 			this:AddMessage(msg, r, g, b, id, m.ACCESSID, m.TYPEID, event, eventArgs, function(text)
 				return text
