@@ -811,7 +811,7 @@ Prat:AddModuleToLoad(function()
 			return
 		end
 
-		Name = Ambiguate(Name, "all")
+		Name = Ambiguate(Name, "none")
 
 		local _
 		local class, level, subgroup = self:GetData(Name)
