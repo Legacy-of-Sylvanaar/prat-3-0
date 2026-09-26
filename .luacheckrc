@@ -47,6 +47,7 @@ globals = {
 	"geterrorhandler",
 	"strcmputf8i",
 	"strsplit",
+	"string.split",
 	"time",
 	"table.wipe",
 	-- DEPRECATIONS
