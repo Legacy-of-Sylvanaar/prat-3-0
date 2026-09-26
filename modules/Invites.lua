@@ -24,10 +24,10 @@
 --
 -------------------------------------------------------------------------------
 
-local ChatEdit_GetActiveWindow = _G.ChatEdit_GetActiveWindow or _G.ChatFrameUtil.GetActiveWindow
+local ChatEdit_GetActiveWindow = ChatEdit_GetActiveWindow or ChatFrameUtil.GetActiveWindow
 
-local CanInvite = _G.CanGroupInvite or _G.C_PartyInfo.CanInvite
-local InviteUnit = _G.InviteUnit or _G.C_PartyInfo.InviteUnit
+local CanInvite = CanGroupInvite or C_PartyInfo.CanInvite
+local InviteUnit = InviteUnit or C_PartyInfo.InviteUnit
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Invites", "AceHook-3.0")
@@ -76,7 +76,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:SetAltInvite()
-		if (self.db.profile.altinvite) then
+		if self.db.profile.altinvite then
 			self:SecureHook("SetItemRef")
 		else
 			self:Unhook("SetItemRef")
@@ -147,12 +147,7 @@ Prat:AddModuleToLoad(function()
 	function module:Invite_Link(link)
 		if self.db.profile.linkinvite then
 			local name = strsub(link, 8)
-			if (name and (strlen(name) > 0)) then
-				local begin = string.find(name, "%s[^%s]+$")
-				if (begin) then
-					name = strsub(name, begin + 1)
-				end
-
+			if name and strlen(name) > 0 then
 				InviteUnit(name)
 			end
 		end
@@ -169,17 +164,17 @@ Prat:AddModuleToLoad(function()
 	function module:Player_Link(link)
 		if self.db.profile.altinvite then
 			local name = strsub(link, 8)
-			if (name and (strlen(name) > 0)) then
-				local begin, nend = string.find(name, "%s*[^%s:]+")
-				if (begin) then
+			if name and strlen(name) > 0 then
+				local begin, nend = string.find(name, "%s*[^:]+")
+				if begin then
 					name = strsub(name, begin, nend)
 				end
-				if (IsAltKeyDown()) then
+				if IsAltKeyDown() then
 					InviteUnit(name)
 
 					local activeWindow = ChatEdit_GetActiveWindow()
 					if activeWindow then
-						if _G.ChatEdit_OnEscapePressed then
+						if ChatEdit_OnEscapePressed then
 							ChatEdit_OnEscapePressed(activeWindow)
 						else
 							activeWindow:OnEscapePressed()
@@ -200,12 +195,8 @@ Prat:AddModuleToLoad(function()
 
 		local enabled = self.db.profile.linkinvite
 
-		if enabled and CanInvite() then
-			if Prat.CurrentMessage then
-				if EVENTS_FOR_INVITE[Prat.CurrentMessage.EVENT] then
-					return self:InviteLink(text, name)
-				end
-			end
+		if enabled and CanInvite() and Prat.CurrentMessage and EVENTS_FOR_INVITE[Prat.CurrentMessage.EVENT] then
+			return self:InviteLink(text, name)
 		end
 
 		return text

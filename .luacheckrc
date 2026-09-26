@@ -243,6 +243,7 @@ globals = {
 	"ChatFrameUtil.DisplaySystemMessageInPrimary",
 	"ChatFrameUtil.FlashTabIfNotShown",
 	"ChatFrameUtil.FormatDiscordMessage",
+	"ChatFrameUtil.GetActiveWindow",
 	"ChatFrameUtil.GetChatCategory",
 	"ChatFrameUtil.GetChatFrame",
 	"ChatFrameUtil.GetMentorChannelStatus",
@@ -293,6 +294,8 @@ globals = {
 	"C_Item.GetItemInfoInstant",
 	"C_Map.GetBestMapForUnit",
 	"C_Map.GetPlayerMapPosition",
+	"C_PartyInfo.CanInvite",
+	"C_PartyInfo.InviteUnit",
 	"C_PlayerInfo.GetClass",
 	"C_PlayerInfo.GetRace",
 	"C_PlayerMentorship.IsActivePlayerConsideredNewcomer",
@@ -314,6 +317,7 @@ globals = {
 	"BNGetFriendInfoByID",
 	"BNGetGameAccountInfo",
 	"BNGetNumFriends",
+	"CanGroupInvite", -- Classic
 	"ChangeChatColor",
 	"CreateAtlasMarkup",
 	"CreateColor",
@@ -358,6 +362,7 @@ globals = {
 	"GetTime",
 	"GetUnitName",
 	"InCombatLockdown",
+	"InviteUnit", -- Classic
 	"IsActivePlayerGuide",
 	"IsAddOnLoaded", -- Deprecated
 	"IsAltKeyDown",
