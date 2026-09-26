@@ -662,7 +662,7 @@ function addon:ChatFrame_MessageEventHandler(this, event, ...)
 
 			-- Hack to strip out timestamps if injected
 			local chatTimestampFmt = ChatFrameUtil and ChatFrameUtil.GetTimestampFormat and ChatFrameUtil.GetTimestampFormat()
-			if chatTimestampFmt then
+			if chatTimestampFmt and TimeUtil and TimeUtil.BetterDate then
 				msg = msg:gsub(TimeUtil.BetterDate(chatTimestampFmt, time()), '')
 			end
 
