@@ -24,6 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
+local issecretvalue = issecretvalue or function() return false end
+
 local function GetTargetName(unit)
 	return Prat.IsForever and GetUnitName(unit) or UnitName(unit)
 end
@@ -533,7 +535,7 @@ Prat:AddModuleToLoad(function()
 			for i = 1, GetNumBattlefieldScores() do
 				local score = C_PvP.GetScoreInfo(i);
 
-				if (not issecretvalue or not issecretvalue(score.name)) and score.name then
+				if not issecretvalue(score.name) and score.name then
 					local plr, svr = score.name:match("([^%-]+)%-?(.*)")
 					self:addName(plr, nil, score.className, nil, nil, "BATTLEFIELD")
 					self:addName(plr, svr, score.className, nil, nil, "BATTLEFIELD")
@@ -543,7 +545,7 @@ Prat:AddModuleToLoad(function()
 			for i = 1, GetNumBattlefieldScores() do
 				local name, _, _, _, _, _, _, _, class = GetBattlefieldScore(i);
 
-				if (not issecretvalue or not issecretvalue(name)) and name then
+				if not issecretvalue(name) and name then
 					local plr, svr = name:match("([^%-]+)%-?(.*)")
 					self:addName(plr, nil, class, nil, nil, "BATTLEFIELD")
 					self:addName(plr, svr, class, nil, nil, "BATTLEFIELD")
@@ -613,7 +615,7 @@ Prat:AddModuleToLoad(function()
 			return
 		end
 
-		if issecretvalue and (issecretvalue(Name) or issecretvalue(Server)) then
+		if issecretvalue(Name) or issecretvalue(Server) then
 			return
 		end
 
@@ -639,28 +641,25 @@ Prat:AddModuleToLoad(function()
 		Name = Name .. (Server and Server:len() > 0 and ("-" .. Server) or "")
 
 		local changed
-		if Level and Level > 0 then
+		if Level and not issecretvalue(Level) and Level > 0 then
 			self.Levels[Name:lower()] = Level
-			if ((not nosave) and self.db.profile.keep) then
+			if not nosave and self.db.profile.keep then
 				self.db.realm.levels[Name:lower()] = Level
-			else
-				-- Update it if it exists
-				if self.db.realm.levels[Name:lower()] then
-					self.db.realm.levels[Name:lower()] = Level
-				end
+			elseif self.db.realm.levels[Name:lower()] then
+				self.db.realm.levels[Name:lower()] = Level
 			end
 
 			changed = true
 		end
-		if Class and Class ~= UNKNOWN then
+		if Class and not issecretvalue(Class) and Class ~= UNKNOWN then
 			self.Classes[Name:lower()] = Class
-			if ((not nosave) and self.db.profile.keep) then
+			if not nosave and self.db.profile.keep then
 				self.db.realm.classes[Name:lower()] = Class
 			end
 
 			changed = true
 		end
-		if SubGroup then
+		if SubGroup and not issecretvalue(SubGroup) then
 			module.Subgroups[Name:lower()] = SubGroup
 
 			changed = true
