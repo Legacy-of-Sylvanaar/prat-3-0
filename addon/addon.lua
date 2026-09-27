@@ -367,6 +367,19 @@ end
 function addon:PostEnable()
 	Prat.AddPrintMethods()
 
+	-- TEMP: Gamepad hacks
+	for _, v in pairs(Prat.HookedFrames) do
+		v.SetGamepadFocus = function() end
+		v.ClearGamepadFocus = function() end
+		v.HasGamepadFocus = function() return false end
+		v.IsGamepadMenuOpen = function() return false end
+		hooksecurefunc(_G[v:GetName() .. "EditBox"], 'ClearChat', function(editbox)
+			if InputUtil and InputUtil.IsGamepadUIEnabled and InputUtil.IsGamepadUIEnabled() then
+				ChatFrameUtil.DeactivateChat(editbox)
+			end
+		end)
+	end
+
 	if Prat.PrintSlashCommand then
 		self:RegisterChatCommand("print", Prat.PrintSlashCommand)
 	end

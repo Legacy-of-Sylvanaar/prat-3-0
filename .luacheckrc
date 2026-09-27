@@ -258,6 +258,7 @@ globals = {
 	"ChatFrameUtil.SubstituteChatMessageBeforeSend",
 	"ChatFrameUtil.TruncateToMaxLength",
 	--
+	"InputUtil.IsGamepadUIEnabled",
 	"TimeUtil.BetterDate",
 	"TimerunningUtil.AddSmallIcon",
 
