@@ -332,6 +332,7 @@ globals = {
 	"GetAchievementInfo",
 	"GetAverageItemLevel",
 	"GetBattlefieldScore",
+	"GetBuildInfo",
 	"GetChannelList",
 	"GetChannelName",
 	"GetChatWindowChannels",
