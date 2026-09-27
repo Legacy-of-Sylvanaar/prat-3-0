@@ -24,6 +24,18 @@
 --
 -------------------------------------------------------------------------------
 
+local function GetTargetName(unit)
+	return Prat.IsForever and GetUnitName(unit) or UnitName(unit)
+end
+
+local function GetTargetServer(unit)
+	if Prat.IsForever then
+		return
+	end
+	local _, realm = UnitName(unit)
+	return realm
+end
+
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("PlayerNames", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
 	local PL = module.PL
@@ -254,7 +266,7 @@ Prat:AddModuleToLoad(function()
 			self.wholib = b and LibStub:GetLibrary("LibWho-2.0", true)
 			self:UpdateAll()
 		elseif field == "coloreverywhere" then
-			local _player, _ = string.split("-", GetUnitName("player"))
+			local _player = GetTargetName("player")
 			self:OnPlayerDataChanged(b and _player or nil)
 		end
 	end
@@ -429,13 +441,13 @@ Prat:AddModuleToLoad(function()
 
 	function module:UpdatePlayer()
 		local PlayerClass = select(2, UnitClass("player"))
-		local Name, Server = string.split("-", GetUnitName("player"))
+		local Name, Server = GetTargetName("player"), GetTargetServer("player")
 		self:addName(Name, Server, PlayerClass, UnitLevel("player"), nil, "PLAYER")
 	end
 
 	function module:PLAYER_LEVEL_UP(_, level)
 		local PlayerClass = select(2, UnitClass("player"))
-		local Name, Server = string.split("-", GetUnitName("player"))
+		local Name, Server = GetTargetName("player"), GetTargetServer("player")
 		self:addName(Name, Server, PlayerClass, level, nil, "PLAYER")
 	end
 
@@ -464,7 +476,8 @@ Prat:AddModuleToLoad(function()
 
 		for i = 1, GetNumGroupMembers() do
 			local _, _, SubGroup, Level, _, Class = GetRaidRosterInfo(i)
-			local Name, Server = string.split("-", GetUnitName("raid" .. i))
+			local uid = "raid" .. i
+			local Name, Server = GetTargetName(uid), GetTargetServer(uid)
 			self:addName(Name, Server, Class, Level, SubGroup, "RAID")
 		end
 	end
@@ -473,7 +486,7 @@ Prat:AddModuleToLoad(function()
 		for i = 1, GetNumSubgroupMembers() do
 			local Unit = "party" .. i
 			local _, Class = UnitClass(Unit)
-			local Name, Server = string.split("-", GetUnitName(Unit))
+			local Name, Server = GetTargetName(Unit), GetTargetServer(Unit)
 			self:addName(Name, Server, Class, UnitLevel(Unit), nil, "PARTY")
 		end
 	end
@@ -491,7 +504,7 @@ Prat:AddModuleToLoad(function()
 			return
 		end
 		local Class = select(2, UnitClass("target"))
-		local Name, Server = string.split("-", GetUnitName("target"))
+		local Name, Server = GetTargetName("target"), GetTargetServer("target")
 		self:addName(Name, Server, Class, UnitLevel("target"), nil, "TARGET")
 	end
 
@@ -500,7 +513,7 @@ Prat:AddModuleToLoad(function()
 			return
 		end
 		local Class = select(2, UnitClass("mouseover"))
-		local Name, Server = string.split("-", GetUnitName("mouseover"))
+		local Name, Server = GetTargetName("mouseover"), GetTargetServer("mouseover")
 		self:addName(Name, Server, Class, UnitLevel("mouseover"), nil, "MOUSE")
 	end
 
@@ -728,8 +741,7 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 
-		local _player, _ = string.split("-", GetUnitName("player"))
-		if message.PLAYERLINKDATA and (message.PLAYERLINKDATA:find("BN_") and message.PLAYER ~= _player) then
+		if message.PLAYERLINKDATA and (message.PLAYERLINKDATA:find("BN_") and message.PLAYER ~= GetTargetName("player")) then
 			if self.db.profile.realidcolor == "CLASS" then
 				local toonName, toonLevel, toonClass = GetToonInfoByBnetID(message.PRESENCE_ID)
 				if toonName and self.db.profile.realidname then
@@ -921,6 +933,4 @@ Prat:AddModuleToLoad(function()
 			)
 		end
 	end
-
-	return
 end)

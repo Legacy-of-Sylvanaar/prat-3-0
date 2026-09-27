@@ -68,9 +68,11 @@ am.__tostring = function()
 end
 setmetatable(Prat, am)
 
+Prat.wowTOC = (select(4, GetBuildInfo()))
 Prat.IsClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 Prat.IsRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
 Prat.IsMop = (WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC)
+Prat.IsForever = Prat.wowTOC == 16001
 
 Prat.Frames = {
 	["ChatFrame1"] = ChatFrame1,
