@@ -263,6 +263,17 @@ Prat:AddModuleToLoad(function()
 			parent.rDrag:SetWidth(15)
 			parent.rDrag:SetPoint("TOPRIGHT", parent, "TOPRIGHT")
 			parent.rDrag:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT")
+
+			-- Backdrop hack
+			if frame.SetupTextureCoordinates and issecretvalue then
+				local setupTextureCoordinates = frame.SetupTextureCoordinates
+				frame.SetupTextureCoordinates = function(f)
+					if issecretvalue(f:GetWidth()) or issecretvalue(f:GetHeight()) or issecretvalue(f:GetEffectiveScale()) then
+						return
+					end
+					return setupTextureCoordinates(f)
+				end
+			end
 		end
 	end
 
@@ -385,8 +396,6 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 
-		self:SetBackdrop()
-
 		self:SetAttach(nil, self.db.profile.editX, self.db.profile.editY, self.db.profile.editW)
 
 		if _G.ChatFrameUtil then
@@ -402,9 +411,6 @@ Prat:AddModuleToLoad(function()
 		else
 			self:SecureHook("ChatFrame_OpenChat")
 		end
-
-		self:SetBackdrop()
-		self:UpdateHeight()
 		if self.db.profile.colorByChannel then
 			if _G.ChatFrameEditBoxBaseMixin and _G.ChatFrameEditBoxBaseMixin.UpdateHeader then
 				self:SecureHook(_G.ChatFrameEditBoxBaseMixin, "UpdateHeader", "SetBorderByChannel")
@@ -413,6 +419,9 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 		self:SecureHook("FCF_FadeInChatFrame")
+
+		self:SetBackdrop()
+		self:UpdateHeight()
 
 		Prat.RegisterChatEvent(self, Prat.Events.FRAMES_UPDATED)
 	end
