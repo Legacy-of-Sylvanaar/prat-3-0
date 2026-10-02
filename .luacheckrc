@@ -93,6 +93,7 @@ globals = {
 	"WOW_PROJECT_ID",
 	"WOW_PROJECT_MAINLINE",
 	"WOW_PROJECT_MISTS_CLASSIC",
+	"WOW_PROJECT_CAMELOT",
 
 	-- Global Strings
 	"ACCEPT",
