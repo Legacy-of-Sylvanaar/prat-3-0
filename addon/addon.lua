@@ -68,11 +68,12 @@ am.__tostring = function()
 end
 setmetatable(Prat, am)
 
-Prat.wowTOC = (select(4, GetBuildInfo()))
-Prat.IsClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
-Prat.IsRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
-Prat.IsMop = (WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC)
-Prat.IsForever = Prat.wowTOC == 16001
+Prat.IsClassic = WOW_PROJECT_ID == (WOW_PROJECT_CLASSIC or 2)
+Prat.IsRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
+Prat.IsMop = WOW_PROJECT_ID == (WOW_PROJECT_MISTS_CLASSIC or 19)
+Prat.IsForever = WOW_PROJECT_ID == (WOW_PROJECT_CAMELOT or 18)
+
+Prat.IsModernAPI = Prat.IsRetail or Prat.IsForever
 
 Prat.Frames = {
 	["ChatFrame1"] = ChatFrame1,
@@ -480,7 +481,7 @@ function addon:ChatEdit_ParseText(editBox, send)
 
 	self:ProcessUserEnteredChat(m)
 
-	if Prat.IsRetail and InCombatLockdown() then
+	if Prat.IsModernAPI and InCombatLockdown() then
 		Prat.CurrentMessage = nil
 		return
 	end
@@ -740,7 +741,7 @@ function Prat.PlaySound(_, sound)
 end
 
 function Prat.CanSendChatMessage(chatType)
-	if Prat.IsRetail and InCombatLockdown() then
+	if Prat.IsModernAPI and InCombatLockdown() then
 		return false
 	end
 	if chatType == "SAY" or chatType == "YELL" then

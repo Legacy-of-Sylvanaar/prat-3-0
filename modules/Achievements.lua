@@ -183,7 +183,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:OnGratsLink(link)
-		if Prat.IsRetail and InCombatLockdown() then
+		if Prat.IsModernAPI and InCombatLockdown() then
 			return false
 		end
 

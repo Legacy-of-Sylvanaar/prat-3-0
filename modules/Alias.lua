@@ -158,7 +158,7 @@ Prat:AddModuleToLoad(function()
 			self.WontAlias[string.lower(naughtyalias)] = 1
 		end
 
-		if Prat.IsRetail then
+		if Prat.IsModernAPI then
 			self.RegisteredAliasCommands = {}
 			self:RegisterAllAliasCommands()
 		else
@@ -288,7 +288,7 @@ Prat:AddModuleToLoad(function()
 
 			self:warnUser(string.format(PL["/%s aliased to: /%s"], clralias(alias['name']), clrexpansion(alias['value'])))
 		end
-		if Prat.IsRetail then
+		if Prat.IsModernAPI then
 			self:RegisterAliasCommand(alias['name'])
 		end
 	end

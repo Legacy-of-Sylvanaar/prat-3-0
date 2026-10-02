@@ -80,7 +80,7 @@ Prat:AddModuleToLoad(function()
 				desc = PL["showvoice_desc"],
 				type = "toggle",
 				order = 150,
-				hidden = not Prat.IsRetail,
+				hidden = not Prat.IsModernAPI,
 			},
 			showchannel = {
 				name = PL["showchannel_name"],
@@ -226,7 +226,7 @@ Prat:AddModuleToLoad(function()
 		local upButton, downButton, bottomButton
 
 		for name, frame in pairs(Prat.Frames) do
-			if not Prat.IsRetail then
+			if not Prat.IsModernAPI then
 				upButton = _G[name .. "ButtonFrameUpButton"]
 				upButton:SetScript("OnShow", hide)
 				upButton:Hide()
@@ -313,7 +313,7 @@ Prat:AddModuleToLoad(function()
 		local upButton, downButton, bottomButton
 
 		for name, frame in pairs(Prat.Frames) do
-			if not Prat.IsRetail then
+			if not Prat.IsModernAPI then
 				upButton = _G[name .. "ButtonFrameUpButton"]
 				upButton:SetScript("OnShow", nil)
 				upButton:Show()
@@ -339,7 +339,7 @@ Prat:AddModuleToLoad(function()
 		local f = _G[chatFrame:GetName() .. "ButtonFrameBottomButton"]
 		local bf = _G[chatFrame:GetName() .. "ButtonFrame"]
 
-		if not Prat.IsRetail then
+		if not Prat.IsModernAPI then
 			if self.db.profile.showButtons then
 				f:ClearAllPoints()
 				f:SetPoint("BOTTOM", bf, "BOTTOM", 0, 0)

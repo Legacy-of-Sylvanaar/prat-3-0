@@ -84,7 +84,7 @@ Prat:AddModuleToLoad(function()
 		min = 4,
 		max = 100,
 		step = 1,
-		hidden = not Prat.IsRetail and not Prat.IsMop,
+		hidden = not Prat.IsModernAPI and not Prat.IsMop,
 		order = 900,
 	}
 

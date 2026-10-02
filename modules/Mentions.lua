@@ -49,7 +49,7 @@ Prat:AddModuleToLoad(function()
 	})
 
 	local function handleMention(match, m)
-		if Prat.IsRetail and InCombatLockdown() then
+		if Prat.IsModernAPI and InCombatLockdown() then
 			return
 		end
 		if m == nil then
