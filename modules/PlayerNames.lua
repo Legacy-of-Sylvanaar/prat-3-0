@@ -443,13 +443,15 @@ Prat:AddModuleToLoad(function()
 
 	function module:UpdatePlayer()
 		local PlayerClass = select(2, UnitClass("player"))
-		local Name, Server = GetTargetName("player"), GetTargetServer("player")
-		self:addName(Name, Server, PlayerClass, UnitLevel("player"), nil, "PLAYER")
+		local Name, Server, Level = GetTargetName("player"), GetTargetServer("player"), UnitLevel("player")
+		self:addName(Name, nil, PlayerClass, Level, nil, "PLAYER")
+		self:addName(Name, Server, PlayerClass, Level, nil, "PLAYER")
 	end
 
 	function module:PLAYER_LEVEL_UP(_, level)
 		local PlayerClass = select(2, UnitClass("player"))
 		local Name, Server = GetTargetName("player"), GetTargetServer("player")
+		self:addName(Name, nil, PlayerClass, level, nil, "PLAYER")
 		self:addName(Name, Server, PlayerClass, level, nil, "PLAYER")
 	end
 
