@@ -32,9 +32,32 @@ Prat:AddModuleToLoad(function()
 		profile = {
 			on = true,
 			textfade = { ["*"] = true },
-			duration = 120
+			duration = 120,
+			perwindowdelay = false,
+			durations = {}
 		}
 	})
+
+	local frameOption = {
+		name = function(info)
+			return Prat.HookedFrameList[info[#info]] or ""
+		end,
+		type = "range",
+		min = 1,
+		max = 240,
+		step = 1,
+		get = function(info)
+			local db = info.handler.db.profile
+			return db.durations[info[#info]] or db.duration
+		end,
+		set = function(info, v)
+			info.handler.db.profile.durations[info[#info]] = v
+			info.handler:OnValueChanged(info, v)
+		end,
+		hidden = function(info)
+			return Prat.HookedFrameList[info[#info]] == nil
+		end,
+	}
 
 	Prat:SetModuleOptions(module.name, {
 		name = PL["module_name"],
@@ -57,6 +80,38 @@ Prat:AddModuleToLoad(function()
 				min = 1,
 				max = 240,
 				step = 1,
+				disabled = function(info)
+					return info.handler.db.profile.perwindowdelay
+				end,
+			},
+			perwindowdelay = {
+				name = PL["perwindowdelay_name"],
+				desc = PL["perwindowdelay_desc"],
+				type = "toggle",
+				order = 195,
+				width = 1.5,
+			},
+			durations = {
+				name = PL["durations_name"],
+				desc = PL["durations_desc"],
+				type = "group",
+				order = 200,
+				inline = true,
+				hidden = function(info)
+					return not info.handler.db.profile.perwindowdelay
+				end,
+				args = {
+					ChatFrame1 = frameOption,
+					ChatFrame2 = frameOption,
+					ChatFrame3 = frameOption,
+					ChatFrame4 = frameOption,
+					ChatFrame5 = frameOption,
+					ChatFrame6 = frameOption,
+					ChatFrame7 = frameOption,
+					ChatFrame8 = frameOption,
+					ChatFrame9 = frameOption,
+					ChatFrame10 = frameOption,
+				}
 			},
 		}
 	})
@@ -89,7 +144,8 @@ Prat:AddModuleToLoad(function()
 	function module:Fade(cf, textfade)
 		if textfade then
 			cf:SetFading(true)
-			cf:SetTimeVisible(module.db.profile.duration)
+			local p = module.db.profile
+			cf:SetTimeVisible(p.perwindowdelay and p.durations[cf:GetName()] or p.duration)
 		else
 			cf:SetFading(false)
 		end
