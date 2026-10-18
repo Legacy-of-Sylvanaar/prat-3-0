@@ -6,6 +6,7 @@ local ChatFrame_GetMobileEmbeddedTexture = ChatFrame_GetMobileEmbeddedTexture or
 local MAX_WOW_CHAT_CHANNELS = MAX_WOW_CHAT_CHANNELS or Constants.ChatFrameConstants.MaxChatChannels
 
 local issecretvalue = issecretvalue or function() return false end
+local canaccesstable = canaccesstable or function() return true end
 
 local string = string
 local setmetatable = setmetatable
@@ -316,15 +317,15 @@ function private.SplitChatMessage(frame, event, ...)
 		end
 
 		if not issecretvalue(arg2) and (chatGroup == "WHISPER" or chatGroup == "BN_WHISPER") then
-			if (frame.privateMessageList and not issecretvalue(frame.privateMessageList) and not frame.privateMessageList[strlower(arg2)]) then
+			if frame.privateMessageList and not issecretvalue(frame.privateMessageList) and canaccesstable(frame.privateMessageList) and not frame.privateMessageList[strlower(arg2)] then
 				s.DONOTPROCESS = true
-			elseif (frame.excludePrivateMessageList and not issecretvalue(frame.excludePrivateMessageList) and frame.excludePrivateMessageList[strlower(arg2)]) then
+			elseif frame.excludePrivateMessageList and not issecretvalue(frame.excludePrivateMessageList) and canaccesstable(frame.excludePrivateMessageList) and frame.excludePrivateMessageList[strlower(arg2)] then
 				s.DONOTPROCESS = true
 			end
-		elseif not issecretvalue(arg8) and (chatGroup == "BN_CONVERSATION") then
-			if (frame.bnConversationList and not issecretvalue(frame.bnConversationList) and not frame.bnConversationList[arg8]) then
+		elseif not issecretvalue(arg8) and chatGroup == "BN_CONVERSATION" then
+			if frame.bnConversationList and not issecretvalue(frame.bnConversationList) and canaccesstable(frame.bnConversationList) and not frame.bnConversationList[arg8] then
 				s.DONOTPROCESS = true
-			elseif (frame.excludeBNConversationList and not issecretvalue(frame.excludeBNConversationList) and frame.excludeBNConversationList[arg8]) then
+			elseif frame.excludeBNConversationList and not issecretvalue(frame.excludeBNConversationList) and canaccesstable(frame.excludeBNConversationList) and frame.excludeBNConversationList[arg8] then
 				s.DONOTPROCESS = true
 			end
 		end
