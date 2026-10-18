@@ -311,6 +311,7 @@ globals = {
 	"C_Timer.After",
 	"C_Timer.NewTimer",
 	"C_VoiceChat.IsLoggedIn",
+	"canaccesstable",
 	"hooksecurefunc",
 	"issecretvalue",
 	"issecurevariable",
