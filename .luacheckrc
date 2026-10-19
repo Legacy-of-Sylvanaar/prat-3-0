@@ -310,6 +310,7 @@ globals = {
 	"C_Texture.GetTitleIconTexture",
 	"C_Timer.After",
 	"C_Timer.NewTimer",
+	"C_UIFileAsset.IsKnownFile",
 	"C_VoiceChat.IsLoggedIn",
 	"canaccesstable",
 	"hooksecurefunc",

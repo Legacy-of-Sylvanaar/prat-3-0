@@ -6,6 +6,14 @@ end
 
 local folder = [[Prat-3.0\fonts\]]
 
+-- Friz Quadrata with Cyrillic letters. On non-Russian clients LSM's "Friz Quadrata TT"
+-- is the Latin-only FRIZQT__.TTF, so Russian words in chat fall back to another font.
+-- The Cyrillic file has the Latin letters too, so one font covers both.
+local FRIZ_CYR = [[Fonts\FRIZQT___CYR.TTF]]
+if not (C_UIFileAsset and C_UIFileAsset.IsKnownFile) or C_UIFileAsset.IsKnownFile(FRIZ_CYR) then
+	LSM:Register("font", "Friz Quadrata TT (Cyrillic)", FRIZ_CYR, LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
+end
+
 -- From SharedMedia
 LSM:Register("font", "Bazooka", [[Interface\Addons\]] .. folder .. [[Bazooka.ttf]])
 LSM:Register("font", "DorisPP", [[Interface\Addons\]] .. folder .. [[DORISPP.ttf]])
