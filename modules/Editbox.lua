@@ -277,6 +277,14 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
+	local function ChatFrameTab_OnClick(self, i)
+		if self.db.profile.attach == "TOP" and GetCVar("chatStyle") ~= "classic" then
+			local chatFrame = _G["ChatFrame" .. i];
+			ChatEdit_DeactivateChat(chatFrame.editBox)
+			chatFrame.editBox:Hide()
+		end
+	end
+
 	Prat:SetModuleInit(module, function(self)
 		Media.RegisterCallback(module, "LibSharedMedia_Registered")
 		self.frames = {}
@@ -395,6 +403,11 @@ Prat:AddModuleToLoad(function()
 			if not module.db.profile.useAltKey then
 				enableArrowKeys(f)
 			end
+
+			local tab = _G["ChatFrame" .. i .. "Tab"]
+			tab:HookScript("OnClick", function()
+				ChatFrameTab_OnClick(self, i)
+			end)
 		end
 
 		self:SetAttach(nil, self.db.profile.editX, self.db.profile.editY, self.db.profile.editW)
@@ -419,7 +432,6 @@ Prat:AddModuleToLoad(function()
 				self:SecureHook("ChatEdit_UpdateHeader", "SetBorderByChannel", true)
 			end
 		end
-		self:SecureHook("FCF_FadeInChatFrame")
 
 		self:SetBackdrop()
 		self:UpdateHeight()
@@ -435,13 +447,6 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:FCF_FadeInChatFrame(frame)
-		if self.db.profile.attach == "TOP" and GetCVar("chatStyle") ~= "classic" then
-			local chatFrame = _G["ChatFrame" .. frame:GetID()];
-			ChatEdit_DeactivateChat(chatFrame.editBox)
-			chatFrame.editBox:Hide()
-		end
-	end
 
 	function module:OnModuleDisable()
 		self:SetAttach("BOTTOM") -- clear move/resize handlers
