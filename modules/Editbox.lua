@@ -339,6 +339,8 @@ Prat:AddModuleToLoad(function()
 			f.focusMid:SetAlpha(0)
 		end
 		f:Hide()
+		f:SetAlpha(0)
+		f:EnableMouse(false)
 
 		MakePratEditbox(self, i)
 		self.frames[i]:Show()
@@ -377,9 +379,8 @@ Prat:AddModuleToLoad(function()
 				f.focusMid:SetAlpha(0)
 			end
 			f:Hide()
-
-			-- Prevent an error in FloatingChatFrame FCF_FadeOutChatFrame() (blizz bug)
-			f:SetAlpha(f:GetAlpha() or 0)
+			f:SetAlpha(0)
+			f:EnableMouse(false)
 
 			MakePratEditbox(self, i) -- For new temporary chat frames created between init and now
 			self.frames[i]:Show()
@@ -478,17 +479,13 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:ChatEdit_ActivateChat(frame)
-		if frame:IsShown() then
-			frame:SetAlpha(1)
-			frame:EnableMouse(true)
-		end
+		frame:SetAlpha(1)
+		frame:EnableMouse(true)
 	end
 
 	function module:ChatEdit_DeactivateChat(frame)
-		if frame:IsShown() then
-			frame:SetAlpha(0)
-			frame:EnableMouse(false)
-		end
+		frame:SetAlpha(0)
+		frame:EnableMouse(false)
 	end
 
 	function module:SetBackdrop()
