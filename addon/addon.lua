@@ -367,6 +367,28 @@ function addon:FCF_CopyChatSettings(chatFrame)
 	end
 end
 
+function addon:FloatingChatFrame_Update(id)
+	local chatFrame = FCF_GetChatFrameByID(id)
+
+	if not chatFrame.isTemporary then
+		local name = chatFrame:GetName()
+
+		Prat.Frames[name] = chatFrame
+
+		if not IsCombatLog(chatFrame) then
+			Prat.HookedFrames[name] = chatFrame
+
+			if ChatFrameMixin and ChatFrameMixin.MessageEventHandler then
+				chatFrame.MessageEventHandler = function(frame, event, ...)
+					return addon:ChatFrame_MessageEventHandler(frame, event, ...)
+				end
+			end
+		end
+
+		Prat.callbacks:Fire(Prat.Events.FRAMES_UPDATED, name, chatFrame)
+	end
+end
+
 function addon:PostEnable()
 	Prat.AddPrintMethods()
 
@@ -423,6 +445,7 @@ function addon:PostEnable()
 	self:SecureHook("FCF_SetTemporaryWindowType")
 	self:SecureHook("FCF_Close")
 	self:SecureHook("FCF_CopyChatSettings")
+	self:SecureHook("FloatingChatFrame_Update")
 
 	-- Combat hooking
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
