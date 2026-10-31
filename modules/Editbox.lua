@@ -491,7 +491,6 @@ Prat:AddModuleToLoad(function()
 	function module:ChatEdit_DeactivateChat(frame)
 		frame:SetAlpha(0)
 		frame:EnableMouse(false)
-		print("DeactivateChat")
 	end
 
 	function module:SetBackdrop()
