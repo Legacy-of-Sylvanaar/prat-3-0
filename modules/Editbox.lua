@@ -277,8 +277,8 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	local function ChatFrameTab_OnClick(self, i)
-		if self.db.profile.attach == "TOP" and GetCVar("chatStyle") ~= "classic" then
+	local function ChatFrameTab_OnClick(i)
+		if GetCVar("chatStyle") ~= "classic" then
 			local chatFrame = _G["ChatFrame" .. i];
 			ChatEdit_DeactivateChat(chatFrame.editBox)
 			chatFrame.editBox:Hide()
@@ -406,7 +406,7 @@ Prat:AddModuleToLoad(function()
 
 			local tab = _G["ChatFrame" .. i .. "Tab"]
 			tab:HookScript("OnClick", function()
-				ChatFrameTab_OnClick(self, i)
+				ChatFrameTab_OnClick(i)
 			end)
 		end
 
@@ -491,6 +491,7 @@ Prat:AddModuleToLoad(function()
 	function module:ChatEdit_DeactivateChat(frame)
 		frame:SetAlpha(0)
 		frame:EnableMouse(false)
+		print("DeactivateChat")
 	end
 
 	function module:SetBackdrop()
