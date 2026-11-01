@@ -47,12 +47,6 @@ Prat:AddModuleToLoad(function()
 		desc = PL["A module to provide basic chat filtering."],
 		type = "group",
 		args = {
-			--		    leavejoin = {
-			--				name = PL["leavejoin_name"],
-			--				desc = PL["leavejoin_desc"],
-			--				type = "toggle",
-			--				order = 100
-			--			},
 			notices = {
 				name = PL["notices_name"],
 				desc = PL["notices_desc"],
@@ -83,28 +77,18 @@ Prat:AddModuleToLoad(function()
 				type = "toggle",
 				order = 118
 			},
-
-			--		    bgjoin = {
-			--				name = PL["bgjoin_name"],
-			--				desc = PL["bgjoin_desc"],
-			--				type = "toggle",
-			--				order = 111
-			--			},
 		}
 	})
 
 	local THROTTLE_TIME = 120
-
 	local MessageTime = {}
+	local CLR = Prat.CLR
 
 	local function cleanText(msg, author)
 		local cleanmsg = msg:gsub("...hic!", ""):gsub("%d", ""):gsub("%c", ""):gsub("%p", ""):gsub("%s", ""):upper():gsub("SH", "S");
 		return (author and author:upper() or "") .. cleanmsg;
 	end
 
-	--[[------------------------------------------------
-		Module Event Functions
-	------------------------------------------------]] --
 	function module:OnModuleEnable()
 		Prat.RegisterMessageItem("SPAMPROB", "PRE", "after")
 		self.classifier = Prat.GetClassifier(self.db.global)
@@ -113,36 +97,23 @@ Prat:AddModuleToLoad(function()
 		self.trainTable = {}
 		self.throttle = THROTTLE_TIME
 
-		self.throttleFrame:SetScript("OnUpdate",
-			function(frame, elapsed)
-				self.throttle = self.throttle - elapsed
-				if frame:IsShown() and self.throttle < 0 then
-					self.throttle = THROTTLE_TIME
-					self:PruneMessages()
-				end
-			end)
-
-		--    ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", tradeSpamFilter)
-		--    ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", tradeSpamFilter)
+		self.throttleFrame:SetScript("OnUpdate", function(frame, elapsed)
+			self.throttle = self.throttle - elapsed
+			if frame:IsShown() and self.throttle < 0 then
+				self.throttle = THROTTLE_TIME
+				self:PruneMessages()
+			end
+		end)
 
 		Prat.RegisterChatEvent(self, "Prat_FrameMessage")
 		Prat.RegisterLinkType({ linkid = "pratfilter", linkfunc = module.PratFilter, handler = module }, module.name)
 	end
 
-	-- things to do when the module is disabled
 	function module:OnModuleDisable()
 		self.lineTable = nil
 		self.trainTable = nil
-		--    ChatFrame_RemoveMessageEventFilter("CHAT_MSG_CHANNEL", tradeSpamFilter)
-		--    ChatFrame_RemoveMessageEventFilter("CHAT_MSG_YELL", tradeSpamFilter)
-
 		Prat.UnregisterAllChatEvents(self)
 	end
-
-	--[[------------------------------------------------
-		Core Functions
-	------------------------------------------------]] --
-
 
 	function module:PratFilter(data, frame)
 		local _, id, found = strsplit(":", data)
@@ -176,8 +147,6 @@ Prat:AddModuleToLoad(function()
 	local function tokenize(msg)
 		return string_split(msg, nil, "([^%s%p%c]+)") -- obfuscations removal
 	end
-
-	local CLR = Prat.CLR
 
 	function module:AdjustScore(id, frame)
 		id = tonumber(id)
@@ -269,21 +238,17 @@ Prat:AddModuleToLoad(function()
 				self.lineTable[message.LINE_ID] = message.ORG.MESSAGE
 				message.SPAMPROB = ("|cff40ff40|Hpratfilter:%d:0|h[--]|h|r" .. CLR:Bracket("[") .. "%s" .. CLR:Bracket("]") .. "|cffff4040|Hpratfilter:%d:1|h[++]|h|r ")
 					:format(message.LINE_ID, CLR:Probability(FormatPercentage(prob), prob), message.LINE_ID)
-			else
-				if isSpam then
-					message.DONOTPROCESS = true
-				end
+			elseif isSpam then
+				message.DONOTPROCESS = true
 			end
 		end
 
 		local newEvent = true
-		if message.LINE_ID and
-			message.LINE_ID == self.lastevent and
-			self.lasteventtype == event then
+		if message.LINE_ID and message.LINE_ID == self.lastevent and self.lasteventtype == event then
 			newEvent = false
 		end
 
-		if self.db.profile.tradespam then
+		if self.db.profile.tradespam and not issecretvalue(message.ORG.MESSAGE) and not issecretvalue(message.ORG.PLAYER) then
 			if event == "CHAT_MSG_CHANNEL" or event == "CHAT_MSG_YELL" then
 				local msg = cleanText(message.ORG.MESSAGE, message.ORG.PLAYER)
 
@@ -303,7 +268,7 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 
-		if self.db.profile.afkdnd then
+		if self.db.profile.afkdnd and not issecretvalue(message.ORG.MESSAGE) and not issecretvalue(message.ORG.PLAYER) then
 			if event == "CHAT_MSG_AFK" or event == "CHAT_MSG_DND" then
 				local msg = cleanText(message.ORG.MESSAGE, message.ORG.PLAYER)
 
@@ -327,6 +292,4 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 	end
-
-	return
-end) -- Prat:AddModuleToLoad
+end)
