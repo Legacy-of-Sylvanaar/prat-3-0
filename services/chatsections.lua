@@ -350,7 +350,7 @@ function private.SplitChatMessage(frame, event, ...)
 		s.TYPEPREFIX = safestr(s.TYPEPREFIX)
 
 		arg2 = isSecret and arg2 or safestr(arg2)
-		if (strsub(type, 1, 7) == "MONSTER" or type == "SYSTEM" or type == "RAID_BOSS_EMOTE" or type == "CHANNEL_NOTICE" or type == "CHANNEL_NOTICE_USER") then
+		if (strsub(type, 1, 7) == "MONSTER" or type == "RAID_BOSS_EMOTE" or type == "CHANNEL_NOTICE" or type == "CHANNEL_NOTICE_USER") then
 			s.NONPLAYER = arg2
 		elseif isSecret and coloredName then
 			local isCommunityType = type == "COMMUNITIES_CHANNEL"
