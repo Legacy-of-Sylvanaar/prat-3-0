@@ -423,6 +423,9 @@ Prat:AddModuleToLoad(function()
 			self.errorcount = 0
 			self:Output(PL.msg_settingsloaded)
 		else
+			if not self.errorcount then
+				self.errorcount = 0
+			end
 			self.errorcount = self.errorcount + 1
 
 			if self.errorcount > 10 then
