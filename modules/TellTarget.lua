@@ -57,9 +57,6 @@ Prat:AddModuleToLoad(function()
 		self:UnhookAll()
 	end
 
-	--[[------------------------------------------------
-		Core Functions
-	------------------------------------------------]] --
 	function module:GetDescription()
 		return PL["Adds telltarget slash command (/tt)."]
 	end
@@ -71,6 +68,18 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
+	local function GetTargetName(unit)
+		return Prat.IsForever and GetUnitName(unit) or UnitName(unit)
+	end
+
+	local function GetTargetServer(unit)
+		if Prat.IsForever then
+			return
+		end
+		local _, realm = UnitName(unit)
+		return realm
+	end
+
 	function module:SendTellToTarget(frame, text, editBox)
 		if frame == nil then
 			frame = DEFAULT_CHAT_FRAME
@@ -78,7 +87,7 @@ Prat:AddModuleToLoad(function()
 
 		local unitname, realm, fullname
 		if UnitIsPlayer("target") then
-			unitname, realm = UnitName("target")
+			unitname, realm = GetTargetName("target"), GetTargetServer("target")
 			if unitname then
 				if realm and UnitRealmRelationship("target") ~= LE_REALM_RELATION_SAME then
 					fullname = unitname .. "-" .. realm
@@ -88,7 +97,7 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 
-		local target = fullname and fullname:gsub(" ", "") or PL["NoTarget"]
+		local target = fullname and fullname or PL["NoTarget"]
 
 		if editBox then
 			editBox:SetAttribute("chatType", "WHISPER")
@@ -99,6 +108,4 @@ Prat:AddModuleToLoad(function()
 			ChatFrame_SendTell(target, frame)
 		end
 	end
-
-	return
 end)
