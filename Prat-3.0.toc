@@ -1,18 +1,9 @@
-## Interface: 120107, 120105
-## Interface-Classic: 11509
-## Interface-Forever: 16001
-## Interface-BCC: 20506
-## Interface-Wrath: 30405
-## Interface-Titan: 38001
-## Interface-Mists: 50504
-
-## X-Curse-Project-ID: 7473
-## X-WoWI-ID: 10783
-## X-Wago-ID: RNL9ae6o
+## Interface: 11509, 16001, 20506, 30405, 38002, 40402, 50504, 120105, 120107
 
 ## Title: Prat |cff8080ff3.0|r
-## Notes: A framework for chat ehancement modules.
 ## Title-zhCN: Prat |cff8080ff3.0|r
+
+## Notes: A framework for chat ehancement modules.
 ## Notes-zhCN: 整合的聊天增强助手
 ## Notes-zhTW: 整合的聊天視窗模組。
 ## Notes-frFR: Framework pour des modules concernant les fen\195\170tres de discussion
@@ -20,6 +11,7 @@
 ## Notes-deDE: Ein Grundaddon für Chatfenstermodule.
 ## Notes-koKR: 대화창에 대한 다양한 기능을 제공하는 애드온입니다.
 ## Notes-ruRU: Фреймворк для чата. Это БЕТА-версия, а значит возможны баги и глюки.
+
 ## Category-enUS: Chat
 ## Category-deDE: Chat
 ## Category-esES: Chat
@@ -31,16 +23,6 @@
 ## Category-ruRU: Чат
 ## Category-zhCN: 聊天
 ## Category-zhTW: 對話
-## Version: @project-version@
-## Author: Sylvanaar (Sylvaann - Proudmoore/US-Alliance)
-## eMail: sylvanaar@mindspring.com
-
-## X-Category: Chat/Communication
-## X-Website: http://www.wowace.com/wiki/Prat
-
-## X-Credits: Prat Dev Team (Sylvanaar, Fin, Curney, Krtek), Industrial, Ammo, Cirk, Yrys (ChatLink), Leuchtturm, AnduinLothar, Satrina, <CWDG>昏睡墨鱼&月色狼影, Zurazzi(Jubei’Thos), Cybeloras
-
-## X-License: GPLv3
 
 ## OptionalDeps: LibSink-2.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDataBroker-1.1, LibDBIcon-1.0, LibAlts-1.0, LibChatAnims
 
@@ -49,6 +31,12 @@
 
 ## IconTexture: Interface\AddOns\Prat-3.0\textures\prat-logo-dark-small
 ## AddonCompartmentFunc: Prat_ToggleOptionsWindow
+
+## Author: QartemisT, formerly Sylvanaar
+## Version: @project-version@
+## X-Curse-Project-ID: 7473
+## X-WoWI-ID: 10783
+## X-Wago-ID: RNL9ae6o
 
 Libs.xml
 

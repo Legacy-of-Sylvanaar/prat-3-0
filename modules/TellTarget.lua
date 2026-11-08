@@ -97,7 +97,7 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 
-		local target = fullname and fullname or PL["NoTarget"]
+		local target = fullname or PL["NoTarget"]
 
 		if editBox then
 			editBox:SetAttribute("chatType", "WHISPER")
