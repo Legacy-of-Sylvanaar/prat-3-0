@@ -164,7 +164,7 @@ Prat:AddModuleToLoad(function()
 
 	-- replace text using prat event implementation
 	function module:Prat_FrameMessage(_, message)
-		if message.GUID == nil or (_G.issecretvalue and _G.issecretvalue(message.GUID)) then
+		if message.GUID == nil or (issecretvalue and issecretvalue(message.GUID)) then
 			return
 		end
 

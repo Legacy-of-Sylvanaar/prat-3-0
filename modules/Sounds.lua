@@ -79,17 +79,15 @@ Prat:AddModuleToLoad(function()
 		media.RegisterCallback(self, "LibSharedMedia_Registered", "SharedMedia_Registered")
 		media.RegisterCallback(self, "LibSharedMedia_SetGlobal", "SharedMedia_Registered")
 
-		_G.MuteSoundFile(567421)
+		MuteSoundFile(567421)
 	end
-
-
 
 	-- things to do when the module is disabled
 	function module:OnModuleDisable()
 		self:UnregisterAllEvents()
 		Prat.UnregisterAllChatEvents(self)
 		media.UnregisterAllCallbacks(self)
-		_G.UnmuteSoundFile(567421)
+		UnmuteSoundFile(567421)
 	end
 
 	local soundslist = {}
@@ -277,6 +275,4 @@ Prat:AddModuleToLoad(function()
 		self.lastevent = eventId
 		Prat:PlaySound(sound)
 	end
-
-	return
-end) -- Prat:AddModuleToLoad
+end)

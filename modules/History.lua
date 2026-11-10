@@ -24,7 +24,7 @@
 --
 -------------------------------------------------------------------------------
 
-local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
+local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend or ChatFrameUtil.ChooseBoxForSend
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("History", "AceHook-3.0")
@@ -111,8 +111,8 @@ Prat:AddModuleToLoad(function()
 	})
 
 	local function applyEditBox(func)
-		for i = 1, NUM_CHAT_WINDOWS do
-			local f = _G["ChatFrame" .. i .. "EditBox"]
+		for _, frameName in ipairs(CHAT_FRAMES) do
+			local f = _G[frameName .. "EditBox"]
 			func(f)
 		end
 	end
@@ -210,7 +210,12 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:addSavedHistory(editBox)
-		editBox = editBox or ChatFrame1EditBox
+		if not editBox then
+			applyEditBox(function(edit)
+				self:addSavedHistory(edit)
+			end)
+			return
+		end
 		local cmdhistory = Prat3CharDB.history.cmdhistory[editBox:GetName()] or {}
 		local cmdindex = #cmdhistory
 
@@ -244,7 +249,12 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:ClearHistory(editBox)
-		editBox = editBox or ChatFrame1EditBox
+		if not editBox then
+			applyEditBox(function(edit)
+				self:ClearHistory(edit)
+			end)
+			return
+		end
 
 		local cmdhistory = editBox.history_lines or {}
 		local cmdcount = #cmdhistory
@@ -255,7 +265,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:AddHistoryLine(editBox)
-		editBox = editBox or ChatFrame1EditBox
+		editBox = editBox or ChatEdit_ChooseBoxForSend()
 
 		-- following code mostly ripped off from Blizzard, but at least I understand it now
 		local text = ""

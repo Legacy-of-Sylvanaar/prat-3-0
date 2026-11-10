@@ -172,7 +172,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:UpdateMenuButtons()
-		local socialBtn = _G.QuickJoinToastButton or _G.FriendsMicroButton
+		local socialBtn = QuickJoinToastButton or FriendsMicroButton
 		if socialBtn then
 			if self.db.profile.showBnet then
 				socialBtn:Show()

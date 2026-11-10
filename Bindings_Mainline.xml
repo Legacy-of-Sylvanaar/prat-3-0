@@ -1,79 +1,79 @@
 <Bindings>
 	<!-- ChannelNames -->
 	<Binding name="officer" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/o");
 	</Binding>
 	<Binding name="guild" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/g");
 	</Binding>
  	<Binding name="party" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/p");
 	</Binding>
 	<Binding name="raid" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/raid");
 	</Binding>
 	<Binding name="raidwarn" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/rw");
 	</Binding>
 	<Binding name="instance" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/i");
 	</Binding>
 	<Binding name="say" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/say");
 	</Binding>
 	<Binding name="yell" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/yell");
 	</Binding>
 	<Binding name="whisper" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/w");
 	</Binding>
 	<Binding name="one" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/1");
 	</Binding>
 	<Binding name="two" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/2");
 	</Binding>
 	<Binding name="three" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/3");
 	</Binding>
 	<Binding name="four" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/4");
 	</Binding>
 	<Binding name="five" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/5");
 	</Binding>
 	<Binding name="six" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/6");
 	</Binding>
 	<Binding name="seven" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/7");
 	</Binding>
 	<Binding name="eight" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/8");
 	</Binding>
 	<Binding name="nine" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/9");
 	</Binding>
 	<Binding name="SmartGroup" category="ADDONS">
-		local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
+		local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
 		ChatFrame_OpenChat("/smart");
 	</Binding>
 	<Binding name="NextTab" category="ADDONS">

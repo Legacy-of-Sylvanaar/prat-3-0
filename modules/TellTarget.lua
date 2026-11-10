@@ -24,8 +24,8 @@
 --
 -------------------------------------------------------------------------------
 
-local ChatFrame_SendTell = _G.ChatFrame_SendTell or _G.ChatFrameUtil.SendTell
-local ChatEdit_UpdateHeader = _G.ChatEdit_UpdateHeader or _G.ChatFrameEditBoxMixin.UpdateHeader
+local ChatFrame_SendTell = ChatFrame_SendTell or ChatFrameUtil.SendTell
+local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader or ChatFrameEditBoxMixin.UpdateHeader
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("TellTarget", "AceHook-3.0")
@@ -50,7 +50,9 @@ Prat:AddModuleToLoad(function()
 	})
 
 	function module:OnModuleEnable()
-		self:SecureHookScript(_G.ChatFrame1EditBox, "OnTextChanged")
+		for _, frameName in ipairs(CHAT_FRAMES) do
+			self:SecureHookScript(_G[frameName .. "EditBox"], "OnTextChanged")
+		end
 	end
 
 	function module:OnModuleDisable()

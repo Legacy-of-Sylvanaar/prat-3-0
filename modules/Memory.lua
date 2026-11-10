@@ -26,15 +26,15 @@
 
 local NUM_CHAT_WINDOWS = NUM_CHAT_WINDOWS or Constants.ChatFrameConstants.MaxChatWindows
 
-local Chat_GetChatFrame = _G.Chat_GetChatFrame or _G.ChatFrameUtil.GetChatFrame
+local Chat_GetChatFrame = Chat_GetChatFrame or ChatFrameUtil.GetChatFrame
 
-local ChatEdit_DeactivateChat = _G.ChatEdit_DeactivateChat or _G.ChatFrameUtil.DeactivateChat
+local ChatEdit_DeactivateChat = ChatEdit_DeactivateChat or ChatFrameUtil.DeactivateChat
 
-local ChatFrame_AddNewCommunitiesChannel = _G.ChatFrame_AddNewCommunitiesChannel or _G.ChatFrameUtil.AddNewCommunitiesChannel
-local ChatFrame_RemoveAllMessageGroups = _G.ChatFrame_RemoveAllMessageGroups or _G.ChatFrameMixin.RemoveAllMessageGroups
-local ChatFrame_AddMessageGroup = _G.ChatFrame_AddMessageGroup or _G.ChatFrameMixin.AddMessageGroup
-local ChatFrame_RemoveAllChannels = _G.ChatFrame_RemoveAllChannels or _G.ChatFrameMixin.RemoveAllChannels
-local ChatFrame_ReceiveAllPrivateMessages = _G.ChatFrame_ReceiveAllPrivateMessages or _G.ChatFrameMixin.ReceiveAllPrivateMessages
+local ChatFrame_AddNewCommunitiesChannel = ChatFrame_AddNewCommunitiesChannel or ChatFrameUtil.AddNewCommunitiesChannel
+local ChatFrame_RemoveAllMessageGroups = ChatFrame_RemoveAllMessageGroups or ChatFrameMixin.RemoveAllMessageGroups
+local ChatFrame_AddMessageGroup = ChatFrame_AddMessageGroup or ChatFrameMixin.AddMessageGroup
+local ChatFrame_RemoveAllChannels = ChatFrame_RemoveAllChannels or ChatFrameMixin.RemoveAllChannels
+local ChatFrame_ReceiveAllPrivateMessages = ChatFrame_ReceiveAllPrivateMessages or ChatFrameMixin.ReceiveAllPrivateMessages
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Memory", "AceHook-3.0", "AceEvent-3.0", "AceTimer-3.0")
@@ -226,9 +226,9 @@ Prat:AddModuleToLoad(function()
 		ChatFrame_RemoveAllChannels(f)
 		for i = 1, #db.channels, 2 do
 			local chan
-			if _G.ChatFrame_AddChannel then
-				chan = _G.ChatFrame_AddChannel(f, db.channels[i])
-			elseif _G.ChatFrameMixin.AddChannel then
+			if ChatFrame_AddChannel then
+				chan = ChatFrame_AddChannel(f, db.channels[i])
+			elseif ChatFrameMixin.AddChannel then
 				chan = f:AddChannel(db.channels[i])
 			end
 			if not chan then

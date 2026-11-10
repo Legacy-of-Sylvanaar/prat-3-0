@@ -1,5 +1,5 @@
-local ChatEdit_ChooseBoxForSend = _G.ChatEdit_ChooseBoxForSend or _G.ChatFrameUtil.ChooseBoxForSend
-local ChatEdit_DeactivateChat = _G.ChatEdit_DeactivateChat or _G.ChatFrameUtil.DeactivateChat
+local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend or ChatFrameUtil.ChooseBoxForSend
+local ChatEdit_DeactivateChat = ChatEdit_DeactivateChat or ChatFrameUtil.DeactivateChat
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Editbox", "AceHook-3.0")
@@ -412,22 +412,22 @@ Prat:AddModuleToLoad(function()
 
 		self:SetAttach(nil, self.db.profile.editX, self.db.profile.editY, self.db.profile.editW)
 
-		if _G.ChatFrameUtil then
-			if _G.ChatFrameUtil.DeactivateChat then
-				self:SecureHook(_G.ChatFrameUtil, "DeactivateChat", "ChatEdit_DeactivateChat")
+		if ChatFrameUtil then
+			if ChatFrameUtil.DeactivateChat then
+				self:SecureHook(ChatFrameUtil, "DeactivateChat", "ChatEdit_DeactivateChat")
 			end
-			if _G.ChatFrameUtil.SetLastActiveWindow then
-				self:SecureHook(_G.ChatFrameUtil, "ActivateChat", "ChatEdit_ActivateChat")
+			if ChatFrameUtil.SetLastActiveWindow then
+				self:SecureHook(ChatFrameUtil, "ActivateChat", "ChatEdit_ActivateChat")
 			end
-			if _G.ChatFrameUtil.OpenChat then
-				self:SecureHook(_G.ChatFrameUtil, "OpenChat", "ChatFrame_OpenChat")
+			if ChatFrameUtil.OpenChat then
+				self:SecureHook(ChatFrameUtil, "OpenChat", "ChatFrame_OpenChat")
 			end
 		else
 			self:SecureHook("ChatFrame_OpenChat")
 		end
 		if self.db.profile.colorByChannel then
-			if _G.ChatFrameEditBoxBaseMixin and _G.ChatFrameEditBoxBaseMixin.UpdateHeader then
-				self:SecureHook(_G.ChatFrameEditBoxBaseMixin, "UpdateHeader", "SetBorderByChannel")
+			if ChatFrameEditBoxBaseMixin and ChatFrameEditBoxBaseMixin.UpdateHeader then
+				self:SecureHook(ChatFrameEditBoxBaseMixin, "UpdateHeader", "SetBorderByChannel")
 			else
 				self:SecureHook("ChatEdit_UpdateHeader", "SetBorderByChannel", true)
 			end

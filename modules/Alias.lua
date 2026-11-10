@@ -24,7 +24,7 @@
 --
 -------------------------------------------------------------------------------
 
-local ChatEdit_ParseText = _G.ChatEdit_ParseText or _G.ChatFrameEditBoxMixin.ParseText
+local ChatEdit_ParseText = ChatEdit_ParseText or ChatFrameEditBoxMixin.ParseText
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Alias", "AceHook-3.0")

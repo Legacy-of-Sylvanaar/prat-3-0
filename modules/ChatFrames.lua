@@ -131,7 +131,7 @@ Prat:AddModuleToLoad(function()
 		local prevClamp = ChatFrame1.SetClampRectInsets
 		self:SecureHook(ChatFrame1, "SetClampRectInsets", function(frame)
 			-- If in combat, SetClampRectInsets is protected... This should likely never happen, but to be safe.
-			if _G.InCombatLockdown() then
+			if InCombatLockdown() then
 				return
 			end
 			if self.db.profile.on and self.db.profile.removeclamp then

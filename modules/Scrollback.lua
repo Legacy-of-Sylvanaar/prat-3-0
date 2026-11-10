@@ -24,7 +24,7 @@
 --
 -------------------------------------------------------------------------------
 
-local ChatFrame_TimeBreakDown = _G.ChatFrame_TimeBreakDown or _G.ChatFrameUtil.TimeBreakDown
+local ChatFrame_TimeBreakDown = ChatFrame_TimeBreakDown or ChatFrameUtil.TimeBreakDown
 
 Prat:AddModuleExtension(function()
 	local module = Prat:GetModule("History")

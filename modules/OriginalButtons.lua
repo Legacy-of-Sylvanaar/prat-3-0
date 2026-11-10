@@ -166,7 +166,7 @@ Prat:AddModuleToLoad(function()
 		self.OnUpdateInterval = 0.05
 		self.lastupdate = 0
 		-- hook functions
-		if _G.ChatFrame_OnUpdate then
+		if ChatFrame_OnUpdate then
 			self:SecureHook("ChatFrame_OnUpdate", "ChatFrame_OnUpdateHook")
 		else
 			for _, v in pairs(Prat.Frames) do

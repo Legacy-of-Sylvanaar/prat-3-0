@@ -26,11 +26,11 @@
 
 local issecretvalue = issecretvalue or function() return false end
 
-local ChatEdit_GetActiveWindow = _G.ChatEdit_GetActiveWindow or _G.ChatFrameUtil.GetActiveWindow
-local ChatEdit_ChooseBoxForSend = _G.ChatEdit_ChooseBoxForSend or _G.ChatFrameUtil.ChooseBoxForSend
+local ChatEdit_GetActiveWindow = ChatEdit_GetActiveWindow or ChatFrameUtil.GetActiveWindow
+local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend or ChatFrameUtil.ChooseBoxForSend
 
-local ChatFrame_OpenChat = _G.ChatFrame_OpenChat or _G.ChatFrameUtil.OpenChat
-local StripHyperlinks = _G.StripHyperlinks or _G.C_StringUtil.StripHyperlinks
+local ChatFrame_OpenChat = ChatFrame_OpenChat or ChatFrameUtil.OpenChat
+local StripHyperlinks = StripHyperlinks or C_StringUtil.StripHyperlinks
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("CopyChat", "AceHook-3.0", "AceTimer-3.0")

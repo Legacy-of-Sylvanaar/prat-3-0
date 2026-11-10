@@ -24,7 +24,7 @@
 --
 -------------------------------------------------------------------------------
 
-local ChatEdit_GetActiveWindow = _G.ChatEdit_GetActiveWindow or _G.ChatFrameUtil.GetActiveWindow
+local ChatEdit_GetActiveWindow = ChatEdit_GetActiveWindow or ChatFrameUtil.GetActiveWindow
 
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("Substitutions")
