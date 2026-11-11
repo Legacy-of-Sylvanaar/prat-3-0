@@ -250,6 +250,7 @@ globals = {
 	"ChatFrameEditBoxMixin.UpdateHeader",
 	"ChatFrameEditBoxBaseMixin.UpdateHeader",
 	--
+	"ChatFrameUtil.ActivateChat",
 	"ChatFrameUtil.AddCommunitiesChannel",
 	"ChatFrameUtil.AddNewCommunitiesChannel",
 	"ChatFrameUtil.CanChatGroupPerformExpressionExpansion",
