@@ -7,6 +7,7 @@ Prat:AddModuleToLoad(function()
 
 	local Media = Prat.Media
 	local backgrounds, borders, fonts = {}, {}, {}
+	local originalFonts = {}
 
 	local VALID_ATTACH_POINTS = {
 		TOP = PL["Top"],
@@ -15,10 +16,47 @@ Prat:AddModuleToLoad(function()
 		LOCK = PL["Free-floating, Locked"]
 	}
 
-	local function updateEditBox(method, ...)
-		for i = 1, #CHAT_FRAMES do
-			local f = _G["ChatFrame" .. i .. "EditBox"]
-			f[method](f, ...)
+	function module:UpdateFont(editBox)
+		if not editBox then
+			for _, frameName in ipairs(CHAT_FRAMES) do
+				local frame = _G[frameName .. "EditBox"]
+				if frame then
+					self:UpdateFont(frame)
+				end
+			end
+			return
+		end
+
+		local font = Media:Fetch("font", self.db.profile.font)
+		originalFonts[editBox] = originalFonts[editBox] or { editBox:GetFont() }
+		local _, _, flags = editBox:GetFont()
+		editBox:SetFont(font, self.db.profile.fontSize, flags)
+		local header = _G[editBox:GetName() .. "Header"]
+		if header then
+			originalFonts[header] = originalFonts[header] or { header:GetFont() }
+			local _, _, headerFlags = header:GetFont()
+			header:SetFont(font, self.db.profile.fontSize, headerFlags)
+		end
+	end
+
+	function module:UpdateBorderHook(editBox)
+		local object, method = editBox, "UpdateHeader"
+		if not editBox.UpdateHeader then
+			object, method = "ChatEdit_UpdateHeader", nil
+			if not ChatEdit_UpdateHeader then
+				return
+			end
+		end
+		if self.db.profile.colorByChannel then
+			if not self:IsHooked(object, method) then
+				if method then
+					self:SecureHook(object, method, "SetBorderByChannel")
+				else
+					self:SecureHook(object, "SetBorderByChannel", true)
+				end
+			end
+		elseif self:IsHooked(object, method) then
+			self:Unhook(object, method)
 		end
 	end
 
@@ -153,17 +191,10 @@ Prat:AddModuleToLoad(function()
 				end,
 				set = function(_, v)
 					module.db.profile.colorByChannel = v
-					if v then
-						module:SecureHook("ChatEdit_UpdateHeader", "SetBorderByChannel", true)
-					else
-						if module:IsHooked("ChatEdit_UpdateHeader") then
-							module:Unhook("ChatEdit_UpdateHeader")
-							local c = module.db.profile.borderColor
-							for _, frame in ipairs(module.frames) do
-								frame:SetBackdropBorderColor(c.r, c.g, c.b, c.a)
-							end
-						end
+					for _, frameName in ipairs(CHAT_FRAMES) do
+						module:UpdateBorderHook(_G[frameName .. "EditBox"])
 					end
+					module:SetBackdrop()
 				end
 			},
 			useAltKey = {
@@ -175,7 +206,9 @@ Prat:AddModuleToLoad(function()
 				end,
 				set = function(_, v)
 					module.db.profile.useAltKey = v
-					updateEditBox("SetAltArrowKeyMode", v)
+					for _, frameName in ipairs(CHAT_FRAMES) do
+						module:UpdateArrowKeys(_G[frameName .. "EditBox"])
+					end
 				end,
 			},
 			font = {
@@ -188,14 +221,23 @@ Prat:AddModuleToLoad(function()
 				end,
 				set = function(_, v)
 					module.db.profile.font = v
-					for i = 1, #CHAT_FRAMES do
-						local ff = _G["ChatFrame" .. i .. "EditBox"]
-						local header = _G[ff:GetName() .. "Header"]
-						local _, s, m = ff:GetFont()
-						local font = Media:Fetch("font", v)
-						ff:SetFont(font, s, m)
-						header:SetFont(font, s, m)
-					end
+					module:UpdateFont()
+				end
+			},
+			fontSize = {
+				type = "range",
+				name = PL["Font Size"],
+				desc = PL["Set the edit box font size"],
+				min = 6,
+				max = 32,
+				step = 1,
+				get = function()
+					return module.db.profile.fontSize
+				end,
+				set = function(_, v)
+					module.db.profile.fontSize = v
+					module:UpdateFont()
+					module:UpdateHeight()
 				end
 			},
 		},
@@ -215,9 +257,10 @@ Prat:AddModuleToLoad(function()
 			attach = "BOTTOM",
 			colorByChannel = true,
 			useAltKey = false,
+			fontSize = select(2, ChatFrame1EditBox:GetFont()) or 12,
 			font = (function()
-				for i = 1, #CHAT_FRAMES do
-					local ff = _G["ChatFrame" .. i .. "EditBox"]
+				for _, frameName in ipairs(CHAT_FRAMES) do
+					local ff = _G[frameName .. "EditBox"]
 					local f = ff:GetFont()
 					for k, v in pairs(Media:HashTable("font")) do
 						if v == f then
@@ -290,12 +333,15 @@ Prat:AddModuleToLoad(function()
 
 		self:LibSharedMedia_Registered()
 
-		for i = 1, #CHAT_FRAMES do
-			MakePratEditbox(self, i)
+		for _, frameName in ipairs(CHAT_FRAMES) do
+			MakePratEditbox(self, _G[frameName]:GetID())
 		end
 	end)
 
 	local function OnArrowPressed(self, key)
+		if module.db.profile.useAltKey then
+			return
+		end
 		-- We cannot call SetText while in lockdown
 		if C_ChatInfo and C_ChatInfo.InChatMessagingLockdown and C_ChatInfo.InChatMessagingLockdown() then
 			return
@@ -324,13 +370,22 @@ Prat:AddModuleToLoad(function()
 		self:SetText(self.history_lines[self.history_index])
 	end
 
-	local function enableArrowKeys(e)
-		e.history_lines = e.history_lines or {}
-		e.history_index = e.history_index or 0
-		e:HookScript("OnArrowPressed", OnArrowPressed)
+	function module:UpdateArrowKeys(editBox)
+		editBox:SetAltArrowKeyMode(self.db.profile.useAltKey)
+		if self.db.profile.useAltKey then
+			if self:IsHooked(editBox, "OnArrowPressed") then
+				self:Unhook(editBox, "OnArrowPressed")
+			end
+		else
+			editBox.history_lines = editBox.history_lines or {}
+			editBox.history_index = editBox.history_index or 0
+			if not self:IsHooked(editBox, "OnArrowPressed") then
+				self:SecureHookScript(editBox, "OnArrowPressed", OnArrowPressed)
+			end
+		end
 	end
 
-	function module:Prat_FramesUpdated(_, _, chatFrame)
+	function module:ConfigureFrame(chatFrame)
 		local i = chatFrame:GetID()
 		local f = _G["ChatFrame" .. i .. "EditBox"]
 		_G["ChatFrame" .. i .. "EditBoxLeft"]:Hide()
@@ -352,72 +407,45 @@ Prat:AddModuleToLoad(function()
 		MakePratEditbox(self, i)
 		self.frames[i]:Show()
 
-		local _, s, m = f:GetFont()
-		f:SetFont(Media:Fetch("font", self.db.profile.font), s, m)
+		self:UpdateFont(f)
 
-		local header = _G[f:GetName() .. "Header"]
-		local _, s2, m2 = header:GetFont()
-		header:SetFont(Media:Fetch("font", self.db.profile.font), s2, m2)
+		self:UpdateArrowKeys(f)
+		self:UpdateBorderHook(f)
 
-		f:SetAltArrowKeyMode(module.db.profile.useAltKey and 1 or nil)
-		if not module.db.profile.useAltKey then
-			enableArrowKeys(f)
+		if not self:IsHooked(chatFrame, "OnShow") then
+			self:SecureHookScript(chatFrame, "OnShow", function()
+				C_Timer.After(0, function()
+					if self:IsEnabled() then
+						ChatFrame_OnShow(chatFrame)
+					end
+				end)
+			end)
 		end
+	end
+
+	function module:UpdateLayout()
 		self:SetBackdrop()
 		self:UpdateHeight()
 		self:SetAttach(nil, self.db.profile.editX, self.db.profile.editY, self.db.profile.editW)
 	end
 
+	function module:Prat_FramesUpdated(_, _, chatFrame)
+		self:ConfigureFrame(chatFrame)
+		self:UpdateLayout()
+	end
+
 	function module:OnModuleEnable()
 		self:LibSharedMedia_Registered()
 
-		for i = 1, #CHAT_FRAMES do
-			local f = _G["ChatFrame" .. i .. "EditBox"]
-			_G["ChatFrame" .. i .. "EditBoxLeft"]:Hide()
-			_G["ChatFrame" .. i .. "EditBoxRight"]:Hide()
-			_G["ChatFrame" .. i .. "EditBoxMid"]:Hide()
-			if f.focusLeft then
-				f.focusLeft:SetAlpha(0)
-			end
-			if f.focusRight then
-				f.focusRight:SetAlpha(0)
-			end
-			if f.focusMid then
-				f.focusMid:SetAlpha(0)
-			end
-			f:Hide()
-			f:SetAlpha(0)
-			f:EnableMouse(false)
-
-			MakePratEditbox(self, i) -- For new temporary chat frames created between init and now
-			self.frames[i]:Show()
-			local _, s, m = f:GetFont()
-			f:SetFont(Media:Fetch("font", self.db.profile.font), s, m)
-
-			local header = _G[f:GetName() .. "Header"]
-			local _, s2, m2 = header:GetFont()
-			header:SetFont(Media:Fetch("font", self.db.profile.font), s2, m2)
-
-			f:SetAltArrowKeyMode(module.db.profile.useAltKey and 1 or nil)
-			if not module.db.profile.useAltKey then
-				enableArrowKeys(f)
-			end
-
-			local chatFrame = _G["ChatFrame" .. i]
-			chatFrame:HookScript("OnShow", function()
-				C_Timer.After(0, function()
-					ChatFrame_OnShow(chatFrame)
-				end)
-			end)
+		for _, frameName in ipairs(CHAT_FRAMES) do
+			self:ConfigureFrame(_G[frameName])
 		end
-
-		self:SetAttach(nil, self.db.profile.editX, self.db.profile.editY, self.db.profile.editW)
 
 		if ChatFrameUtil then
 			if ChatFrameUtil.DeactivateChat then
 				self:SecureHook(ChatFrameUtil, "DeactivateChat", "ChatEdit_DeactivateChat")
 			end
-			if ChatFrameUtil.SetLastActiveWindow then
+			if ChatFrameUtil.ActivateChat then
 				self:SecureHook(ChatFrameUtil, "ActivateChat", "ChatEdit_ActivateChat")
 			end
 			if ChatFrameUtil.OpenChat then
@@ -426,16 +454,7 @@ Prat:AddModuleToLoad(function()
 		else
 			self:SecureHook("ChatFrame_OpenChat")
 		end
-		if self.db.profile.colorByChannel then
-			if ChatFrameEditBoxBaseMixin and ChatFrameEditBoxBaseMixin.UpdateHeader then
-				self:SecureHook(ChatFrameEditBoxBaseMixin, "UpdateHeader", "SetBorderByChannel")
-			else
-				self:SecureHook("ChatEdit_UpdateHeader", "SetBorderByChannel", true)
-			end
-		end
-
-		self:SetBackdrop()
-		self:UpdateHeight()
+		self:UpdateLayout()
 
 		Prat.RegisterChatEvent(self, Prat.Events.FRAMES_UPDATED)
 	end
@@ -443,19 +462,18 @@ Prat:AddModuleToLoad(function()
 	function module:ChatFrame_OpenChat(_, chatFrame)
 		if not self.db.profile.useAltKey then
 			local frame = ChatEdit_ChooseBoxForSend(chatFrame)
-
 			frame.history_index = 0
 		end
 	end
 
-
 	function module:OnModuleDisable()
+		self:UnhookAll()
 		self:SetAttach("BOTTOM") -- clear move/resize handlers
-		for i = 1, #CHAT_FRAMES do
-			local f = _G["ChatFrame" .. i .. "EditBox"]
-			_G["ChatFrame" .. i .. "EditBoxLeft"]:Show()
-			_G["ChatFrame" .. i .. "EditBoxRight"]:Show()
-			_G["ChatFrame" .. i .. "EditBoxMid"]:Show()
+		for _, frameName in ipairs(CHAT_FRAMES) do
+			local f = _G[frameName .. "EditBox"]
+			_G[frameName .. "EditBoxLeft"]:Show()
+			_G[frameName .. "EditBoxRight"]:Show()
+			_G[frameName .. "EditBoxMid"]:Show()
 			if f.focusLeft then
 				f.focusLeft:SetAlpha(1)
 			end
@@ -466,6 +484,7 @@ Prat:AddModuleToLoad(function()
 				f.focusMid:SetAlpha(1)
 			end
 			f:SetAltArrowKeyMode(true)
+			f:SetAlpha(1)
 			f:EnableMouse(true)
 			f.pratFrame:Hide()
 			-- restore Blizz size/position
@@ -474,9 +493,15 @@ Prat:AddModuleToLoad(function()
 			f:SetPoint("TOPLEFT", f.chatFrame, "BOTTOMLEFT", -5, -2)
 			if Prat.IsClassic then
 				f:SetPoint("TOPRIGHT", f.chatFrame, "BOTTOMRIGHT", 5, -2)
-			else
+			elseif f.chatFrame.ScrollBar then
 				f:SetPoint("RIGHT", f.chatFrame.ScrollBar, "RIGHT", 5, 0)
+			else
+				f:SetPoint("TOPRIGHT", f.chatFrame, "BOTTOMRIGHT", 5, -2)
 			end
+		end
+		for frame, font in pairs(originalFonts) do
+			frame:SetFont(unpack(font))
+			originalFonts[frame] = nil
 		end
 	end
 
@@ -495,7 +520,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:SetBackdrop()
-		for _, frame in ipairs(self.frames) do
+		for _, frame in pairs(self.frames) do
 			frame:SetBackdrop({
 				bgFile = Media:Fetch("background", self.db.profile.background),
 				edgeFile = Media:Fetch("border", self.db.profile.border),
@@ -515,24 +540,31 @@ Prat:AddModuleToLoad(function()
 			local c2 = self.db.profile.borderColor
 			frame:SetBackdropBorderColor(c2.r, c2.g, c2.b, c2.a)
 		end
+		if self.db.profile.colorByChannel then
+			self:SetBorderByChannel()
+		end
 	end
 
 	function module:SetBorderByChannel()
-		for index, frame in ipairs(self.frames) do
+		for index, frame in pairs(self.frames) do
 			local f = _G["ChatFrame" .. index .. "EditBox"]
 			local attr = f:GetAttribute("chatType")
-			if attr == "CHANNEL" then
+			if issecretvalue and issecretvalue(attr) then
+				attr = nil
+			elseif attr == "CHANNEL" then
 				local chan = f:GetAttribute("channelTarget")
-				if chan == 0 then
-					local c = self.db.profile.borderColor
-					frame:SetBackdropBorderColor(c.r, c.g, c.b, c.a)
-				elseif chan and ChatTypeInfo["CHANNEL" .. chan] then
-					local r, g, b = GetMessageTypeColor("CHANNEL" .. chan)
-					frame:SetBackdropBorderColor(r, g, b, 1)
+				if (issecretvalue and issecretvalue(chan)) or not chan or chan == 0 then
+					attr = nil
+				else
+					attr = "CHANNEL" .. chan
 				end
-			else
+			end
+			if attr and ChatTypeInfo[attr] then
 				local r, g, b = GetMessageTypeColor(attr)
 				frame:SetBackdropBorderColor(r, g, b, 1)
+			else
+				local c = self.db.profile.borderColor
+				frame:SetBackdropBorderColor(c.r, c.g, c.b, c.a)
 			end
 		end
 	end
@@ -570,24 +602,22 @@ Prat:AddModuleToLoad(function()
 		end
 
 		function module:SetAttach(val, x, y, w)
-			for i = 1, #CHAT_FRAMES do
-				local frame = _G["ChatFrame" .. i .. "EditBox"]
-				val = val or self.db.profile.attach
-				if not x and val == "FREE" then
-					if self.db.profile.editX and self.db.profile.editY then
-						x, y, w = self.db.profile.editX, self.db.profile.editY, self.db.profile.editW
-					else
-						x, y, w = frame:GetLeft(), frame:GetTop(), math.max(frame:GetWidth(), (frame:GetRight() or 0) - (frame:GetLeft() or 0))
-					end
+			val = val or self.db.profile.attach
+			for _, frameName in ipairs(CHAT_FRAMES) do
+				local frame = _G[frameName .. "EditBox"]
+				local frameX, frameY, frameWidth = x, y, w
+				if val == "FREE" or val == "LOCK" then
+					frameX = frameX or self.db.profile.editX or frame:GetLeft() or 0
+					frameY = frameY or self.db.profile.editY or frame:GetTop() or 0
+					frameWidth = frameWidth or self.db.profile.editW or frame:GetWidth()
 				end
-				if not w or w < 10 then
-					w = 100
+				if not frameWidth or frameWidth < 10 then
+					frameWidth = 100
 				end
 				frame:ClearAllPoints()
 				if val ~= "FREE" then
 					frame:SetMovable(false)
-					frame.lDrag:EnableMouse(false)
-					frame.rDrag:EnableMouse(false)
+					frame:SetResizable(false)
 					frame:SetScript("OnMouseDown", nil)
 					frame:SetScript("OnMouseUp", nil)
 					frame.lDrag:EnableMouse(false)
@@ -611,8 +641,8 @@ Prat:AddModuleToLoad(function()
 					frame:SetResizable(true)
 					frame:SetScript("OnMouseDown", startMoving)
 					frame:SetScript("OnMouseUp", stopMoving)
-					frame:SetWidth(w)
-					frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
+					frame:SetWidth(frameWidth)
+					frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", frameX, frameY)
 					local minWidth, minHeight = 40, 1
 					if frame.SetResizeBounds then
 						frame:SetResizeBounds(minWidth, minHeight)
@@ -629,19 +659,17 @@ Prat:AddModuleToLoad(function()
 					frame.lDrag:SetScript("OnMouseUp", stopDragging)
 					frame.rDrag:SetScript("OnMouseUp", stopDragging)
 				elseif val == "LOCK" then
-					frame:SetWidth(self.db.profile.editW or w)
-					frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", self.db.profile.editX or x, self.db.profile.editY or y)
+					frame:SetWidth(frameWidth)
+					frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", frameX, frameY)
 				end
 			end
 		end
 	end
 
 	function module:UpdateHeight()
-		for i, _ in ipairs(self.frames) do
+		for i in pairs(self.frames) do
 			local ff = _G["ChatFrame" .. i .. "EditBox"]
-			ff:SetHeight(module.db.profile.height)
+			ff:SetHeight(math.max(module.db.profile.height, module.db.profile.fontSize + 8))
 		end
 	end
-
-	return
 end)
