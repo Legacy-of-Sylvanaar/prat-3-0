@@ -81,7 +81,15 @@ Prat:AddModuleExtension(function()
 	end
 
 	local function newPattern(name)
-		return { pattern = Prat.GetNamePattern(name), matchfunc = ColorPlayer, priority = 48 }
+		local pattern
+		if Prat.IsForever then
+			-- Forever names have no realm suffix. Match the complete name,
+			-- allowing the first letter of each name part to be capitalized.
+			pattern = name:gsub("%S+", Prat.GetNamePattern)
+		else
+			pattern = Prat.GetNamePattern(name)
+		end
+		return { pattern = pattern, matchfunc = ColorPlayer, priority = 48 }
 	end
 
 	do
@@ -91,7 +99,9 @@ Prat:AddModuleExtension(function()
 			self.timerPlayerData = nil
 
 			if self.db.profile.coloreverywhere and Name then
-				Name = Name:match("(.-)%-.+") or Name
+				if not Prat.IsForever then
+					Name = Name:match("(.-)%-.+") or Name
+				end
 				Name = Name:lower()
 				if not namePatterns[Name] and not Prat.PlayerNameBlackList[Name] and Name:len() > 1 then
 					namePatterns[Name] = Prat:RegisterPattern(newPattern(Name), self.name)
@@ -112,6 +122,4 @@ Prat:AddModuleExtension(function()
 			self:OnPlayerDataChangedThrottled(Name)
 		end
 	end
-
-	return
-end) -- Prat:AddModuleToLoad
+end)

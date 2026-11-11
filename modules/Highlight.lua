@@ -77,8 +77,12 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
+	local function GetTargetName(unit)
+		return Prat.IsForever and GetUnitName(unit) or UnitName(unit)
+	end
+
 	Prat:SetModulePatterns(module, {
-		{ pattern = Prat.GetNamePattern(UnitName("player")), matchfunc = highlightPlayer, priority = 47 },
+		{ pattern = Prat.GetNamePattern(GetTargetName("player")), matchfunc = highlightPlayer, priority = 47 },
 		{ pattern = "<(..-)>", matchfunc = highlightGuild, priority = 49 },
 	})
 end)
