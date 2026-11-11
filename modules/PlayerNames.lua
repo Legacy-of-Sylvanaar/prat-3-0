@@ -45,6 +45,7 @@ Prat:AddModuleToLoad(function()
 	module.Classes = {}
 	module.Levels = {}
 	module.Subgroups = {}
+	local playerNames = {}
 
 	local NOP = function()
 		return
@@ -329,7 +330,8 @@ Prat:AddModuleToLoad(function()
 	local cache = {
 		module.Levels,
 		module.Classes,
-		module.Subgroups
+		module.Subgroups,
+		playerNames
 	}
 
 	function module:EmptyDataCache()
@@ -441,18 +443,25 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	function module:UpdatePlayer()
+	function module:UpdatePlayer(level)
 		local PlayerClass = select(2, UnitClass("player"))
-		local Name, Server, Level = GetTargetName("player"), GetTargetServer("player"), UnitLevel("player")
-		self:addName(Name, nil, PlayerClass, Level, nil, "PLAYER")
-		self:addName(Name, Server, PlayerClass, Level, nil, "PLAYER")
+		local Name, Server = GetTargetName("player"), GetTargetServer("player")
+		if not Prat.IsForever and (not Server or Server == "") then
+			Server = GetNormalizedRealmName and GetNormalizedRealmName() or GetRealmName()
+		end
+		local subgroup
+		local raidIndex = UnitInRaid("player")
+		if raidIndex and not issecretvalue(raidIndex) then
+			local _, _, group = GetRaidRosterInfo(raidIndex)
+			subgroup = group
+		end
+		level = level or UnitLevel("player")
+		self:addName(Name, nil, PlayerClass, level, subgroup, "PLAYER")
+		self:addName(Name, Server, PlayerClass, level, subgroup, "PLAYER")
 	end
 
 	function module:PLAYER_LEVEL_UP(_, level)
-		local PlayerClass = select(2, UnitClass("player"))
-		local Name, Server = GetTargetName("player"), GetTargetServer("player")
-		self:addName(Name, nil, PlayerClass, level, nil, "PLAYER")
-		self:addName(Name, Server, PlayerClass, level, nil, "PLAYER")
+		self:UpdatePlayer(level)
 	end
 
 	function module:UpdateFriends()
@@ -501,6 +510,7 @@ Prat:AddModuleToLoad(function()
 		elseif IsInGroup() then
 			self:UpdateParty()
 		end
+		self:UpdatePlayer()
 	end
 
 	function module:UpdateTarget()
@@ -642,6 +652,15 @@ Prat:AddModuleToLoad(function()
 
 		Name = Name .. (Server and Server:len() > 0 and ("-" .. Server) or "")
 
+		if Source == "PLAYER" then
+			playerNames[Name:lower()] = true
+			self.Subgroups[Name:lower()] = nil
+		elseif playerNames[Name:lower()] then
+			-- Roster imports may add a foreign namesake under its bare name.
+			-- Only live player updates may replace our character's cached data.
+			return
+		end
+
 		local changed
 		if Level and not issecretvalue(Level) and Level > 0 then
 			self.Levels[Name:lower()] = Level
@@ -695,7 +714,7 @@ Prat:AddModuleToLoad(function()
 			class = nil
 		end
 
-		if self.wholib and not (class and level) then
+		if self.wholib and not playerNames[player:lower()] and not (class and level) then
 			local user = self.wholib:UserInfo(player, { timeout = 20 })
 
 			if user then
