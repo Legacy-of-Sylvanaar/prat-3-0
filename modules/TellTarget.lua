@@ -50,17 +50,59 @@ Prat:AddModuleToLoad(function()
 	})
 
 	function module:OnModuleEnable()
-		for _, frameName in ipairs(CHAT_FRAMES) do
-			self:SecureHookScript(_G[frameName .. "EditBox"], "OnTextChanged")
+		self.useProcessChatType = ChatFrame1EditBox and type(ChatFrame1EditBox.ProcessChatType) == "function"
+		if self.useProcessChatType then
+			local whisper = ChatTypeInfo.WHISPER
+			ChatTypeInfo["PRAT_TELLTARGET"] = {
+				r = whisper.r,
+				g = whisper.g,
+				b = whisper.b,
+				sticky = 0,
+				ignoreChatTypeProcessing = nil
+			}
+			_G["CHAT_PRAT_TELLTARGET_SEND"] = PL["TellTarget"] .. ": "
+			_G["SLASH_PRAT_TELLTARGET1"] = "/tt"
+			if PL["/tt"] ~= "/tt" then
+				_G["SLASH_PRAT_TELLTARGET2"] = PL["/tt"]
+			end
 		end
+
+		for _, frameName in ipairs(CHAT_FRAMES) do
+			self:HookEditBox(_G[frameName .. "EditBox"])
+		end
+		Prat.RegisterChatEvent(self, Prat.Events.FRAMES_UPDATED)
 	end
 
 	function module:OnModuleDisable()
 		self:UnhookAll()
+		Prat.UnregisterAllChatEvents(self)
 	end
 
 	function module:GetDescription()
 		return PL["Adds telltarget slash command (/tt)."]
+	end
+
+	function module:HookEditBox(editBox)
+		if not editBox then
+			return
+		end
+		if self.useProcessChatType then
+			if editBox.ProcessChatType and not self:IsHooked(editBox, "ProcessChatType") then
+				self:SecureHook(editBox, "ProcessChatType", "ProcessChatType")
+			end
+		elseif not self:IsHooked(editBox, "OnTextChanged") then
+			self:SecureHookScript(editBox, "OnTextChanged")
+		end
+	end
+
+	function module:Prat_FramesUpdated(_, _, chatFrame)
+		self:HookEditBox(chatFrame.editBox)
+	end
+
+	function module:ProcessChatType(editBox, msg, index)
+		if index == "PRAT_TELLTARGET" then
+			self:SendTellToTarget(editBox.chatFrame, msg, editBox)
+		end
 	end
 
 	function module:OnTextChanged(editBox)
