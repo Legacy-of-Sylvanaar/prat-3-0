@@ -277,9 +277,8 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	local function ChatFrameTab_OnClick(i)
+	local function ChatFrame_OnShow(chatFrame)
 		if GetCVar("chatStyle") ~= "classic" then
-			local chatFrame = _G["ChatFrame" .. i];
 			ChatEdit_DeactivateChat(chatFrame.editBox)
 			chatFrame.editBox:Hide()
 		end
@@ -404,9 +403,11 @@ Prat:AddModuleToLoad(function()
 				enableArrowKeys(f)
 			end
 
-			local tab = _G["ChatFrame" .. i .. "Tab"]
-			tab:HookScript("OnClick", function()
-				ChatFrameTab_OnClick(i)
+			local chatFrame = _G["ChatFrame" .. i]
+			chatFrame:HookScript("OnShow", function()
+				C_Timer.After(0, function()
+					ChatFrame_OnShow(chatFrame)
+				end)
 			end)
 		end
 
