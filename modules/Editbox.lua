@@ -412,6 +412,15 @@ Prat:AddModuleToLoad(function()
 		self:UpdateArrowKeys(f)
 		self:UpdateBorderHook(f)
 
+		-- In IM chat style Blizzard's ChatFrameUtil.SetLastActiveWindow (tab switch, whisper pop-out,
+		-- FCF_Close, editbox OnHide fallback) calls editBox:Deactivate() directly instead of going through
+		-- ChatFrameUtil.DeactivateChat. The mixin leaves the box shown at alpha 0.35 with the header hidden,
+		-- so our DeactivateChat hook never runs and an empty box is left on screen. Hook the per-frame
+		-- Deactivate method (mixin methods are copied onto the frame) so every path hides it.
+		if f.Deactivate and not self:IsHooked(f, "Deactivate") then
+			self:SecureHook(f, "Deactivate", "ChatEdit_DeactivateChat")
+		end
+
 		if not self:IsHooked(chatFrame, "OnShow") then
 			self:SecureHookScript(chatFrame, "OnShow", function()
 				C_Timer.After(0, function()
