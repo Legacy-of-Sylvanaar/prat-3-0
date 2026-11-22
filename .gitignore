@@ -1,3 +1,5 @@
 .idea
 Libs
 .release
+node_modules/
+tests/**/generated-*.lua

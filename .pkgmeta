@@ -1,5 +1,11 @@
 package-as: Prat-3.0
 
+ignore:
+  - tests
+  - docs
+  - package.json
+  - package-lock.json
+
 externals:
   Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
   Libs/LibStub: svn://svn.wowace.com/wow/libstub/mainline/trunk

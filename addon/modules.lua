@@ -80,6 +80,7 @@ do
 		["Prat_ChatTabs"] = "display",
 		["Prat_Buttons"] = "display",
 		["Prat_SideTabs"] = "display",
+		["Prat_SecondaryChatGroup"] = "display",
 
 		--formatting
 		["Prat_ChannelNames"] = "formatting",

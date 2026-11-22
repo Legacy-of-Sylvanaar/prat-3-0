@@ -140,6 +140,7 @@ local defaults = {
 			["KeyBindings"] = 3,
 			["ChatTabs"] = 2,
 			["SideTabs"] = 2,
+			["SecondaryChatGroup"] = 2,
 			["*"] = 3
 		}
 	},
