@@ -519,11 +519,17 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:ChatEdit_ActivateChat(frame)
+		if not frame then
+			return
+		end
 		frame:SetAlpha(1)
 		frame:EnableMouse(true)
 	end
 
 	function module:ChatEdit_DeactivateChat(frame)
+		if not frame then
+			return
+		end
 		frame:SetAlpha(0)
 		frame:EnableMouse(false)
 	end
