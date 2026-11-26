@@ -178,7 +178,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:SetHistory(frame, lines)
-		if not framethen
+		if not frame then
 			return
 		end
 		frame:SetMaxLines(lines)
