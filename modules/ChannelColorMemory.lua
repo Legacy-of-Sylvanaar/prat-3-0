@@ -47,17 +47,11 @@ Prat:AddModuleToLoad(function()
 		}
 	})
 
-	--[[------------------------------------------------
-		Moduleule Event Functions
-	------------------------------------------------]] --
-
-	-- things to do when the moduleule is enabled
 	function module:OnModuleEnable()
 		self:RegisterEvent("UPDATE_CHAT_COLOR")
 		self:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE")
 		self.zoneChanIdx = {}
 
-		-- upgrade saved channel names to lowercase only
 		for k, v in pairs(self.db.profile.colors) do
 			if k ~= k:lower() then
 				self.db.profile.colors[k:lower()] = v
@@ -71,6 +65,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:IndexServerChannels()
+		self.zoneChanIdx = {}
 		for _, v in pairs(Prat.HookedFrames) do
 			local t = { GetChatWindowChannels(v:GetID()) }
 			for i = 1, #t, 2 do
@@ -83,6 +78,7 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:RestoreAllChatColors()
+		self.zoneChanIdx = {}
 		for _, v in pairs(Prat.HookedFrames) do
 			local t = { GetChatWindowChannels(v:GetID()) }
 			for i = 1, #t, 2 do
@@ -91,22 +87,14 @@ Prat:AddModuleToLoad(function()
 					self.zoneChanIdx[tostring(num)] = tostring(chan)
 				end
 				if chan and chan:len() > 0 then
-					local color = self.db.profile.colors[chan:lower()];
+					local color = self.db.profile.colors[chan:lower()]
 					if color then
-						local number = Prat.GetChannelName(chan);
-						if number then
-							ChangeChatColor("CHANNEL" .. number, color.r, color.g, color.b);
-						end
+						ChangeChatColor("CHANNEL" .. num, color.r, color.g, color.b)
 					end
 				end
 			end
 		end
 	end
-
-	--[[------------------------------------------------
-		Core Functions
-	------------------------------------------------]] --
-
 
 	local function getServerChan(name)
 		local t = { EnumerateServerChannels() }
@@ -118,13 +106,13 @@ Prat:AddModuleToLoad(function()
 	end
 
 	function module:UPDATE_CHAT_COLOR(_, ChatType, cr, cg, cb)
-		if (ChatType) then
+		if ChatType then
 			local number = ChatType:match("CHANNEL(%d+)")
-			if (number) then
-				local _, name = Prat.GetChannelName(number);
-				if (name) then
+			if number then
+				local _, name = Prat.GetChannelName(number)
+				if name then
 					local zoneSuffix
-					name, zoneSuffix = name:match(PL["(%w+)%s?(.*)"]);
+					name, zoneSuffix = name:match(PL["(%w+)%s?(.*)"])
 					if zoneSuffix and zoneSuffix:len() > 0 then
 						name = getServerChan(name)
 					end
@@ -133,9 +121,9 @@ Prat:AddModuleToLoad(function()
 						return
 					end
 
-					local color = self.db.profile.colors[name:lower()];
-					if (not color) then
-						self.db.profile.colors[name:lower()] = { r = cr, g = cg, b = cb };
+					local color = self.db.profile.colors[name:lower()]
+					if not color then
+						self.db.profile.colors[name:lower()] = { r = cr, g = cg, b = cb }
 					else
 						color.r = cr
 						color.g = cg
@@ -153,34 +141,29 @@ Prat:AddModuleToLoad(function()
 
 		if tonumber(ServChanID) > 0 then
 			cname = self.zoneChanIdx[tostring(ServChanID)]
-
 			if not cname then
 				self:IndexServerChannels()
-
 				cname = self.zoneChanIdx[tostring(ServChanID)]
 			end
 		end
 
 		if number == nil or cname == nil then
 			return
-		elseif (NoticeType == "YOU_JOINED") then
-			local color = self.db.profile.colors[cname:lower()];
-			if (color) then
-				ChangeChatColor("CHANNEL" .. number, color.r, color.g, color.b);
+		elseif NoticeType == "YOU_JOINED" then
+			local color = self.db.profile.colors[cname:lower()]
+			if color then
+				ChangeChatColor("CHANNEL" .. number, color.r, color.g, color.b)
 			end
-		elseif (NoticeType == "YOU_LEFT") then
-			local color = self.db.profile.colors[cname:lower()];
-			if (color) then
-				ChangeChatColor("CHANNEL" .. number, 1.0, 0.75, 0.75);
+		elseif NoticeType == "YOU_LEFT" then
+			local color = self.db.profile.colors[cname:lower()]
+			if color then
+				ChangeChatColor("CHANNEL" .. number, 1.0, 0.75, 0.75)
 			else
-				color = ChatTypeInfo["CHANNEL" .. number];
-				-- The color may not exist if the number is 0
-				if (color) then
-					self.db.profile.colors[cname:lower()] = { r = color.r, g = color.g, b = color.b };
+				color = ChatTypeInfo["CHANNEL" .. number]
+				if color then
+					self.db.profile.colors[cname:lower()] = { r = color.r, g = color.g, b = color.b }
 				end
 			end
 		end
 	end
-
-	return
-end) -- Prat:AddModuleToLoad
+end)
