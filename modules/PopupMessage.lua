@@ -24,6 +24,10 @@
 --
 -------------------------------------------------------------------------------
 
+local function GetTargetName(unit)
+	return Prat.IsForever and GetUnitName(unit) or UnitName(unit)
+end
+
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("PopupMessage", "LibSink-2.0")
 	local PL = module.PL
@@ -54,6 +58,7 @@ Prat:AddModuleToLoad(function()
 			show = { ChatFrame1 = true },
 			framealpha = 1.0,
 			nickname = {},
+			matchbothnames = true,
 			sinkoptions = { ["sink20OutputSink"] = "Popup" },
 		}
 	})
@@ -79,6 +84,22 @@ Prat:AddModuleToLoad(function()
 				values = Prat.HookedFrameList,
 				get = "GetSubValue",
 				set = "SetSubValue"
+			},
+			matchbothnames = {
+				name = PL["Match both names"],
+				desc = PL["Match messages that contain both your first and last name."],
+				type = "toggle",
+				order = 120,
+				hidden = function()
+					return not Prat.IsForever
+				end,
+				get = function(info)
+					return info.handler.db.profile.matchbothnames
+				end,
+				set = function(info, value)
+					info.handler.db.profile.matchbothnames = value
+					info.handler:UpdatePlayerName()
+				end,
 			},
 			addnick = {
 				name = PL["Add Nickname"],
@@ -147,7 +168,15 @@ Prat:AddModuleToLoad(function()
 			self.nickpat[v] = Prat.GetNamePattern(v)
 		end
 
-		self.playerName = Prat.GetNamePattern(UnitName("player"))
+		self:UpdatePlayerName()
+	end
+
+	function module:UpdatePlayerName()
+		local name = GetTargetName("player")
+		if Prat.IsForever and not self.db.profile.matchbothnames then
+			name = name and name:match("^(%S+)")
+		end
+		self.playerName = name and Prat.GetNamePattern(name)
 	end
 
 	--[[------------------------------------------------

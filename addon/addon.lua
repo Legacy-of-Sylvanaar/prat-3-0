@@ -784,25 +784,37 @@ Prat.MULTIBYTE_FIRST_CHAR = "^([%a\192-\255]?[\128-\191]*)"
 Prat.AnyNamePattern = "%f[%a\128-\255]([%a\128-\255]+)%f[^%a\128-\255]"
 
 function Prat.GetNamePattern(name)
-	local u = name:match(Prat.MULTIBYTE_FIRST_CHAR):upper()
+	local function getWordPattern(word)
+		local u = word:match(Prat.MULTIBYTE_FIRST_CHAR):upper()
 
-	if not u or u:len() == 0 then
-		Prat:Print("GetNamePattern: name error ", name)
-		return
+		if not u or u:len() == 0 then
+			return
+		end
+
+		local l = u:lower()
+		if u == l then
+			return word:lower()
+		elseif u:len() == 1 then
+			return "[" .. u .. l .. "]" .. word:sub(2):lower()
+		elseif u:len() > 1 then
+			local wordpat = ""
+			for i = 1, u:len() do
+				wordpat = wordpat .. "[" .. u:sub(i, i) .. l:sub(i, i) .. "]"
+			end
+			return wordpat .. word:sub(u:len() + 1)
+		end
 	end
 
-	local l = u:lower()
 	local namepat
-	if u == l then
-		namepat = name:lower()
-	elseif u:len() == 1 then
-		namepat = "[" .. u .. l .. "]" .. name:sub(2):lower()
-	elseif u:len() > 1 then
-		namepat = ""
-		for i = 1, u:len() do
-			namepat = namepat .. "[" .. u:sub(i, i) .. l:sub(i, i) .. "]"
-		end
-		namepat = namepat .. name:sub(u:len() + 1)
+	if Prat.IsForever and name:find("%s") then
+		namepat = name:gsub("%S+", getWordPattern):gsub("%s+", "%%s+")
+	else
+		namepat = getWordPattern(name)
+	end
+
+	if not namepat then
+		Prat:Print("GetNamePattern: name error ", name)
+		return
 	end
 
 	return "%f[%a\128-\255]" .. namepat .. "%f[^%a\128-\255]"
