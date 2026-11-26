@@ -467,6 +467,10 @@ end
 function addon:ChatEdit_ParseText(editBox, send)
 	local command = editBox:GetText()
 
+	if issecretvalue(command) then
+		return
+	end
+
 	-- This is what blizzard does
 	local cmd = command:match("^(#%s*[Ss][Hh][Oo][Ww]:*)%s[^%s]") or
 		command:match("^(#%s*[Ss][Hh][Oo][Ww][Tt][Oo][Oo][Ll][Tt][Ii][Pp]:*)%s[^%s]") or

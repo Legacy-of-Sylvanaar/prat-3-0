@@ -26,6 +26,8 @@
 
 local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend or ChatFrameUtil.ChooseBoxForSend
 
+local issecretvalue = issecretvalue or function() return false end
+
 Prat:AddModuleToLoad(function()
 	local module = Prat:NewModule("History", "AceHook-3.0")
 	local PL = module.PL
@@ -95,18 +97,6 @@ Prat:AddModuleToLoad(function()
 				type = "toggle",
 				order = 131,
 			},
-			--      colorgmotd = {
-			--        name = PL["Color GMOTD"],
-			--        desc = PL["Colors the GMOTD label"],
-			--        type = "toggle",
-			--        order = 150,
-			--      },
-			--      delaygmotd = {
-			--        name = PL.delaygmotd_name,
-			--        desc = PL.delaygmotd_desc,
-			--        type = "toggle",
-			--        order = 151
-			--      }
 		}
 	})
 
@@ -117,14 +107,7 @@ Prat:AddModuleToLoad(function()
 		end
 	end
 
-	--[[------------------------------------------------
-		Module Event Functions
-	------------------------------------------------]] --
-
-	-- things to do when the module is enabled
 	function module:OnModuleEnable()
-
-
 		Prat3CharDB = Prat3CharDB or {}
 		Prat3CharDB.history = Prat3CharDB.history or {}
 		Prat3CharDB.history.cmdhistory = Prat3CharDB.history.cmdhistory or {}
@@ -153,8 +136,6 @@ Prat:AddModuleToLoad(function()
 			end
 		end
 
-
-		-- Clean out any old data
 		if self.db.profile.cmdhistory then
 			self.db.profile.cmdhistory = nil
 		end
@@ -163,8 +144,6 @@ Prat:AddModuleToLoad(function()
 	function module:GetDescription()
 		return PL["Chat history options."]
 	end
-
-	-- things to do when the module is enabled
 	function module:OnModuleDisable()
 		self:ConfigureAllChatFrames(384)
 	end
@@ -178,7 +157,7 @@ Prat:AddModuleToLoad(function()
 
 		for k in pairs(Prat3CharDB.history.cmdhistory) do
 			local edit = _G[k]
-			if (edit) then
+			if edit then
 				if self.db.profile.savehistory then
 					edit:SetHistoryLines(self.db.profile.maxlines)
 					edit.history_lines = Prat3CharDB.history.cmdhistory[k]
@@ -198,15 +177,11 @@ Prat:AddModuleToLoad(function()
 		self:ConfigureAllChatFrames()
 	end
 
-	--[[------------------------------------------------
-		Core Functions
-	------------------------------------------------]] --
-	function module:SetHistory(f, lines)
-		if f == nil then
+	function module:SetHistory(frame, lines)
+		if not framethen
 			return
 		end
-
-		f:SetMaxLines(lines)
+		frame:SetMaxLines(lines)
 	end
 
 	function module:addSavedHistory(editBox)
@@ -219,16 +194,14 @@ Prat:AddModuleToLoad(function()
 		local cmdhistory = Prat3CharDB.history.cmdhistory[editBox:GetName()] or {}
 		local cmdindex = #cmdhistory
 
-		-- where there"s a while, there"s a way
 		while cmdindex > 0 do
 			editBox:AddHistoryLine(cmdhistory[cmdindex])
 			cmdindex = cmdindex - 1
-			-- way
 		end
 	end
 
 	function module:saveLine(text, editBox)
-		if not text or (text == "") then
+		if not text or text == "" then
 			return false
 		end
 
@@ -267,27 +240,27 @@ Prat:AddModuleToLoad(function()
 	function module:AddHistoryLine(editBox)
 		editBox = editBox or ChatEdit_ChooseBoxForSend()
 
-		-- following code mostly ripped off from Blizzard, but at least I understand it now
 		local text = ""
 		local type = editBox:GetAttribute("chatType")
+		if issecretvalue(type) then
+			return
+		end
 		local header = _G["SLASH_" .. type .. "1"]
 
-		if (header) then
+		if header then
 			text = header
 		end
 
-		if (type == "WHISPER") and editBox:GetAttribute("tellTarget") ~= nil then
+		if type == "WHISPER" and editBox:GetAttribute("tellTarget") ~= nil then
 			text = text .. " " .. editBox:GetAttribute("tellTarget")
-		elseif (type == "CHANNEL") and editBox:GetAttribute("channelTarget") ~= nil then
+		elseif type == "CHANNEL" and editBox:GetAttribute("channelTarget") ~= nil then
 			text = "/" .. editBox:GetAttribute("channelTarget")
 		end
 
 		local editBoxText = editBox:GetText();
-		if (strlen(editBoxText) > 0 and not IsSecureCmd(editBoxText:match("^/[%a%d_]+") or "")) then
+		if strlen(editBoxText) > 0 and not IsSecureCmd(editBoxText:match("^/[%a%d_]+") or "") then
 			text = (header and (text .. " ") or "") .. editBoxText;
 			self:saveLine(text, editBox)
 		end
 	end
-
-	return
-end) -- Prat:AddModuleToLoad
+end)
