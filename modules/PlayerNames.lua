@@ -948,7 +948,11 @@ Prat:AddModuleToLoad(function()
 				end,
 				nil,
 				function(name)
-					return name:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1):match("^[^%-]+")
+					name = name:match("^[^%-]+") or name
+					name = name:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1)
+					return name:gsub("(%s+)([%a\192-\255]?[\128-\191]*)", function(spaces, first)
+						return spaces .. first:upper()
+					end)
 				end
 			)
 		end

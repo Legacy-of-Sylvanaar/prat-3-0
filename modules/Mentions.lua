@@ -78,7 +78,9 @@ Prat:AddModuleToLoad(function()
 		local playernames = Prat:GetModule("PlayerNames")
 
 		if not AceTab:IsTabCompletionRegistered(tabcompleteName) then
-			AceTab:RegisterTabCompletion(tabcompleteName, "@",
+			AceTab:RegisterTabCompletion(
+				tabcompleteName,
+				"@",
 				function(t)
 					for name in pairs(playernames.Classes) do
 						table.insert(t, name)
@@ -111,8 +113,13 @@ Prat:AddModuleToLoad(function()
 				end,
 				nil,
 				function(name)
-					return name:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1):match("^[^%-]+")
-				end)
+					name = name:match("^[^%-]+") or name
+					name = name:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1)
+					return name:gsub("(%s+)([%a\192-\255]?[\128-\191]*)", function(spaces, first)
+						return spaces .. first:upper()
+					end)
+				end
+			)
 		end
 	end
 end)

@@ -438,6 +438,13 @@ Prat:AddModuleToLoad(function()
 		return clrname(altname, altcolour)
 	end
 
+	local function capitalizeName(name)
+		name = name:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1)
+		return name:gsub("(%s+)([%a\192-\255]?[\128-\191]*)", function(spaces, first)
+			return spaces .. first:upper()
+		end)
+	end
+
 	function module:formatCharName(name)
 		if name == nil then
 			return ""
@@ -647,7 +654,7 @@ Prat:AddModuleToLoad(function()
 						if class then
 							local classColor = Prat.GetClassColor(class, true)
 							if classColor then
-								self.ALTNAMES = string.format(padfmt, classColor:WrapTextInColorCode(altname:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1)))
+								self.ALTNAMES = string.format(padfmt, classColor:WrapTextInColorCode(capitalizeName(altname)))
 								message.ALTNAMES = self.ALTNAMES
 								return
 							end
@@ -660,7 +667,7 @@ Prat:AddModuleToLoad(function()
 				hexcolour = hexcolour or CLR:GetHexColor(self.db.profile.colour)
 			end
 
-			self.ALTNAMES = string.format(padfmt, CLR:Colorize(hexcolour, altname:gsub(Prat.MULTIBYTE_FIRST_CHAR, string.upper, 1)))
+			self.ALTNAMES = string.format(padfmt, CLR:Colorize(hexcolour, capitalizeName(altname)))
 
 			message.ALTNAMES = self.ALTNAMES
 		end
